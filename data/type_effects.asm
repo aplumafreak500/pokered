@@ -97,6 +97,7 @@ TypeEffects:
 	db FIRE,STEEL,20
 	db STEEL,ROCK,20
 	db FIGHTING,STEEL,20
+	db NORMAL,STEEL,05
 	;todo: how Fairy stacks up against other types
 	;todo: confirm for Dark, Steel, and add Contest entries as we plan to consult this table for appeal effects
 	db $FF
