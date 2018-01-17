@@ -86,4 +86,17 @@ TypeEffects:
 	db GRASS,DRAGON,05
 	db ICE,DRAGON,20
 	db DRAGON,DRAGON,20
+	db FAIRY,DRAGON,20
+	db DRAGON,FAIRY,05
+	db DARK,PSYCHIC,20
+	db DARK,GHOST,05 ;this, SE, or null?
+	db STEEL,ELECTRIC,05 ;?
+	db ELECTRIC,STEEL,05 ;?
+	db PSYCHIC,DARK,05
+	db GHOST,DARK,20
+	db FIRE,STEEL,20
+	db STEEL,ROCK,20
+	db FIGHTING,STEEL,20
+	;todo: how Fairy stacks up against other types
+	;todo: confirm for Dark, Steel, and add Contest entries as we plan to consult this table for appeal effects
 	db $FF

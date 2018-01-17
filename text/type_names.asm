@@ -10,17 +10,17 @@ TypeNames:
 	dw .Bug
 	dw .Ghost
 
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
-	dw .Normal
+	dw .Fairy
+	dw .Cool
+	dw .Cute
+	dw .Smart
+	dw .Tough
+	dw .Beauty
+	dw .Curse
+	dw .Dark
+	dw .Steel
+	dw .Unknown
+	dw .Unknown
 
 	dw .Fire
 	dw .Water
@@ -30,19 +30,29 @@ TypeNames:
 	dw .Ice
 	dw .Dragon
 
-.Normal:   db "NORMAL@"
-.Fighting: db "FIGHTING@"
-.Flying:   db "FLYING@"
-.Poison:   db "POISON@"
-.Fire:     db "FIRE@"
-.Water:    db "WATER@"
-.Grass:    db "GRASS@"
-.Electric: db "ELECTRIC@"
-.Psychic:  db "PSYCHIC@"
-.Ice:      db "ICE@"
-.Ground:   db "GROUND@"
-.Rock:     db "ROCK@"
-.Bird:     db "BIRD@"
-.Bug:      db "BUG@"
-.Ghost:    db "GHOST@"
-.Dragon:   db "DRAGON@"
+.Normal:   db "Normal@"
+.Fighting: db "Fighting@"
+.Flying:   db "Flying@"
+.Poison:   db "Poison@"
+.Fire:     db "Fire@"
+.Water:    db "Water@"
+.Grass:    db "Grass@"
+.Electric: db "Electric@"
+.Psychic:  db "Psychic@"
+.Ice:      db "Ice@"
+.Ground:   db "Ground@"
+.Rock:     db "Rock@"
+.Bird:     db "Bird@"
+.Bug:      db "Bug@"
+.Ghost:    db "Ghost@"
+.Dragon:   db "Dragon@"
+.Steel: db "Steel@"
+.Dark: db "Dark@"
+.Fairy: db "Fairy@"
+.Cool: db "Cool@"
+.Cute: db "Cute@"
+.Tough: db "Tough@"
+.Smart: db "Smart@"
+.Beauty: db "Beauty@"
+.Curse: db "???@"
+.Unknown: db "-@"
