@@ -4,100 +4,117 @@ TypeEffects:
 ;     20 is ×2.0
 ;     05 is ×0.5
 ;     00 is ×0
-	db WATER,FIRE,20
-	db FIRE,GRASS,20
-	db FIRE,ICE,20
-	db GRASS,WATER,20
-	db ELECTRIC,WATER,20
-	db WATER,ROCK,20
-	db GROUND,FLYING,00
-	db WATER,WATER,05
-	db FIRE,FIRE,05
-	db ELECTRIC,ELECTRIC,05
-	db ICE,ICE,05
-	db GRASS,GRASS,05
-	db PSYCHIC,PSYCHIC,05
-	db FIRE,WATER,05
-	db GRASS,FIRE,05
-	db WATER,GRASS,05
-	db ELECTRIC,GRASS,05
-	db NORMAL,ROCK,05
-	db NORMAL,GHOST,00
-	db GHOST,GHOST,20
-	db FIRE,BUG,20
-	db FIRE,ROCK,05
-	db WATER,GROUND,20
-	db ELECTRIC,GROUND,00
-	db ELECTRIC,FLYING,20
-	db GRASS,GROUND,20
-	db GRASS,BUG,05
-	db GRASS,POISON,05
-	db GRASS,ROCK,20
-	db GRASS,FLYING,05
-	db ICE,WATER,05
-	db ICE,GRASS,20
-	db ICE,GROUND,20
-	db ICE,FLYING,20
-	db FIGHTING,NORMAL,20
-	db FIGHTING,POISON,05
-	db FIGHTING,FLYING,05
-	db FIGHTING,PSYCHIC,05
-	db FIGHTING,BUG,05
-	db FIGHTING,ROCK,20
-	db FIGHTING,ICE,20
-	db FIGHTING,GHOST,00
-	db POISON,GRASS,20
-	db POISON,POISON,05
-	db POISON,GROUND,05
-	db POISON,BUG,20
-	db POISON,ROCK,05
-	db POISON,GHOST,05
-	db GROUND,FIRE,20
-	db GROUND,ELECTRIC,20
-	db GROUND,GRASS,05
-	db GROUND,BUG,05
-	db GROUND,ROCK,20
-	db GROUND,POISON,20
-	db FLYING,ELECTRIC,05
-	db FLYING,FIGHTING,20
-	db FLYING,BUG,20
-	db FLYING,GRASS,20
-	db FLYING,ROCK,05
-	db PSYCHIC,FIGHTING,20
-	db PSYCHIC,POISON,20
-	db BUG,FIRE,05
-	db BUG,GRASS,20
-	db BUG,FIGHTING,05
-	db BUG,FLYING,05
-	db BUG,PSYCHIC,20
-	db BUG,GHOST,05
-	db BUG,POISON,20
-	db ROCK,FIRE,20
-	db ROCK,FIGHTING,05
-	db ROCK,GROUND,05
-	db ROCK,FLYING,20
-	db ROCK,BUG,20
-	db ROCK,ICE,20
-	db GHOST,NORMAL,00
-	db GHOST,PSYCHIC,00
-	db FIRE,DRAGON,05
-	db WATER,DRAGON,05
-	db ELECTRIC,DRAGON,05
-	db GRASS,DRAGON,05
-	db ICE,DRAGON,20
-	db DRAGON,DRAGON,20
+	db   NORMAL,     ROCK,  5
+	db   NORMAL,    STEEL,  5
+	db     FIRE,     FIRE,  5
+	db     FIRE,    WATER,  5
+	db     FIRE,    GRASS, 20
+	db     FIRE,      ICE, 20
+	db     FIRE,      BUG, 20
+	db     FIRE,     ROCK,  5
+	db     FIRE,   DRAGON,  5
+	db     FIRE,    STEEL, 20
+	db    WATER,     FIRE, 20
+	db    WATER,    WATER,  5
+	db    WATER,    GRASS,  5
+	db    WATER,   GROUND, 20
+	db    WATER,     ROCK, 20
+	db    WATER,   DRAGON,  5
+	db ELECTRIC,    WATER, 20
+	db ELECTRIC, ELECTRIC,  5
+	db ELECTRIC,    GRASS,  5
+	db ELECTRIC,   GROUND,  0
+	db ELECTRIC,   FLYING, 20
+	db ELECTRIC,   DRAGON,  5
+	db    GRASS,     FIRE,  5
+	db    GRASS,    WATER, 20
+	db    GRASS,    GRASS,  5
+	db    GRASS,   POISON,  5
+	db    GRASS,   GROUND, 20
+	db    GRASS,   FLYING,  5
+	db    GRASS,      BUG,  5
+	db    GRASS,     ROCK, 20
+	db    GRASS,   DRAGON,  5
+	db    GRASS,    STEEL,  5
+	db      ICE,    WATER,  5
+	db      ICE,    GRASS, 20
+	db      ICE,      ICE,  5
+	db      ICE,   GROUND, 20
+	db      ICE,   FLYING, 20
+	db      ICE,   DRAGON, 20
+	db      ICE,    STEEL,  5
+	db      ICE,     FIRE,  5
+	db FIGHTING,   NORMAL, 20
+	db FIGHTING,      ICE, 20
+	db FIGHTING,   POISON,  5
+	db FIGHTING,   FLYING,  5
+	db FIGHTING,  PSYCHIC,  5
+	db FIGHTING,      BUG,  5
+	db FIGHTING,     ROCK, 20
+	db FIGHTING,     DARK, 20
+	db FIGHTING,    STEEL, 20
+	db   POISON,    GRASS, 20
+	db   POISON,   POISON,  5
+	db   POISON,   GROUND,  5
+	db   POISON,     ROCK,  5
+	db   POISON,    GHOST,  5
+	db   POISON,    STEEL,  0
+	db   GROUND,     FIRE, 20
+	db   GROUND, ELECTRIC, 20
+	db   GROUND,    GRASS,  5
+	db   GROUND,   POISON, 20
+	db   GROUND,   FLYING,  0
+	db   GROUND,      BUG,  5
+	db   GROUND,     ROCK, 20
+	db   GROUND,    STEEL, 20
+	db   FLYING, ELECTRIC,  5
+	db   FLYING,    GRASS, 20
+	db   FLYING, FIGHTING, 20
+	db   FLYING,      BUG, 20
+	db   FLYING,     ROCK,  5
+	db   FLYING,    STEEL,  5
+	db  PSYCHIC, FIGHTING, 20
+	db  PSYCHIC,   POISON, 20
+	db  PSYCHIC,  PSYCHIC,  5
+	db  PSYCHIC,     DARK,  0
+	db  PSYCHIC,    STEEL,  5
+	db      BUG,     FIRE,  5
+	db      BUG,    GRASS, 20
+	db      BUG, FIGHTING,  5
+	db      BUG,   POISON,  5
+	db      BUG,   FLYING,  5
+	db      BUG,  PSYCHIC, 20
+	db      BUG,    GHOST,  5
+	db      BUG,     DARK, 20
+	db      BUG,    STEEL,  5
+	db     ROCK,     FIRE, 20
+	db     ROCK,      ICE, 20
+	db     ROCK, FIGHTING,  5
+	db     ROCK,   GROUND,  5
+	db     ROCK,   FLYING, 20
+	db     ROCK,      BUG, 20
+	db     ROCK,    STEEL,  5
+	db    GHOST,   NORMAL,  0
+	db    GHOST,  PSYCHIC, 20
+	db    GHOST,     DARK,  5
+	db    GHOST,    STEEL,  5
+	db    GHOST,    GHOST, 20
+	db   DRAGON,   DRAGON, 20
+	db   DRAGON,    STEEL,  5
+	db     DARK, FIGHTING,  5
+	db     DARK,  PSYCHIC, 20
+	db     DARK,    GHOST, 20
+	db     DARK,     DARK,  5
+	db     DARK,    STEEL,  5
+	db    STEEL,     FIRE,  5
+	db    STEEL,    WATER,  5
+	db    STEEL, ELECTRIC,  5
+	db    STEEL,      ICE, 20
+	db    STEEL,     ROCK, 20
+	db    STEEL,    STEEL,  5
 	db FAIRY,DRAGON,20
 	db DRAGON,FAIRY,05
-	db DARK,PSYCHIC,20
-	db DARK,GHOST,05 ;this, SE, or null?
-	db STEEL,ELECTRIC,05 ;?
-	db ELECTRIC,STEEL,05 ;?
-	db PSYCHIC,DARK,05
-	db GHOST,DARK,20
-	db FIRE,STEEL,20
-	db STEEL,ROCK,20
-	db FIGHTING,STEEL,20
-	db NORMAL,STEEL,05
 	;todo: how Fairy stacks up against other types
-	;todo: confirm for Dark, Steel, and add Contest entries as we plan to consult this table for appeal effects
+	;todo: add Contest entries as we plan to consult this table for appeal effects
+	;todo: Foresight/Odor Sluth
 	db $FF
