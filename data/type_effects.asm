@@ -53,12 +53,14 @@ TypeEffects:
 	db FIGHTING,     ROCK, 20
 	db FIGHTING,     DARK, 20
 	db FIGHTING,    STEEL, 20
+	db FIGHTING,    FAIRY, 5
 	db   POISON,    GRASS, 20
 	db   POISON,   POISON,  5
 	db   POISON,   GROUND,  5
 	db   POISON,     ROCK,  5
 	db   POISON,    GHOST,  5
 	db   POISON,    STEEL,  0
+	db   POISON,    FAIRY, 20
 	db   GROUND,     FIRE, 20
 	db   GROUND, ELECTRIC, 20
 	db   GROUND,    GRASS,  5
@@ -87,6 +89,7 @@ TypeEffects:
 	db      BUG,    GHOST,  5
 	db      BUG,     DARK, 20
 	db      BUG,    STEEL,  5
+	db      BUG,     FAIRY, 5
 	db     ROCK,     FIRE, 20
 	db     ROCK,      ICE, 20
 	db     ROCK, FIGHTING,  5
@@ -101,20 +104,26 @@ TypeEffects:
 	db    GHOST,    GHOST, 20
 	db   DRAGON,   DRAGON, 20
 	db   DRAGON,    STEEL,  5
+	db   DRAGON,    FAIRY, 0
 	db     DARK, FIGHTING,  5
 	db     DARK,  PSYCHIC, 20
 	db     DARK,    GHOST, 20
 	db     DARK,     DARK,  5
 	db     DARK,    STEEL,  5
+	db     DARK,    FAIRY, 5
 	db    STEEL,     FIRE,  5
 	db    STEEL,    WATER,  5
 	db    STEEL, ELECTRIC,  5
 	db    STEEL,      ICE, 20
 	db    STEEL,     ROCK, 20
 	db    STEEL,    STEEL,  5
-	db FAIRY,DRAGON,20
-	db DRAGON,FAIRY,05
-	;todo: how Fairy stacks up against other types
+	db    STEEL,    FAIRY, 20
+	db    FAIRY,    DRAGON, 20
+	db    FAIRY,      DARK, 20
+	db    FAIRY,   FIGHTING, 20
+	db    FAIRY,       FIRE, 5
+	db    FAIRY,    POISON, 5
+	db    FAIRY,     STEEL, 5
 	;todo: add Contest entries as we plan to consult this table for appeal effects
 	;todo: Foresight/Odor Sluth
 	db $FF
