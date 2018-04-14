@@ -871,13 +871,13 @@ INCLUDE "data/bike_riding_tilesets.asm"
 
 ; load the tile pattern data of the current tileset into VRAM
 LoadTilesetTilePatternData::
-	ld a, [wTilesetGfxPtr]
-	ld l, a
-	ld a, [wTilesetGfxPtr + 1]
-	ld h, a
-	ld de, vTileset
-	ld bc, $600
-	ld a, [wTilesetBank]
+	ld a,[wTilesetGfxPtr]
+	ld l,a
+	ld a,[wTilesetGfxPtr + 1]
+	ld h,a
+	ld de,vTileset
+	ld bc,$790
+	ld a,[wTilesetBank]
 	jp FarCopyData2
 
 ; this loads the current maps complete tile map (which references blocks, not individual tiles) to C6E8

@@ -1848,7 +1848,6 @@ SECTION "bank19",ROMX,BANK[$19]
 
 Overworld_GFX:     INCBIN "gfx/tilesets/overworld.2bpp"
 Overworld_Block:   INCBIN "gfx/blocksets/overworld.bst"
-
 RedsHouse1_GFX:
 RedsHouse2_GFX:    INCBIN "gfx/tilesets/reds_house.2bpp"
 	ds 16
@@ -2088,3 +2087,8 @@ INCLUDE "engine/evolution.asm"
 INCLUDE "engine/overworld/elevator.asm"
 
 INCLUDE "engine/items/tm_prices.asm"
+
+SECTION "bank2d",ROMX,BANK[$2d]
+
+Overworld_GFX:     INCBIN "gfx/tilesets/overworld.t7.2bpp"
+Overworld_Block:   INCBIN "gfx/blocksets/overworld.bst"
