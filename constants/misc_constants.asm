@@ -121,7 +121,7 @@ SWAP_MONS_PARTY_MENU  EQU 4
 EVO_STONE_PARTY_MENU  EQU 5
 DEVO_STONE_PARTY_MENU EQU 6
 
-; party memu message IDs
+; party menu message IDs
 ANTIDOTE_MSG     EQU $F0
 BURN_HEAL_MSG    EQU $F1
 ICE_HEAL_MSG     EQU $F2
@@ -201,3 +201,7 @@ LINK_STATE_START_BATTLE  EQU $03 ; pre-battle initialisation
 LINK_STATE_BATTLING      EQU $04 ; in a link battle
 LINK_STATE_RESET         EQU $05 ; reset game (unused)
 LINK_STATE_TRADING       EQU $32 ; in a link trade
+
+LINKBATTLE_RUN       EQU $F
+LINKBATTLE_STRUGGLE  EQU $E
+LINKBATTLE_NO_ACTION EQU $D
