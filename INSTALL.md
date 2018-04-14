@@ -1,13 +1,14 @@
 # Linux
 
-	sudo apt-get install make gcc bison git python
+	sudo apt-get install make git gcc
 
-	git clone https://github.com/bentley/rgbds
+	sudo apt-get install byacc flex pkg-config libpng-dev
+	git clone https://github.com/rednex/rgbds
 	cd rgbds
 	sudo make install
 	cd ..
 
-	git clone --recursive https://github.com/pret/pokered
+	git clone https://github.com/pret/pokered
 	cd pokered
 
 To build **pokered.gbc** and **pokeblue.gbc**:
@@ -22,33 +23,38 @@ To build them individually:
 
 # Mac
 
-In **Terminal**, run:
+Get [**Homebrew**](http://brew.sh/).
+
+Then in **Terminal**, run:
 
 	xcode-select --install
+	brew install rgbds
 
-	git clone https://github.com/bentley/rgbds
-	cd rgbds
-	sudo make install
-	cd ..
-
-	git clone --recursive https://github.com/pret/pokered
+	git clone https://github.com/pret/pokered
 	cd pokered
+
+To build **pokered.gbc** and **pokeblue.gbc**:
 
 	make
 
 
 # Windows
 
-To build on Windows, use [**Cygwin**](http://cygwin.com/install.html). Use the default settings.
+Download [**Cygwin**](http://cygwin.com/install.html): **setup-x86_64.exe** for 64-bit Windows, **setup-x86.exe** for 32-bit.
 
-In the installer, select the following packages: `make` `git` `python` `gettext`
+Run setup and leave the default settings. At "Select Packages", choose to install the following:
 
-Then get the most recent version of [**rgbds**](https://github.com/bentley/rgbds/releases/).
-Extract the archive and put `rgbasm.exe`, `rgblink.exe` and `rgbfix.exe` in `C:\cygwin\usr\local\bin`.
+- `make`
+- `git`
+- `gcc-core`
 
-In the **Cygwin terminal**:
+Then download [**rgbds**](https://github.com/rednex/rgbds/releases/): the latest **win64.tar.gz** or **win32.tar.gz** release. Extract it and put all the `exe` and `dll` files individually in **C:\cygwin64\usr\local\bin**.
 
-	git clone --recursive https://github.com/pret/pokered
+In the **Cygwin terminal**, enter these commands:
+
+	git clone https://github.com/pret/pokered
 	cd pokered
+
+To build **pokered.gbc** and **pokeblue.gbc**:
 
 	make
