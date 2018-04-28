@@ -9,19 +9,17 @@ TypeNames:
 	dw .Bird
 	dw .Bug
 	dw .Ghost
-
-	dw .Fairy
+	dw .Dark
+	dw .Steel
+	dw .Curse
 	dw .Cool
 	dw .Cute
 	dw .Smart
 	dw .Tough
 	dw .Beauty
-	dw .Curse
-	dw .Dark
-	dw .Steel
 	dw .Unknown
 	dw .Unknown
-
+	dw .Unknown
 	dw .Fire
 	dw .Water
 	dw .Grass
@@ -29,6 +27,8 @@ TypeNames:
 	dw .Psychic
 	dw .Ice
 	dw .Dragon
+	dw .Fairy
+	dw .Unknown
 
 .Normal:   db "Normal@"
 .Fighting: db "Fighting@"
