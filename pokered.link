@@ -1,6 +1,4 @@
 ROM0
-  ORG $61
-  "Home"
   ORG $150
   "Main"
 
@@ -45,7 +43,6 @@ ROMX $9
 
 ROMX $A
   "Pics 2" ; PICS_2
-  "Battle (bank A)"
 
 ROMX $B
   "Pics 3" ; PICS_3
@@ -155,6 +152,9 @@ ROMX $2B
 
 ROMX $2C
   "Move Names" ; MOVE_NAMES
+  
+ROMX $2D
+  "Battle (bank A)"
 
 WRAM0
   "WRAM Bank 0"

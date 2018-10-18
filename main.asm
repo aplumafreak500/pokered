@@ -22,7 +22,6 @@ INCLUDE "engine/black_out.asm"
 
 MewPicFront:: INCBIN "pic/bmon/mew.pic"
 MewPicBack::  INCBIN "pic/monback/mewb.pic"
-INCLUDE "data/baseStats/mew.asm"
 
 INCLUDE "engine/battle/safari_zone.asm"
 
@@ -518,6 +517,8 @@ INCLUDE "engine/hidden_object_functions7.asm"
 
 SECTION "Pics 1", ROMX, BANK[PICS_1]
 
+MissingnoPicFront::   INCBIN "pic/bmon/missingno.pic"
+MissingnoPicBack::    INCBIN "pic/monback/missingno.pic"
 RhydonPicFront::      INCBIN "pic/bmon/rhydon.pic"
 RhydonPicBack::       INCBIN "pic/monback/rhydonb.pic"
 KangaskhanPicFront::  INCBIN "pic/bmon/kangaskhan.pic"
@@ -580,8 +581,6 @@ TangelaPicBack::      INCBIN "pic/monback/tangelab.pic"
 
 SECTION "Battle (bank 9)", ROMX, BANK[$9]
 INCLUDE "engine/battle/print_type.asm"
-INCLUDE "engine/battle/save_trainer_name.asm"
-INCLUDE "engine/battle/moveEffects/focus_energy_effect.asm"
 
 
 SECTION "Pics 2", ROMX, BANK[PICS_2]
@@ -652,8 +651,10 @@ MoltresPicFront::     INCBIN "pic/bmon/moltres.pic"
 MoltresPicBack::      INCBIN "pic/monback/moltresb.pic"
 
 
-SECTION "Battle (bank A)", ROMX, BANK[$A]
+SECTION "Battle (bank A)", ROMX, BANK[$2D]
 INCLUDE "engine/battle/moveEffects/leech_seed_effect.asm"
+INCLUDE "engine/battle/moveEffects/focus_energy_effect.asm"
+INCLUDE "engine/battle/save_trainer_name.asm"
 
 
 SECTION "Pics 3", ROMX, BANK[PICS_3]
