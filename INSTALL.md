@@ -1,6 +1,6 @@
 # Linux
 
-	sudo apt-get install make git python
+	sudo apt-get install make git gcc
 
 	sudo apt-get install byacc flex pkg-config libpng-dev
 	git clone https://github.com/rednex/rgbds
@@ -23,7 +23,7 @@ To build them individually:
 	
 To build them in pairs:
 
-    make red green
+	make red green
 	make red blue
 	make green red
 	make green blue
@@ -43,28 +43,30 @@ Then in **Terminal**, run:
 	git clone --recursive https://github.com/RonaldMcFrickinDonald/starterpak
 	cd starterpak
 
+To build **pokered.gbc** and **pokeblue.gbc**:
+
 	make
 
 
 # Windows
 
-To build on Windows, use [**Cygwin**](http://cygwin.com/install.html) (64-bit). Use the default settings.
+Download [**Cygwin**](http://cygwin.com/install.html): **setup-x86_64.exe** for 64-bit Windows, **setup-x86.exe** for 32-bit.
 
-In the installer, select the following packages:
+Run setup and leave the default settings. At "Select Packages", choose to install the following:
+
 - `make`
 - `git`
-- `python`
+- `gcc-core`
 
-Then download [**rgbds**](https://github.com/bentley/rgbds/releases).
-Extract the archive. Inside should be `rgbasm.exe`, `rgblink.exe`, `rgbfix.exe`, `rgbgfx.exe` and some `.dll` files. Put each file in `C:\cygwin64\usr\local\bin\`. If your Cygwin installation directory differs, ensure the `bin` directory is present in the PATH variable.
+Then download [**rgbds**](https://github.com/rednex/rgbds/releases/): the latest **win64.tar.gz** or **win32.tar.gz** release. Extract it and put all the `exe` and `dll` files individually in **C:\cygwin64\usr\local\bin**.
 
-In the **Cygwin terminal**:
+In the **Cygwin terminal**, enter these commands:
 
-	git clone --recursive https://github.com/RonaldMcFrickinDonald/starterpak
+	git clone https://github.com/RonaldMcFrickinDonald/starterpak
 	cd starterpak
-	
-	git submodule init
-	git submodule update
+
+
+To build **pokered.gbc** and **pokeblue.gbc**:
 
 	make
 
@@ -76,7 +78,7 @@ To build them individually:
 
 To build them in pairs:
 
-    make red green
+	make red green
 	make red blue
 	make green red
 	make green blue
