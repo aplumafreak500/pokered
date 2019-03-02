@@ -58,8 +58,8 @@ endif
 %_red.o: dep = $(shell tools/scan_includes $(@D)/$*.asm)
 $(pokered_obj): %_red.o: %.asm $$(dep)
 	$(RGBASM) -D _RED -h -o $@ $*.asm
-	
-%_green.o: dep = $(shell $(includes) $(@D)/$*.asm)
+
+%_green.o: dep = $(shell tools/scan_includes $(@D)/$*.asm)
 $(pokegreen_obj): %_green.o: %.asm $$(dep)
 	$(RGBASM) -D _GREEN -h -o $@ $*.asm
 

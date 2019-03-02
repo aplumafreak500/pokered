@@ -8,7 +8,7 @@
 	sudo make install
 	cd ..
 
-	git clone --recursive https://github.com/RonaldMcFrickinDonald/starterpak
+	git clone https://github.com/RonaldMcFrickinDonald/starterpak
 	cd starterpak
 
 To build **pokered.gbc**, **pokegreen.gbc** and **pokeblue.gbc**:
@@ -40,7 +40,7 @@ Then in **Terminal**, run:
 	xcode-select --install
 	brew install rgbds
 
-	git clone --recursive https://github.com/RonaldMcFrickinDonald/starterpak
+	git clone https://github.com/RonaldMcFrickinDonald/starterpak
 	cd starterpak
 
 To build **pokered.gbc** and **pokeblue.gbc**:
