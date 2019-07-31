@@ -460,7 +460,9 @@ FightIntroFrontMon3:
 ENDC
 IF DEF(_GREEN)
 	INCBIN "gfx/green/intro_omstar_1.6x6.2bpp"
+FightIntroFrontMon2:
 	INCBIN "gfx/green/intro_omstar_2.6x6.2bpp"
+FightIntroFrontMon3:
 	INCBIN "gfx/green/intro_omstar_3.6x6.2bpp"
 ENDC
 
