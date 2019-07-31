@@ -70,7 +70,7 @@ SetPal_StatusScreen:
 	ld bc, $10
 	call CopyData
 	ld a, [wcf91]
-	cp VICTREEBEL + 1
+	cp NUM_POKEMON_INDEXES + 1
 	jr c, .pokemon
 	ld a, $1 ; not pokemon
 .pokemon
@@ -147,7 +147,7 @@ SetPal_Overworld:
 	ld a, [wCurMap]
 	cp REDS_HOUSE_1F
 	jr c, .townOrRoute
-	cp UNKNOWN_DUNGEON_2
+	cp CERULEAN_CAVE_2F
 	jr c, .normalDungeonOrBuilding
 	cp NAME_RATERS_HOUSE
 	jr c, .caveOrBruno

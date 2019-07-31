@@ -3371,9 +3371,9 @@ IsGhostBattle:
 	dec a
 	ret nz
 	ld a, [wCurMap]
-	cp POKEMONTOWER_1
+	cp POKEMON_TOWER_1F
 	jr c, .next
-	cp LAVENDER_HOUSE_1
+	cp MR_FUJIS_HOUSE
 	jr nc, .next
 	ld b, SILPH_SCOPE
 	call IsItemInBag
@@ -6867,7 +6867,7 @@ InitBattleCommon:
 	res 1, [hl]
 	callab InitBattleVariables
 	ld a, [wEnemyMonSpecies2]
-	sub 200
+	sub OPP_ID_OFFSET
 	jp c, InitWildBattle
 	ld [wTrainerClass], a
 	call GetTrainerInformation
