@@ -2,70 +2,69 @@ CeladonMansion3F_Script:
 	jp EnableAutoTextBoxDrawing
 
 CeladonMansion3F_TextPointers:
-	dw ProgrammerText
-	dw GraphicArtistText
-	dw WriterText
-	dw DirectorText
-	dw GameFreakPCText1
-	dw GameFreakPCText2
-	dw GameFreakPCText3
-	dw GameFreakSignText
+	def_text_pointers
+	dw_const CeladonMansion3FProgrammerText,     TEXT_CELADONMANSION3F_PROGRAMMER
+	dw_const CeladonMansion3FGraphicArtistText,  TEXT_CELADONMANSION3F_GRAPHIC_ARTIST
+	dw_const CeladonMansion3FWriterText,         TEXT_CELADONMANSION3F_WRITER
+	dw_const CeladonMansion3FGameDesignerText,   TEXT_CELADONMANSION3F_GAME_DESIGNER
+	dw_const CeladonMansion3FGameProgramPCText,  TEXT_CELADONMANSION3F_GAME_PROGRAM_PC
+	dw_const CeladonMansion3FPlayingGamePCText,  TEXT_CELADONMANSION3F_PLAYING_GAME_PC
+	dw_const CeladonMansion3FGameScriptPCText,   TEXT_CELADONMANSION3F_GAME_SCRIPT_PC
+	dw_const CeladonMansion3FDevRoomSignText,    TEXT_CELADONMANSION3F_DEV_ROOM_SIGN
 
-ProgrammerText:
-	TX_FAR _ProgrammerText
-	db "@"
+CeladonMansion3FProgrammerText:
+	text_far _CeladonMansion3FProgrammerText
+	text_end
 
-GraphicArtistText:
-	TX_FAR _GraphicArtistText
-	db "@"
+CeladonMansion3FGraphicArtistText:
+	text_far _CeladonMansion3FGraphicArtistText
+	text_end
 
-WriterText:
-	TX_FAR _WriterText
-	db "@"
+CeladonMansion3FWriterText:
+	text_far _CeladonMansion3FWriterText
+	text_end
 
-DirectorText:
-	TX_ASM
-
-	; check pokédex
+CeladonMansion3FGameDesignerText:
+	text_asm
 	ld hl, wPokedexOwned
 	ld b, wPokedexOwnedEnd - wPokedexOwned
 	call CountSetBits
 	ld a, [wNumSetBits]
-	cp 150
-	jr nc, .CompletedDex
-	ld hl, .GameDesigner
+	cp NUM_POKEMON - 1 ; discount Mew
+	jr nc, .completed_dex
+	ld hl, .Text
 	jr .done
-.CompletedDex
+.completed_dex
 	ld hl, .CompletedDexText
 .done
 	call PrintText
 	jp TextScriptEnd
 
-.GameDesigner
-	TX_FAR _GameDesignerText
-	db "@"
+.Text:
+	text_far _CeladonMansion3FGameDesignerText
+	text_end
 
-.CompletedDexText
-	TX_FAR _CompletedDexText
-	TX_BLINK
-	TX_ASM
-	callab DisplayDiploma
-	ld a, $1
+.CompletedDexText:
+	text_far _CeladonMansion3FGameDesignerCompletedDexText
+	text_promptbutton
+	text_asm
+	callfar DisplayDiploma
+	ld a, TRUE
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
 	jp TextScriptEnd
 
-GameFreakPCText1:
-	TX_FAR _CeladonMansion3Text5
-	db "@"
+CeladonMansion3FGameProgramPCText:
+	text_far _CeladonMansion3FGameProgramPCText
+	text_end
 
-GameFreakPCText2:
-	TX_FAR _CeladonMansion3Text6
-	db "@"
+CeladonMansion3FPlayingGamePCText:
+	text_far _CeladonMansion3FPlayingGamePCText
+	text_end
 
-GameFreakPCText3:
-	TX_FAR _CeladonMansion3Text7
-	db "@"
+CeladonMansion3FGameScriptPCText:
+	text_far _CeladonMansion3FGameScriptPCText
+	text_end
 
-GameFreakSignText:
-	TX_FAR _CeladonMansion3Text8
-	db "@"
+CeladonMansion3FDevRoomSignText:
+	text_far _CeladonMansion3FDevRoomSignText
+	text_end

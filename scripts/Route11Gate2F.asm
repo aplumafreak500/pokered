@@ -2,28 +2,29 @@ Route11Gate2F_Script:
 	jp DisableAutoTextBoxDrawing
 
 Route11Gate2F_TextPointers:
-	dw Route11GateUpstairsText1
-	dw Route11GateUpstairsText2
-	dw Route11GateUpstairsText3
-	dw Route11GateUpstairsText4
+	def_text_pointers
+	dw_const Route11Gate2FYoungsterText,       TEXT_ROUTE11GATE2F_YOUNGSTER
+	dw_const Route11Gate2FOaksAideText,        TEXT_ROUTE11GATE2F_OAKS_AIDE
+	dw_const Route11Gate2FLeftBinocularsText,  TEXT_ROUTE11GATE2F_LEFT_BINOCULARS
+	dw_const Route11Gate2FRightBinocularsText, TEXT_ROUTE11GATE2F_RIGHT_BINOCULARS
 
-Route11GateUpstairsText1:
-	TX_ASM
-	xor a
+Route11Gate2FYoungsterText:
+	text_asm
+	xor a ; TRADE_FOR_TERRY
 	ld [wWhichTrade], a
 	predef DoInGameTradeDialogue
-Route11GateUpstairsScriptEnd:
+Route11Gate2FScriptEnd:
 	jp TextScriptEnd
 
-Route11GateUpstairsText2:
-	TX_ASM
+Route11Gate2FOaksAideText:
+	text_asm
 	CheckEvent EVENT_GOT_ITEMFINDER, 1
-	jr c, .asm_4949b
-	ld a, 30 ; pokemon needed
-	ld [hOaksAideRequirement], a
-	ld a, ITEMFINDER ; oak's aide reward
-	ld [hOaksAideRewardItem], a
-	ld [wd11e], a
+	jr c, .got_item
+	ld a, 30
+	ldh [hOaksAideRequirement], a
+	ld a, ITEMFINDER
+	ldh [hOaksAideRewardItem], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
 	ld h, d
 	ld l, e
@@ -31,46 +32,46 @@ Route11GateUpstairsText2:
 	ld bc, ITEM_NAME_LENGTH
 	call CopyData
 	predef OaksAideScript
-	ld a, [hOaksAideResult]
-	dec a
-	jr nz, .asm_494a1
+	ldh a, [hOaksAideResult]
+	dec a ; OAKS_AIDE_GOT_ITEM?
+	jr nz, .no_item
 	SetEvent EVENT_GOT_ITEMFINDER
-.asm_4949b
-	ld hl, Route11GateUpstairsText_494a3
+.got_item
+	ld hl, .ItemfinderDescriptionText
 	call PrintText
-.asm_494a1
-	jr Route11GateUpstairsScriptEnd
+.no_item
+	jr Route11Gate2FScriptEnd
 
-Route11GateUpstairsText_494a3:
-	TX_FAR _Route11GateUpstairsText_494a3
-	db "@"
+.ItemfinderDescriptionText:
+	text_far _Route11Gate2FOaksAideItemfinderDescriptionText
+	text_end
 
-Route11GateUpstairsText3:
-	TX_ASM
-	ld a, [wSpriteStateData1 + 9]
+Route11Gate2FLeftBinocularsText:
+	text_asm
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	cp SPRITE_FACING_UP
 	jp nz, GateUpstairsScript_PrintIfFacingUp
 	CheckEvent EVENT_BEAT_ROUTE12_SNORLAX
-	ld hl, BinocularsSnorlaxText
+	ld hl, .SnorlaxText
 	jr z, .print
-	ld hl, BinocularsNoSnorlaxText
+	ld hl, .NoSnorlaxText
 .print
 	call PrintText
 	jp TextScriptEnd
 
-BinocularsSnorlaxText:
-	TX_FAR _BinocularsSnorlaxText
-	db "@"
+.SnorlaxText:
+	text_far _Route11Gate2FLeftBinocularsSnorlaxText
+	text_end
 
-BinocularsNoSnorlaxText:
-	TX_FAR _BinocularsNoSnorlaxText
-	db "@"
+.NoSnorlaxText:
+	text_far _Route11Gate2FLeftBinocularsNoSnorlaxText
+	text_end
 
-Route11GateUpstairsText4:
-	TX_ASM
-	ld hl, Route11GateUpstairsText_494d5
+Route11Gate2FRightBinocularsText:
+	text_asm
+	ld hl, .Text
 	jp GateUpstairsScript_PrintIfFacingUp
 
-Route11GateUpstairsText_494d5:
-	TX_FAR _Route11GateUpstairsText_494d5
-	db "@"
+.Text:
+	text_far _Route11Gate2FRightBinocularsText
+	text_end

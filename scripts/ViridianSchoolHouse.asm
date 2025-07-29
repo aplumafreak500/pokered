@@ -2,13 +2,14 @@ ViridianSchoolHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 ViridianSchoolHouse_TextPointers:
-	dw SchoolText1
-	dw SchoolText2
+	def_text_pointers
+	dw_const ViridianSchoolHouseBrunetteGirlText, TEXT_VIRIDIANSCHOOLHOUSE_BRUNETTE_GIRL
+	dw_const ViridianSchoolHouseCooltrainerFText, TEXT_VIRIDIANSCHOOLHOUSE_COOLTRAINER_F
 
-SchoolText1:
-	TX_FAR _SchoolText1
-	db "@"
+ViridianSchoolHouseBrunetteGirlText:
+	text_far _ViridianSchoolHouseBrunetteGirlText
+	text_end
 
-SchoolText2:
-	TX_FAR _SchoolText2
-	db "@"
+ViridianSchoolHouseCooltrainerFText:
+	text_far _ViridianSchoolHouseCooltrainerFText
+	text_end

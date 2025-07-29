@@ -2,38 +2,39 @@ Route2Gate_Script:
 	jp EnableAutoTextBoxDrawing
 
 Route2Gate_TextPointers:
-	dw Route2GateText1
-	dw Route2GateText2
+	def_text_pointers
+	dw_const Route2GateOaksAideText,  TEXT_ROUTE2GATE_OAKS_AIDE
+	dw_const Route2GateYoungsterText, TEXT_ROUTE2GATE_YOUNGSTER
 
-Route2GateText1:
-	TX_ASM
+Route2GateOaksAideText:
+	text_asm
 	CheckEvent EVENT_GOT_HM05
-	jr nz, .asm_5d60d
-	ld a, 10 ; pokemon needed
-	ld [hOaksAideRequirement], a
-	ld a, HM_05 ; oak's aide reward
-	ld [hOaksAideRewardItem], a
-	ld [wd11e], a
+	jr nz, .got_item
+	ld a, 10
+	ldh [hOaksAideRequirement], a
+	ld a, HM_FLASH
+	ldh [hOaksAideRewardItem], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
-	ld hl, wcd6d
+	ld hl, wNameBuffer
 	ld de, wOaksAideRewardItemName
 	ld bc, ITEM_NAME_LENGTH
 	call CopyData
 	predef OaksAideScript
-	ld a, [hOaksAideResult]
-	cp $1
-	jr nz, .asm_5d613
+	ldh a, [hOaksAideResult]
+	cp OAKS_AIDE_GOT_ITEM
+	jr nz, .no_item
 	SetEvent EVENT_GOT_HM05
-.asm_5d60d
-	ld hl, Route2GateText_5d616
+.got_item
+	ld hl, .FlashExplanationText
 	call PrintText
-.asm_5d613
+.no_item
 	jp TextScriptEnd
 
-Route2GateText_5d616:
-	TX_FAR _Route2GateText_5d616
-	db "@"
+.FlashExplanationText:
+	text_far _Route2GateOaksAideFlashExplanationText
+	text_end
 
-Route2GateText2:
-	TX_FAR _Route2GateText2
-	db "@"
+Route2GateYoungsterText:
+	text_far _Route2GateYoungsterText
+	text_end

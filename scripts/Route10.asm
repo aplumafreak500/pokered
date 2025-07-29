@@ -1,6 +1,6 @@
 Route10_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route10TrainerHeader0
+	ld hl, Route10TrainerHeaders
 	ld de, Route10_ScriptPointers
 	ld a, [wRoute10CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,191 +8,152 @@ Route10_Script:
 	ret
 
 Route10_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE10_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE10_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE10_END_BATTLE
 
 Route10_TextPointers:
-	dw Route10Text1
-	dw Route10Text2
-	dw Route10Text3
-	dw Route10Text4
-	dw Route10Text5
-	dw Route10Text6
-	dw Route10Text7
-	dw PokeCenterSignText
-	dw Route10Text9
-	dw Route10Text10
+	def_text_pointers
+	dw_const Route10SuperNerd1Text,     TEXT_ROUTE10_SUPER_NERD1
+	dw_const Route10Hiker1Text,         TEXT_ROUTE10_HIKER1
+	dw_const Route10SuperNerd2Text,     TEXT_ROUTE10_SUPER_NERD2
+	dw_const Route10CooltrainerF1Text,  TEXT_ROUTE10_COOLTRAINER_F1
+	dw_const Route10Hiker2Text,         TEXT_ROUTE10_HIKER2
+	dw_const Route10CooltrainerF2Text,  TEXT_ROUTE10_COOLTRAINER_F2
+	dw_const Route10RockTunnelSignText, TEXT_ROUTE10_ROCKTUNNEL_NORTH_SIGN
+	dw_const PokeCenterSignText,        TEXT_ROUTE10_POKECENTER_SIGN
+	dw_const Route10RockTunnelSignText, TEXT_ROUTE10_ROCKTUNNEL_SOUTH_SIGN
+	dw_const Route10PowerPlantSignText, TEXT_ROUTE10_POWERPLANT_SIGN
 
+Route10TrainerHeaders:
+	def_trainers
 Route10TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_10_TRAINER_0
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_10_TRAINER_0
-	dw Route10BattleText1 ; TextBeforeBattle
-	dw Route10AfterBattleText1 ; TextAfterBattle
-	dw Route10EndBattleText1 ; TextEndBattle
-	dw Route10EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_10_TRAINER_0, 4, Route10SuperNerd1BattleText, Route10SuperNerd1EndBattleText, Route10SuperNerd1AfterBattleText
 Route10TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_10_TRAINER_1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_10_TRAINER_1
-	dw Route10BattleText2 ; TextBeforeBattle
-	dw Route10AfterBattleText2 ; TextAfterBattle
-	dw Route10EndBattleText2 ; TextEndBattle
-	dw Route10EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_10_TRAINER_1, 3, Route10Hiker1BattleText, Route10Hiker1EndBattleText, Route10Hiker1AfterBattleText
 Route10TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_10_TRAINER_2
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_10_TRAINER_2
-	dw Route10BattleText3 ; TextBeforeBattle
-	dw Route10AfterBattleText3 ; TextAfterBattle
-	dw Route10EndBattleText3 ; TextEndBattle
-	dw Route10EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_10_TRAINER_2, 4, Route10SuperNerd2BattleText, Route10SuperNerd2EndBattleText, Route10SuperNerd2AfterBattleText
 Route10TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_10_TRAINER_3
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_10_TRAINER_3
-	dw Route10BattleText4 ; TextBeforeBattle
-	dw Route10AfterBattleText4 ; TextAfterBattle
-	dw Route10EndBattleText4 ; TextEndBattle
-	dw Route10EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_10_TRAINER_3, 3, Route10CooltrainerF1BattleText, Route10CooltrainerF1EndBattleText, Route10CooltrainerF1AfterBattleText
 Route10TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_10_TRAINER_4
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_10_TRAINER_4
-	dw Route10BattleText5 ; TextBeforeBattle
-	dw Route10AfterBattleText5 ; TextAfterBattle
-	dw Route10EndBattleText5 ; TextEndBattle
-	dw Route10EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_10_TRAINER_4, 2, Route10Hiker2BattleText, Route10Hiker2EndBattleText, Route10Hiker2AfterBattleText
 Route10TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_10_TRAINER_5
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_10_TRAINER_5
-	dw Route10BattleText6 ; TextBeforeBattle
-	dw Route10AfterBattleText6 ; TextAfterBattle
-	dw Route10EndBattleText6 ; TextEndBattle
-	dw Route10EndBattleText6 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_10_TRAINER_5, 2, Route10CooltrainerF2BattleText, Route10CooltrainerF2EndBattleText, Route10CooltrainerF2AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route10Text1:
-	TX_ASM
+Route10SuperNerd1Text:
+	text_asm
 	ld hl, Route10TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route10BattleText1:
-	TX_FAR _Route10BattleText1
-	db "@"
+Route10SuperNerd1BattleText:
+	text_far _Route10SuperNerd1BattleText
+	text_end
 
-Route10EndBattleText1:
-	TX_FAR _Route10EndBattleText1
-	db "@"
+Route10SuperNerd1EndBattleText:
+	text_far _Route10SuperNerd1EndBattleText
+	text_end
 
-Route10AfterBattleText1:
-	TX_FAR _Route10AfterBattleText1
-	db "@"
+Route10SuperNerd1AfterBattleText:
+	text_far _Route10SuperNerd1AfterBattleText
+	text_end
 
-Route10Text2:
-	TX_ASM
+Route10Hiker1Text:
+	text_asm
 	ld hl, Route10TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route10BattleText2:
-	TX_FAR _Route10BattleText2
-	db "@"
+Route10Hiker1BattleText:
+	text_far _Route10Hiker1BattleText
+	text_end
 
-Route10EndBattleText2:
-	TX_FAR _Route10EndBattleText2
-	db "@"
+Route10Hiker1EndBattleText:
+	text_far _Route10Hiker1EndBattleText
+	text_end
 
-Route10AfterBattleText2:
-	TX_FAR _Route10AfterBattleText2
-	db "@"
+Route10Hiker1AfterBattleText:
+	text_far _Route10Hiker1AfterBattleText
+	text_end
 
-Route10Text3:
-	TX_ASM
+Route10SuperNerd2Text:
+	text_asm
 	ld hl, Route10TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route10BattleText3:
-	TX_FAR _Route10BattleText3
-	db "@"
+Route10SuperNerd2BattleText:
+	text_far _Route10SuperNerd2BattleText
+	text_end
 
-Route10EndBattleText3:
-	TX_FAR _Route10EndBattleText3
-	db "@"
+Route10SuperNerd2EndBattleText:
+	text_far _Route10SuperNerd2EndBattleText
+	text_end
 
-Route10AfterBattleText3:
-	TX_FAR _Route10AfterBattleText3
-	db "@"
+Route10SuperNerd2AfterBattleText:
+	text_far _Route10SuperNerd2AfterBattleText
+	text_end
 
-Route10Text4:
-	TX_ASM
+Route10CooltrainerF1Text:
+	text_asm
 	ld hl, Route10TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route10BattleText4:
-	TX_FAR _Route10BattleText4
-	db "@"
+Route10CooltrainerF1BattleText:
+	text_far _Route10CooltrainerF1BattleText
+	text_end
 
-Route10EndBattleText4:
-	TX_FAR _Route10EndBattleText4
-	db "@"
+Route10CooltrainerF1EndBattleText:
+	text_far _Route10CooltrainerF1EndBattleText
+	text_end
 
-Route10AfterBattleText4:
-	TX_FAR _Route10AfterBattleText4
-	db "@"
+Route10CooltrainerF1AfterBattleText:
+	text_far _Route10CooltrainerF1AfterBattleText
+	text_end
 
-Route10Text5:
-	TX_ASM
+Route10Hiker2Text:
+	text_asm
 	ld hl, Route10TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route10BattleText5:
-	TX_FAR _Route10BattleText5
-	db "@"
+Route10Hiker2BattleText:
+	text_far _Route10Hiker2BattleText
+	text_end
 
-Route10EndBattleText5:
-	TX_FAR _Route10EndBattleText5
-	db "@"
+Route10Hiker2EndBattleText:
+	text_far _Route10Hiker2EndBattleText
+	text_end
 
-Route10AfterBattleText5:
-	TX_FAR _Route10AfterBattleText5
-	db "@"
+Route10Hiker2AfterBattleText:
+	text_far _Route10Hiker2AfterBattleText
+	text_end
 
-Route10Text6:
-	TX_ASM
+Route10CooltrainerF2Text:
+	text_asm
 	ld hl, Route10TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route10BattleText6:
-	TX_FAR _Route10BattleText6
-	db "@"
+Route10CooltrainerF2BattleText:
+	text_far _Route10CooltrainerF2BattleText
+	text_end
 
-Route10EndBattleText6:
-	TX_FAR _Route10EndBattleText6
-	db "@"
+Route10CooltrainerF2EndBattleText:
+	text_far _Route10CooltrainerF2EndBattleText
+	text_end
 
-Route10AfterBattleText6:
-	TX_FAR _Route10AfterBattleText6
-	db "@"
+Route10CooltrainerF2AfterBattleText:
+	text_far _Route10CooltrainerF2AfterBattleText
+	text_end
 
-Route10Text9:
-Route10Text7:
-	TX_FAR _Route10Text7 ; _Route10Text9
-	db "@"
+Route10RockTunnelSignText:
+	text_far _Route10RockTunnelSignText
+	text_end
 
-Route10Text10:
-	TX_FAR _Route10Text10
-	db "@"
+Route10PowerPlantSignText:
+	text_far _Route10PowerPlantSignText
+	text_end

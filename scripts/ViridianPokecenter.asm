@@ -3,21 +3,22 @@ ViridianPokecenter_Script:
 	jp EnableAutoTextBoxDrawing
 
 ViridianPokecenter_TextPointers:
-	dw ViridianHealNurseText
-	dw ViridianPokeCenterText2
-	dw ViridianPokeCenterText3
-	dw ViridianTradeNurseText
+	def_text_pointers
+	dw_const ViridianPokecenterNurseText,            TEXT_VIRIDIANPOKECENTER_NURSE
+	dw_const ViridianPokecenterGentlemanText,        TEXT_VIRIDIANPOKECENTER_GENTLEMAN
+	dw_const ViridianPokecenterCooltrainerMText,     TEXT_VIRIDIANPOKECENTER_COOLTRAINER_M
+	dw_const ViridianPokecenterLinkReceptionistText, TEXT_VIRIDIANPOKECENTER_LINK_RECEPTIONIST
 
-ViridianHealNurseText:
-	TX_POKECENTER_NURSE
+ViridianPokecenterNurseText:
+	script_pokecenter_nurse
 
-ViridianPokeCenterText2:
-	TX_FAR _ViridianPokeCenterText2
-	db "@"
+ViridianPokecenterGentlemanText:
+	text_far _ViridianPokecenterGentlemanText
+	text_end
 
-ViridianPokeCenterText3:
-	TX_FAR _ViridianPokeCenterText3
-	db "@"
+ViridianPokecenterCooltrainerMText:
+	text_far _ViridianPokecenterCooltrainerMText
+	text_end
 
-ViridianTradeNurseText:
-	TX_CABLE_CLUB_RECEPTIONIST
+ViridianPokecenterLinkReceptionistText:
+	script_cable_club_receptionist

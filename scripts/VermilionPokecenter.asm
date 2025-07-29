@@ -3,21 +3,22 @@ VermilionPokecenter_Script:
 	jp EnableAutoTextBoxDrawing
 
 VermilionPokecenter_TextPointers:
-	dw VermilionHealNurseText
-	dw VermilionPokecenterText2
-	dw VermilionPokecenterText3
-	dw VermilionTradeNurseText
+	def_text_pointers
+	dw_const VermilionPokecenterNurseText,            TEXT_VERMILIONPOKECENTER_NURSE
+	dw_const VermilionPokecenterFishingGuruText,      TEXT_VERMILIONPOKECENTER_FISHING_GURU
+	dw_const VermilionPokecenterSailorText,           TEXT_VERMILIONPOKECENTER_SAILOR
+	dw_const VermilionPokecenterLinkReceptionistText, TEXT_VERMILIONPOKECENTER_LINK_RECEPTIONIST
 
-VermilionHealNurseText:
-	TX_POKECENTER_NURSE
+VermilionPokecenterNurseText:
+	script_pokecenter_nurse
 
-VermilionPokecenterText2:
-	TX_FAR _VermilionPokecenterText2
-	db "@"
+VermilionPokecenterFishingGuruText:
+	text_far _VermilionPokecenterFishingGuruText
+	text_end
 
-VermilionPokecenterText3:
-	TX_FAR _VermilionPokecenterText3
-	db "@"
+VermilionPokecenterSailorText:
+	text_far _VermilionPokecenterSailorText
+	text_end
 
-VermilionTradeNurseText:
-	TX_CABLE_CLUB_RECEPTIONIST
+VermilionPokecenterLinkReceptionistText:
+	script_cable_club_receptionist

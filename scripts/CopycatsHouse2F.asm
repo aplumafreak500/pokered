@@ -2,101 +2,100 @@ CopycatsHouse2F_Script:
 	jp EnableAutoTextBoxDrawing
 
 CopycatsHouse2F_TextPointers:
-	dw CopycatsHouse2FText1
-	dw CopycatsHouse2FText2
-	dw CopycatsHouse2FText3
-	dw CopycatsHouse2FText4
-	dw CopycatsHouse2FText5
-	dw CopycatsHouse2FText6
-	dw CopycatsHouse2FText7
+	def_text_pointers
+	dw_const CopycatsHouse2FCopycatText,      TEXT_COPYCATSHOUSE2F_COPYCAT
+	dw_const CopycatsHouse2FDoduoText,        TEXT_COPYCATSHOUSE2F_DODUO
+	dw_const CopycatsHouse2FRareDollText,     TEXT_COPYCATSHOUSE2F_MONSTER
+	dw_const CopycatsHouse2FRareDollText,     TEXT_COPYCATSHOUSE2F_BIRD
+	dw_const CopycatsHouse2FRareDollText,     TEXT_COPYCATSHOUSE2F_FAIRY
+	dw_const CopycatsHouse2FSNESText,         TEXT_COPYCATSHOUSE2F_SNES
+	dw_const CopycatsHouse2FPCText,           TEXT_COPYCATSHOUSE2F_PC
 
-CopycatsHouse2FText1:
-	TX_ASM
+CopycatsHouse2FCopycatText:
+	text_asm
 	CheckEvent EVENT_GOT_TM31
-	jr nz, .asm_7ccf3
-	ld a, $1
+	jr nz, .got_item
+	ld a, TRUE
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
-	ld hl, CopycatsHouse2FText_5ccd4
+	ld hl, .DoYouLikePokemonText
 	call PrintText
 	ld b, POKE_DOLL
 	call IsItemInBag
-	jr z, .asm_62ecd
-	ld hl, TM31PreReceiveText
+	jr z, .done
+	ld hl, .TM31PreReceiveText
 	call PrintText
-	lb bc, TM_31, 1
+	lb bc, TM_MIMIC, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedTM31Text
+	jr nc, .bag_full
+	ld hl, .ReceivedTM31Text
 	call PrintText
 	ld a, POKE_DOLL
-	ld [$ffdb], a
-	callba RemoveItemByID
+	ldh [hItemToRemoveID], a
+	farcall RemoveItemByID
 	SetEvent EVENT_GOT_TM31
-	jr .asm_62ecd
-.BagFull
-	ld hl, TM31NoRoomText
+	jr .done
+.bag_full
+	ld hl, .TM31NoRoomText
 	call PrintText
-	jr .asm_62ecd
-.asm_7ccf3
-	ld hl, TM31ExplanationText2
+	jr .done
+.got_item
+	ld hl, .TM31Explanation2Text
 	call PrintText
-.asm_62ecd
+.done
 	jp TextScriptEnd
 
-CopycatsHouse2FText_5ccd4:
-	TX_FAR _CopycatsHouse2FText_5ccd4
-	db "@"
+.DoYouLikePokemonText:
+	text_far _CopycatsHouse2FCopycatDoYouLikePokemonText
+	text_end
 
-TM31PreReceiveText:
-	TX_FAR _TM31PreReceiveText
-	db "@"
+.TM31PreReceiveText:
+	text_far _CopycatsHouse2FCopycatTM31PreReceiveText
+	text_end
 
-ReceivedTM31Text:
-	TX_FAR _ReceivedTM31Text
-	TX_SFX_ITEM_1
-TM31ExplanationText1:
-	TX_FAR _TM31ExplanationText1
-	TX_WAIT
-	db "@"
+.ReceivedTM31Text:
+	text_far _CopycatsHouse2FCopycatReceivedTM31Text
+	sound_get_item_1
+.TM31Explanation1Text:
+	text_far _CopycatsHouse2FCopycatTM31Explanation1Text
+	text_waitbutton
+	text_end
 
-TM31ExplanationText2:
-	TX_FAR _TM31ExplanationText2
-	db "@"
+.TM31Explanation2Text:
+	text_far _CopycatsHouse2FCopycatTM31Explanation2Text
+	text_end
 
-TM31NoRoomText:
-	TX_FAR _TM31NoRoomText
-	TX_WAIT
-	db "@"
+.TM31NoRoomText:
+	text_far _CopycatsHouse2FCopycatTM31NoRoomText
+	text_waitbutton
+	text_end
 
-CopycatsHouse2FText2:
-	TX_FAR _CopycatsHouse2FText2
-	db "@"
+CopycatsHouse2FDoduoText:
+	text_far _CopycatsHouse2FDoduoText
+	text_end
 
-CopycatsHouse2FText5:
-CopycatsHouse2FText4:
-CopycatsHouse2FText3:
-	TX_FAR _CopycatsHouse2FText3
-	db "@"
+CopycatsHouse2FRareDollText:
+	text_far _CopycatsHouse2FRareDollText
+	text_end
 
-CopycatsHouse2FText6:
-	TX_FAR _CopycatsHouse2FText6
-	db "@"
+CopycatsHouse2FSNESText:
+	text_far _CopycatsHouse2FSNESText
+	text_end
 
-CopycatsHouse2FText7:
-	TX_ASM
-	ld a, [wSpriteStateData1 + 9]
+CopycatsHouse2FPCText:
+	text_asm
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	cp SPRITE_FACING_UP
-	ld hl, CopycatsHouse2FText_5cd1c
+	ld hl, .CantSeeText
 	jr nz, .notUp
-	ld hl, CopycatsHouse2FText_5cd17
+	ld hl, .MySecretsText
 .notUp
 	call PrintText
 	jp TextScriptEnd
 
-CopycatsHouse2FText_5cd17:
-	TX_FAR _CopycatsHouse2FText_5cd17
-	db "@"
+.MySecretsText:
+	text_far _CopycatsHouse2FPCMySecretsText
+	text_end
 
-CopycatsHouse2FText_5cd1c:
-	TX_FAR _CopycatsHouse2FText_5cd1c
-	db "@"
+.CantSeeText:
+	text_far _CopycatsHouse2FPCCantSeeText
+	text_end

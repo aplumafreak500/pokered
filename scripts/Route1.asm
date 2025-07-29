@@ -2,51 +2,52 @@ Route1_Script:
 	jp EnableAutoTextBoxDrawing
 
 Route1_TextPointers:
-	dw Route1Text1
-	dw Route1Text2
-	dw Route1Text3
+	def_text_pointers
+	dw_const Route1Youngster1Text, TEXT_ROUTE1_YOUNGSTER1
+	dw_const Route1Youngster2Text, TEXT_ROUTE1_YOUNGSTER2
+	dw_const Route1SignText,       TEXT_ROUTE1_SIGN
 
-Route1Text1:
-	TX_ASM
+Route1Youngster1Text:
+	text_asm
 	CheckAndSetEvent EVENT_GOT_POTION_SAMPLE
-	jr nz, .asm_1cada
-	ld hl, Route1ViridianMartSampleText
+	jr nz, .got_item
+	ld hl, .MartSampleText
 	call PrintText
 	lb bc, POTION, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, Route1Text_1cae8
-	jr .asm_1cadd
-.BagFull
-	ld hl, Route1Text_1caf3
-	jr .asm_1cadd
-.asm_1cada
-	ld hl, Route1Text_1caee
-.asm_1cadd
+	jr nc, .bag_full
+	ld hl, .GotPotionText
+	jr .done
+.bag_full
+	ld hl, .NoRoomText
+	jr .done
+.got_item
+	ld hl, .AlsoGotPokeballsText
+.done
 	call PrintText
 	jp TextScriptEnd
 
-Route1ViridianMartSampleText:
-	TX_FAR _Route1ViridianMartSampleText
-	db "@"
+.MartSampleText:
+	text_far _Route1Youngster1MartSampleText
+	text_end
 
-Route1Text_1cae8:
-	TX_FAR _Route1Text_1cae8
-	TX_SFX_ITEM_1
-	db "@"
+.GotPotionText:
+	text_far _Route1Youngster1GotPotionText
+	sound_get_item_1
+	text_end
 
-Route1Text_1caee:
-	TX_FAR _Route1Text_1caee
-	db "@"
+.AlsoGotPokeballsText:
+	text_far _Route1Youngster1AlsoGotPokeballsText
+	text_end
 
-Route1Text_1caf3:
-	TX_FAR _Route1Text_1caf3
-	db "@"
+.NoRoomText:
+	text_far _Route1Youngster1NoRoomText
+	text_end
 
-Route1Text2:
-	TX_FAR _Route1Text2
-	db "@"
+Route1Youngster2Text:
+	text_far _Route1Youngster2Text
+	text_end
 
-Route1Text3:
-	TX_FAR _Route1Text3
-	db "@"
+Route1SignText:
+	text_far _Route1SignText
+	text_end

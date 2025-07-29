@@ -2,14 +2,15 @@ CinnabarMart_Script:
 	jp EnableAutoTextBoxDrawing
 
 CinnabarMart_TextPointers:
-	dw CinnabarCashierText
-	dw CinnabarMartText2
-	dw CinnabarMartText3
+	def_text_pointers
+	dw_const CinnabarMartClerkText,        TEXT_CINNABARMART_CLERK
+	dw_const CinnabarMartSilphWorkerFText, TEXT_CINNABARMART_SILPH_WORKER_F
+	dw_const CinnabarMartScientistText,    TEXT_CINNABARMART_SCIENTIST
 
-CinnabarMartText2:
-	TX_FAR _CinnabarMartText2
-	db "@"
+CinnabarMartSilphWorkerFText:
+	text_far _CinnabarMartSilphWorkerFText
+	text_end
 
-CinnabarMartText3:
-	TX_FAR _CinnabarMartText3
-	db "@"
+CinnabarMartScientistText:
+	text_far _CinnabarMartScientistText
+	text_end

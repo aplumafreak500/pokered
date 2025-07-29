@@ -1,6 +1,6 @@
 Route14_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route14TrainerHeader0
+	ld hl, Route14TrainerHeaders
 	ld de, Route14_ScriptPointers
 	ld a, [wRoute14CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,295 +8,229 @@ Route14_Script:
 	ret
 
 Route14_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE14_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE14_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE14_END_BATTLE
 
 Route14_TextPointers:
-	dw Route14Text1
-	dw Route14Text2
-	dw Route14Text3
-	dw Route14Text4
-	dw Route14Text5
-	dw Route14Text6
-	dw Route14Text7
-	dw Route14Text8
-	dw Route14Text9
-	dw Route14Text10
-	dw Route14Text11
+	def_text_pointers
+	dw_const Route14CooltrainerM1Text, TEXT_ROUTE14_COOLTRAINER_M1
+	dw_const Route14CooltrainerM2Text, TEXT_ROUTE14_COOLTRAINER_M2
+	dw_const Route14CooltrainerM3Text, TEXT_ROUTE14_COOLTRAINER_M3
+	dw_const Route14CooltrainerM4Text, TEXT_ROUTE14_COOLTRAINER_M4
+	dw_const Route14CooltrainerM5Text, TEXT_ROUTE14_COOLTRAINER_M5
+	dw_const Route14CooltrainerM6Text, TEXT_ROUTE14_COOLTRAINER_M6
+	dw_const Route14Biker1Text,        TEXT_ROUTE14_BIKER1
+	dw_const Route14Biker2Text,        TEXT_ROUTE14_BIKER2
+	dw_const Route14Biker3Text,        TEXT_ROUTE14_BIKER3
+	dw_const Route14Biker4Text,        TEXT_ROUTE14_BIKER4
+	dw_const Route14SignText,          TEXT_ROUTE14_SIGN
 
+Route14TrainerHeaders:
+	def_trainers
 Route14TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_0
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_0
-	dw Route14BattleText1 ; TextBeforeBattle
-	dw Route14AfterBattleText1 ; TextAfterBattle
-	dw Route14EndBattleText1 ; TextEndBattle
-	dw Route14EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_0, 2, Route14CooltrainerM1BattleText, Route14CooltrainerM1EndBattleText, Route14CooltrainerM1AfterBattleText
 Route14TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_1
-	dw Route14BattleText2 ; TextBeforeBattle
-	dw Route14AfterBattleText2 ; TextAfterBattle
-	dw Route14EndBattleText2 ; TextEndBattle
-	dw Route14EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_1, 2, Route14CooltrainerM2BattleText, Route14CooltrainerM2EndBattleText, Route14CooltrainerM2AfterBattleText
 Route14TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_2
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_2
-	dw Route14BattleText3 ; TextBeforeBattle
-	dw Route14AfterBattleText3 ; TextAfterBattle
-	dw Route14EndBattleText3 ; TextEndBattle
-	dw Route14EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_2, 4, Route14CooltrainerM3BattleText, Route14CooltrainerM3EndBattleText, Route14CooltrainerM3AfterBattleText
 Route14TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_3
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_3
-	dw Route14BattleText4 ; TextBeforeBattle
-	dw Route14AfterBattleText4 ; TextAfterBattle
-	dw Route14EndBattleText4 ; TextEndBattle
-	dw Route14EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_3, 3, Route14CooltrainerM4BattleText, Route14CooltrainerM4EndBattleText, Route14CooltrainerM4AfterBattleText
 Route14TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_4
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_4
-	dw Route14BattleText5 ; TextBeforeBattle
-	dw Route14AfterBattleText5 ; TextAfterBattle
-	dw Route14EndBattleText5 ; TextEndBattle
-	dw Route14EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_4, 3, Route14CooltrainerM5BattleText, Route14CooltrainerM5EndBattleText, Route14CooltrainerM5AfterBattleText
 Route14TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_5
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_5
-	dw Route14BattleText6 ; TextBeforeBattle
-	dw Route14AfterBattleText6 ; TextAfterBattle
-	dw Route14EndBattleText6 ; TextEndBattle
-	dw Route14EndBattleText6 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_5, 4, Route14CooltrainerM6BattleText, Route14CooltrainerM6EndBattleText, Route14CooltrainerM6AfterBattleText
 Route14TrainerHeader6:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_6
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_6
-	dw Route14BattleText7 ; TextBeforeBattle
-	dw Route14AfterBattleText7 ; TextAfterBattle
-	dw Route14EndBattleText7 ; TextEndBattle
-	dw Route14EndBattleText7 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_6, 4, Route14Biker1BattleText, Route14Biker1EndBattleText, Route14Biker1AfterBattleText
 Route14TrainerHeader7:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_7, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_7, 1
-	dw Route14BattleText8 ; TextBeforeBattle
-	dw Route14AfterBattleText8 ; TextAfterBattle
-	dw Route14EndBattleText8 ; TextEndBattle
-	dw Route14EndBattleText8 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_7, 4, Route14Biker2BattleText, Route14Biker2EndBattleText, Route14Biker2AfterBattleText
 Route14TrainerHeader8:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_8, 1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_8, 1
-	dw Route14BattleText9 ; TextBeforeBattle
-	dw Route14AfterBattleText9 ; TextAfterBattle
-	dw Route14EndBattleText9 ; TextEndBattle
-	dw Route14EndBattleText9 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_8, 3, Route14Biker3BattleText, Route14Biker3EndBattleText, Route14Biker3AfterBattleText
 Route14TrainerHeader9:
-	dbEventFlagBit EVENT_BEAT_ROUTE_14_TRAINER_9, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_14_TRAINER_9, 1
-	dw Route14BattleText10 ; TextBeforeBattle
-	dw Route14AfterBattleText10 ; TextAfterBattle
-	dw Route14EndBattleText10 ; TextEndBattle
-	dw Route14EndBattleText10 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_14_TRAINER_9, 4, Route14Biker4BattleText, Route14Biker4EndBattleText, Route14Biker4AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route14Text1:
-	TX_ASM
+Route14CooltrainerM1Text:
+	text_asm
 	ld hl, Route14TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText1:
-	TX_FAR _Route14BattleText1
-	db "@"
+Route14CooltrainerM1BattleText:
+	text_far _Route14CooltrainerM1BattleText
+	text_end
 
-Route14EndBattleText1:
-	TX_FAR _Route14EndBattleText1
-	db "@"
+Route14CooltrainerM1EndBattleText:
+	text_far _Route14CooltrainerM1EndBattleText
+	text_end
 
-Route14AfterBattleText1:
-	TX_FAR _Route14AfterBattleText1
-	db "@"
+Route14CooltrainerM1AfterBattleText:
+	text_far _Route14CooltrainerM1AfterBattleText
+	text_end
 
-Route14Text2:
-	TX_ASM
+Route14CooltrainerM2Text:
+	text_asm
 	ld hl, Route14TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText2:
-	TX_FAR _Route14BattleText2
-	db "@"
+Route14CooltrainerM2BattleText:
+	text_far _Route14CooltrainerM2BattleText
+	text_end
 
-Route14EndBattleText2:
-	TX_FAR _Route14EndBattleText2
-	db "@"
+Route14CooltrainerM2EndBattleText:
+	text_far _Route14CooltrainerM2EndBattleText
+	text_end
 
-Route14AfterBattleText2:
-	TX_FAR _Route14AfterBattleText2
-	db "@"
+Route14CooltrainerM2AfterBattleText:
+	text_far _Route14CooltrainerM2AfterBattleText
+	text_end
 
-Route14Text3:
-	TX_ASM
+Route14CooltrainerM3Text:
+	text_asm
 	ld hl, Route14TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText3:
-	TX_FAR _Route14BattleText3
-	db "@"
+Route14CooltrainerM3BattleText:
+	text_far _Route14CooltrainerM3BattleText
+	text_end
 
-Route14EndBattleText3:
-	TX_FAR _Route14EndBattleText3
-	db "@"
+Route14CooltrainerM3EndBattleText:
+	text_far _Route14CooltrainerM3EndBattleText
+	text_end
 
-Route14AfterBattleText3:
-	TX_FAR _Route14AfterBattleText3
-	db "@"
+Route14CooltrainerM3AfterBattleText:
+	text_far _Route14CooltrainerM3AfterBattleText
+	text_end
 
-Route14Text4:
-	TX_ASM
+Route14CooltrainerM4Text:
+	text_asm
 	ld hl, Route14TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText4:
-	TX_FAR _Route14BattleText4
-	db "@"
+Route14CooltrainerM4BattleText:
+	text_far _Route14CooltrainerM4BattleText
+	text_end
 
-Route14EndBattleText4:
-	TX_FAR _Route14EndBattleText4
-	db "@"
+Route14CooltrainerM4EndBattleText:
+	text_far _Route14CooltrainerM4EndBattleText
+	text_end
 
-Route14AfterBattleText4:
-	TX_FAR _Route14AfterBattleText4
-	db "@"
+Route14CooltrainerM4AfterBattleText:
+	text_far _Route14CooltrainerM4AfterBattleText
+	text_end
 
-Route14Text5:
-	TX_ASM
+Route14CooltrainerM5Text:
+	text_asm
 	ld hl, Route14TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText5:
-	TX_FAR _Route14BattleText5
-	db "@"
+Route14CooltrainerM5BattleText:
+	text_far _Route14CooltrainerM5BattleText
+	text_end
 
-Route14EndBattleText5:
-	TX_FAR _Route14EndBattleText5
-	db "@"
+Route14CooltrainerM5EndBattleText:
+	text_far _Route14CooltrainerM5EndBattleText
+	text_end
 
-Route14AfterBattleText5:
-	TX_FAR _Route14AfterBattleText5
-	db "@"
+Route14CooltrainerM5AfterBattleText:
+	text_far _Route14CooltrainerM5AfterBattleText
+	text_end
 
-Route14Text6:
-	TX_ASM
+Route14CooltrainerM6Text:
+	text_asm
 	ld hl, Route14TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText6:
-	TX_FAR _Route14BattleText6
-	db "@"
+Route14CooltrainerM6BattleText:
+	text_far _Route14CooltrainerM6BattleText
+	text_end
 
-Route14EndBattleText6:
-	TX_FAR _Route14EndBattleText6
-	db "@"
+Route14CooltrainerM6EndBattleText:
+	text_far _Route14CooltrainerM6EndBattleText
+	text_end
 
-Route14AfterBattleText6:
-	TX_FAR _Route14AfterBattleText6
-	db "@"
+Route14CooltrainerM6AfterBattleText:
+	text_far _Route14CooltrainerM6AfterBattleText
+	text_end
 
-Route14Text7:
-	TX_ASM
+Route14Biker1Text:
+	text_asm
 	ld hl, Route14TrainerHeader6
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText7:
-	TX_FAR _Route14BattleText7
-	db "@"
+Route14Biker1BattleText:
+	text_far _Route14Biker1BattleText
+	text_end
 
-Route14EndBattleText7:
-	TX_FAR _Route14EndBattleText7
-	db "@"
+Route14Biker1EndBattleText:
+	text_far _Route14Biker1EndBattleText
+	text_end
 
-Route14AfterBattleText7:
-	TX_FAR _Route14AfterBattleText7
-	db "@"
+Route14Biker1AfterBattleText:
+	text_far _Route14Biker1AfterBattleText
+	text_end
 
-Route14Text8:
-	TX_ASM
+Route14Biker2Text:
+	text_asm
 	ld hl, Route14TrainerHeader7
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText8:
-	TX_FAR _Route14BattleText8
-	db "@"
+Route14Biker2BattleText:
+	text_far _Route14Biker2BattleText
+	text_end
 
-Route14EndBattleText8:
-	TX_FAR _Route14EndBattleText8
-	db "@"
+Route14Biker2EndBattleText:
+	text_far _Route14Biker2EndBattleText
+	text_end
 
-Route14AfterBattleText8:
-	TX_FAR _Route14AfterBattleText8
-	db "@"
+Route14Biker2AfterBattleText:
+	text_far _Route14Biker2AfterBattleText
+	text_end
 
-Route14Text9:
-	TX_ASM
+Route14Biker3Text:
+	text_asm
 	ld hl, Route14TrainerHeader8
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText9:
-	TX_FAR _Route14BattleText9
-	db "@"
+Route14Biker3BattleText:
+	text_far _Route14Biker3BattleText
+	text_end
 
-Route14EndBattleText9:
-	TX_FAR _Route14EndBattleText9
-	db "@"
+Route14Biker3EndBattleText:
+	text_far _Route14Biker3EndBattleText
+	text_end
 
-Route14AfterBattleText9:
-	TX_FAR _Route14AfterBattleText9
-	db "@"
+Route14Biker3AfterBattleText:
+	text_far _Route14Biker3AfterBattleText
+	text_end
 
-Route14Text10:
-	TX_ASM
+Route14Biker4Text:
+	text_asm
 	ld hl, Route14TrainerHeader9
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route14BattleText10:
-	TX_FAR _Route14BattleText10
-	db "@"
+Route14Biker4BattleText:
+	text_far _Route14Biker4BattleText
+	text_end
 
-Route14EndBattleText10:
-	TX_FAR _Route14EndBattleText10
-	db "@"
+Route14Biker4EndBattleText:
+	text_far _Route14Biker4EndBattleText
+	text_end
 
-Route14AfterBattleText10:
-	TX_FAR _Route14AfterBattleText10
-	db "@"
+Route14Biker4AfterBattleText:
+	text_far _Route14Biker4AfterBattleText
+	text_end
 
-Route14Text11:
-	TX_FAR _Route14Text11
-	db "@"
+Route14SignText:
+	text_far _Route14SignText
+	text_end

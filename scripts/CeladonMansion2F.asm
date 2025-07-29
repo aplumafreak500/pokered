@@ -3,8 +3,9 @@ CeladonMansion2F_Script:
 	ret
 
 CeladonMansion2F_TextPointers:
-	dw CeladonMansion2Text1
+	def_text_pointers
+	dw_const CeladonMansion2FMeetingRoomSignText, TEXT_CELADONMANSION2F_MEETING_ROOM_SIGN
 
-CeladonMansion2Text1:
-	TX_FAR _CeladonMansion2Text1
-	db "@"
+CeladonMansion2FMeetingRoomSignText:
+	text_far _CeladonMansion2FMeetingRoomSignText
+	text_end

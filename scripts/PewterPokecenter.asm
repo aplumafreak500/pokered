@@ -3,30 +3,34 @@ PewterPokecenter_Script:
 	jp EnableAutoTextBoxDrawing
 
 PewterPokecenter_TextPointers:
-	dw PewterHealNurseText
-	dw PewterPokecenterText2
-	dw PewterJigglypuffText
-	dw PewterTradeNurseText
+	def_text_pointers
+	dw_const PewterPokecenterNurseText,            TEXT_PEWTERPOKECENTER_NURSE
+	dw_const PewterPokecenterGentlemanText,        TEXT_PEWTERPOKECENTER_GENTLEMAN
+	dw_const PewterPokecenterJigglypuffText,       TEXT_PEWTERPOKECENTER_JIGGLYPUFF
+	dw_const PewterPokecenterLinkReceptionistText, TEXT_PEWTERPOKECENTER_LINK_RECEPTIONIST
 
-PewterHealNurseText:
-	TX_POKECENTER_NURSE
+PewterPokecenterNurseText:
+	script_pokecenter_nurse
 
-PewterPokecenterText2:
-	TX_FAR _PewterPokecenterText2
-	db "@"
+PewterPokecenterGentlemanText:
+	text_far _PewterPokecenterGentlemanText
+	text_end
 
-PewterJigglypuffText:
-	TX_ASM
-	ld a, $1
+PewterPokecenterJigglypuffText:
+	text_asm
+	ld a, TRUE
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
 	ld hl, .Text
 	call PrintText
-	StopAllMusic
+
+	ld a, SFX_STOP_ALL_MUSIC
+	call PlaySound
 	ld c, 32
 	call DelayFrames
-	ld hl, JigglypuffFacingDirections
+
+	ld hl, .FacingDirections
 	ld de, wJigglypuffFacingDirections
-	ld bc, JigglypuffFacingDirectionsEnd - JigglypuffFacingDirections
+	ld bc, .FacingDirectionsEnd - .FacingDirections
 	call CopyData
 
 	ld a, [wSprite03StateData1ImageIndex]
@@ -36,49 +40,48 @@ PewterJigglypuffText:
 	inc hl
 	jr nz, .findMatchingFacingDirectionLoop
 	dec hl
+
 	push hl
 	ld c, BANK(Music_JigglypuffSong)
 	ld a, MUSIC_JIGGLYPUFF_SONG
 	call PlayMusic
 	pop hl
-.loop
+
+.spinMovementLoop
 	ld a, [hl]
 	ld [wSprite03StateData1ImageIndex], a
-
 ; rotate the array
 	push hl
 	ld hl, wJigglypuffFacingDirections
 	ld de, wJigglypuffFacingDirections - 1
-	ld bc, JigglypuffFacingDirectionsEnd - JigglypuffFacingDirections
+	ld bc, .FacingDirectionsEnd - .FacingDirections
 	call CopyData
 	ld a, [wJigglypuffFacingDirections - 1]
 	ld [wJigglypuffFacingDirections + 3], a
 	pop hl
-
 	ld c, 24
 	call DelayFrames
-
 	ld a, [wChannelSoundIDs]
 	ld b, a
-	ld a, [wChannelSoundIDs + Ch1]
+	ld a, [wChannelSoundIDs + CHAN2]
 	or b
-	jr nz, .loop
+	jr nz, .spinMovementLoop
 
 	ld c, 48
 	call DelayFrames
 	call PlayDefaultMusic
 	jp TextScriptEnd
 
-.Text
-	TX_FAR _PewterJigglypuffText
-	db "@"
+.Text:
+	text_far _PewterPokecenterJigglypuffText
+	text_end
 
-JigglypuffFacingDirections:
+.FacingDirections:
 	db $30 | SPRITE_FACING_DOWN
 	db $30 | SPRITE_FACING_LEFT
 	db $30 | SPRITE_FACING_UP
 	db $30 | SPRITE_FACING_RIGHT
-JigglypuffFacingDirectionsEnd:
+.FacingDirectionsEnd:
 
-PewterTradeNurseText:
-	TX_CABLE_CLUB_RECEPTIONIST
+PewterPokecenterLinkReceptionistText:
+	script_cable_club_receptionist

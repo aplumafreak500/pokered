@@ -1,4 +1,4 @@
-; [wd0b5] = pokemon ID
+; [wCurSpecies] = pokemon ID
 ; hl = dest addr
 PrintMonType:
 	call GetPredefRegisters
@@ -49,4 +49,4 @@ PrintType_:
 	pop hl
 	jp PlaceString
 
-INCLUDE "text/type_names.asm"
+INCLUDE "data/types/names.asm"

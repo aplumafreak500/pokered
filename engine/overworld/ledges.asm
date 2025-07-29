@@ -1,14 +1,14 @@
-HandleLedges:
-	ld a, [wd736]
-	bit 6, a ; already jumping down ledge
+HandleLedges::
+	ld a, [wMovementFlags]
+	bit BIT_LEDGE_OR_FISHING, a
 	ret nz
 	ld a, [wCurMapTileset]
 	and a ; OVERWORLD
 	ret nz
 	predef GetTileAndCoordsInFrontOfPlayer
-	ld a, [wSpriteStateData1 + 9]
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	ld b, a
-	aCoord 8, 9
+	lda_coord 8, 9
 	ld c, a
 	ld a, [wTileInFrontOfPlayer]
 	ld d, a
@@ -36,13 +36,13 @@ HandleLedges:
 	inc hl
 	jr .loop
 .foundMatch
-	ld a, [hJoyHeld]
+	ldh a, [hJoyHeld]
 	and e
 	ret z
-	ld a, $ff
+	ld a, PAD_BUTTONS | PAD_CTRL_PAD
 	ld [wJoyIgnore], a
-	ld hl, wd736
-	set 6, [hl] ; jumping down ledge
+	ld hl, wMovementFlags
+	set BIT_LEDGE_OR_FISHING, [hl]
 	call StartSimulatingJoypadStates
 	ld a, e
 	ld [wSimulatedJoypadStatesEnd], a
@@ -54,33 +54,26 @@ HandleLedges:
 	call PlaySound
 	ret
 
-	; (player direction) (tile player standing on) (ledge tile) (input required)
-LedgeTiles:
-	db SPRITE_FACING_DOWN, $2C,$37,D_DOWN
-	db SPRITE_FACING_DOWN, $39,$36,D_DOWN
-	db SPRITE_FACING_DOWN, $39,$37,D_DOWN
-	db SPRITE_FACING_LEFT, $2C,$27,D_LEFT
-	db SPRITE_FACING_LEFT, $39,$27,D_LEFT
-	db SPRITE_FACING_RIGHT,$2C,$0D,D_RIGHT
-	db SPRITE_FACING_RIGHT,$2C,$1D,D_RIGHT
-	db SPRITE_FACING_RIGHT,$39,$0D,D_RIGHT
-	db $FF
+INCLUDE "data/tilesets/ledge_tiles.asm"
 
 LoadHoppingShadowOAM:
-	ld hl, vChars1 + $7f0
+	ld hl, vChars1 tile $7f
 	ld de, LedgeHoppingShadow
 	lb bc, BANK(LedgeHoppingShadow), (LedgeHoppingShadowEnd - LedgeHoppingShadow) / $8
 	call CopyVideoDataDouble
 	ld a, $9
 	lb bc, $54, $48 ; b, c = y, x coordinates of shadow
-	ld de, LedgeHoppingShadowOAM
+	ld de, LedgeHoppingShadowOAMBlock
 	call WriteOAMBlock
 	ret
 
 LedgeHoppingShadow:
-	INCBIN "gfx/ledge_hopping_shadow.1bpp"
+	INCBIN "gfx/overworld/shadow.1bpp"
 LedgeHoppingShadowEnd:
 
-LedgeHoppingShadowOAM:
-	db $FF,$10,$FF,$20
-	db $FF,$40,$FF,$60
+LedgeHoppingShadowOAMBlock:
+; tile ID, attributes
+	db $ff, OAM_PAL1
+	db $ff, OAM_XFLIP
+	db $ff, OAM_YFLIP
+	db $ff, OAM_XFLIP | OAM_YFLIP

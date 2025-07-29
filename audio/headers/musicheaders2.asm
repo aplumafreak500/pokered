@@ -1,20 +1,41 @@
 Music_GymLeaderBattle::
-	audio Music_GymLeaderBattle, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_GymLeaderBattle_Ch1
+	channel 2, Music_GymLeaderBattle_Ch2
+	channel 3, Music_GymLeaderBattle_Ch3
 
 Music_TrainerBattle::
-	audio Music_TrainerBattle, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_TrainerBattle_Ch1
+	channel 2, Music_TrainerBattle_Ch2
+	channel 3, Music_TrainerBattle_Ch3
 
 Music_WildBattle::
-	audio Music_WildBattle, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_WildBattle_Ch1
+	channel 2, Music_WildBattle_Ch2
+	channel 3, Music_WildBattle_Ch3
 
 Music_FinalBattle::
-	audio Music_FinalBattle, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_FinalBattle_Ch1
+	channel 2, Music_FinalBattle_Ch2
+	channel 3, Music_FinalBattle_Ch3
 
 Music_DefeatedTrainer::
-	audio Music_DefeatedTrainer, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_DefeatedTrainer_Ch1
+	channel 2, Music_DefeatedTrainer_Ch2
+	channel 3, Music_DefeatedTrainer_Ch3
 
 Music_DefeatedWildMon::
-	audio Music_DefeatedWildMon, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_DefeatedWildMon_Ch1
+	channel 2, Music_DefeatedWildMon_Ch2
+	channel 3, Music_DefeatedWildMon_Ch3
 
 Music_DefeatedGymLeader::
-	audio Music_DefeatedGymLeader, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_DefeatedGymLeader_Ch1
+	channel 2, Music_DefeatedGymLeader_Ch2
+	channel 3, Music_DefeatedGymLeader_Ch3

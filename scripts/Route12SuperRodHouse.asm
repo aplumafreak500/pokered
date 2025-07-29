@@ -2,56 +2,57 @@ Route12SuperRodHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 Route12SuperRodHouse_TextPointers:
-	dw Route12HouseText1
+	def_text_pointers
+	dw_const Route12SuperRodHouseFishingGuruText, TEXT_ROUTE12SUPERRODHOUSE_FISHING_GURU
 
-Route12HouseText1:
-	TX_ASM
-	ld a, [wd728]
-	bit 5, a
-	jr nz, .asm_b4cad
-	ld hl, Route12HouseText_564c0
+Route12SuperRodHouseFishingGuruText:
+	text_asm
+	ld a, [wStatusFlags1]
+	bit BIT_GOT_SUPER_ROD, a
+	jr nz, .got_item
+	ld hl, .DoYouLikeToFishText
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	and a
-	jr nz, .asm_a2d76
+	jr nz, .refused
 	lb bc, SUPER_ROD, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, wd728
-	set 5, [hl]
-	ld hl, Route12HouseText_564c5
-	jr .asm_df984
-.BagFull
-	ld hl, Route12HouseText_564d9
-	jr .asm_df984
-.asm_a2d76
-	ld hl, Route12HouseText_564cf
-	jr .asm_df984
-.asm_b4cad
-	ld hl, Route12HouseText_564d4
-.asm_df984
+	jr nc, .bag_full
+	ld hl, wStatusFlags1
+	set BIT_GOT_SUPER_ROD, [hl]
+	ld hl, .ReceivedSuperRodText
+	jr .done
+.bag_full
+	ld hl, .NoRoomText
+	jr .done
+.refused
+	ld hl, .ThatsDisappointingText
+	jr .done
+.got_item
+	ld hl, .TryFishingText
+.done
 	call PrintText
 	jp TextScriptEnd
 
-Route12HouseText_564c0:
-	TX_FAR _Route12HouseText_564c0
-	db "@"
+.DoYouLikeToFishText:
+	text_far _Route12SuperRodHouseFishingGuruDoYouLikeToFishText
+	text_end
 
-Route12HouseText_564c5:
-	TX_FAR _Route12HouseText_564c5
-	TX_SFX_ITEM_1
-	TX_FAR _Route12HouseText_564ca
-	db "@"
+.ReceivedSuperRodText:
+	text_far _Route12SuperRodHouseFishingGuruReceivedSuperRodText
+	sound_get_item_1
+	text_far _Route12SuperRodHouseFishingGuruFishingWayOfLifeText
+	text_end
 
-Route12HouseText_564cf:
-	TX_FAR _Route12HouseText_564cf
-	db "@"
+.ThatsDisappointingText:
+	text_far _Route12SuperRodHouseFishingGuruThatsDisappointingText
+	text_end
 
-Route12HouseText_564d4:
-	TX_FAR _Route12HouseText_564d4
-	db "@"
+.TryFishingText:
+	text_far _Route12SuperRodHouseFishingGuruTryFishingText
+	text_end
 
-Route12HouseText_564d9:
-	TX_FAR _Route12HouseText_564d9
-	db "@"
+.NoRoomText:
+	text_far _Route12SuperRodHouseFishingGuruNoRoomText
+	text_end

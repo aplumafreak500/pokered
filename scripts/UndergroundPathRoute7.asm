@@ -4,8 +4,9 @@ UndergroundPathRoute7_Script:
 	jp EnableAutoTextBoxDrawing
 
 UndergroundPathRoute7_TextPointers:
-	dw UndergroundPathEntranceRoute7Text1
+	def_text_pointers
+	dw_const UndergroundPathRoute7MiddleAgedManText, TEXT_UNDERGROUNDPATHROUTE7_MIDDLE_AGED_MAN
 
-UndergroundPathEntranceRoute7Text1:
-	TX_FAR _UndergroundPathEntRoute7Text1
-	db "@"
+UndergroundPathRoute7MiddleAgedManText:
+	text_far _UndergroundPathRoute7MiddleAgedManText
+	text_end

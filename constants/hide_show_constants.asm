@@ -1,11 +1,14 @@
+DEF HIDE EQU $11
+DEF SHOW EQU $15
+
+; MissableObjects indexes (see data/maps/hide_show_data.asm)
 ; this is a list of the sprites that can be enabled/disabled during the game
 ; sprites marked with an X are constants that are never used
 ; because those sprites are not (de)activated in a map's script
 ; (they are either items or sprites that deactivate after battle
 ; and are detected in wMissableObjectList)
 
-const_value = 0
-
+	const_def
 	const HS_PALLET_TOWN_OAK               ; 00
 	const HS_LYING_OLD_MAN                 ; 01
 	const HS_OLD_MAN                       ; 02
@@ -234,3 +237,4 @@ const_value = 0
 	const HS_SEAFOAM_ISLANDS_B4F_BOULDER_1 ; E1
 	const HS_SEAFOAM_ISLANDS_B4F_BOULDER_2 ; E2
 	const HS_ARTICUNO                      ; E3 X
+DEF NUM_HS_OBJECTS EQU const_value

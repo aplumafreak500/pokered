@@ -5,85 +5,85 @@ BluesHouse_Script:
 	jp CallFunctionInTable
 
 BluesHouse_ScriptPointers:
-	dw BluesHouseScript0
-	dw BluesHouseScript1
+	def_script_pointers
+	dw_const BluesHouseDefaultScript, SCRIPT_BLUESHOUSE_DEFAULT
+	dw_const BluesHouseNoopScript,    SCRIPT_BLUESHOUSE_NOOP
 
-BluesHouseScript0:
+BluesHouseDefaultScript:
 	SetEvent EVENT_ENTERED_BLUES_HOUSE
-
-	; trigger the next script
-	ld a, 1
+	ld a, SCRIPT_BLUESHOUSE_NOOP
 	ld [wBluesHouseCurScript], a
 	ret
 
-BluesHouseScript1:
+BluesHouseNoopScript:
 	ret
 
 BluesHouse_TextPointers:
-	dw BluesHouseText1
-	dw BluesHouseText2
-	dw BluesHouseText3
+	def_text_pointers
+	dw_const BluesHouseDaisySittingText, TEXT_BLUESHOUSE_DAISY_SITTING
+	dw_const BluesHouseDaisyWalkingText, TEXT_BLUESHOUSE_DAISY_WALKING
+	dw_const BluesHouseTownMapText,      TEXT_BLUESHOUSE_TOWN_MAP
 
-BluesHouseText1:
-	TX_ASM
+BluesHouseDaisySittingText:
+	text_asm
 	CheckEvent EVENT_GOT_TOWN_MAP
-	jr nz, .GotMap
+	jr nz, .got_town_map
 	CheckEvent EVENT_GOT_POKEDEX
-	jr nz, .GiveMap
-	ld hl, DaisyInitialText
+	jr nz, .give_town_map
+	ld hl, BluesHouseDaisyRivalAtLabText
 	call PrintText
 	jr .done
 
-.GiveMap
-	ld hl, DaisyOfferMapText
+.give_town_map
+	ld hl, BluesHouseDaisyOfferMapText
 	call PrintText
 	lb bc, TOWN_MAP, 1
 	call GiveItem
-	jr nc, .BagFull
+	jr nc, .bag_full
 	ld a, HS_TOWN_MAP
 	ld [wMissableObjectIndex], a
-	predef HideObject ; hide table map object
+	predef HideObject
 	ld hl, GotMapText
 	call PrintText
 	SetEvent EVENT_GOT_TOWN_MAP
 	jr .done
 
-.GotMap
-	ld hl, DaisyUseMapText
+.got_town_map
+	ld hl, BluesHouseDaisyUseMapText
 	call PrintText
 	jr .done
 
-.BagFull
-	ld hl, DaisyBagFullText
+.bag_full
+	ld hl, BluesHouseDaisyBagFullText
 	call PrintText
 .done
 	jp TextScriptEnd
 
-DaisyInitialText:
-	TX_FAR _DaisyInitialText
-	db "@"
+BluesHouseDaisyRivalAtLabText:
+	text_far _BluesHouseDaisyRivalAtLabText
+	text_end
 
-DaisyOfferMapText:
-	TX_FAR _DaisyOfferMapText
-	db "@"
+BluesHouseDaisyOfferMapText:
+	text_far _BluesHouseDaisyOfferMapText
+	text_end
 
 GotMapText:
-	TX_FAR _GotMapText
-	TX_SFX_KEY_ITEM
-	db "@"
+	text_far _GotMapText
+	sound_get_key_item
+	text_end
 
-DaisyBagFullText:
-	TX_FAR _DaisyBagFullText
-	db "@"
+BluesHouseDaisyBagFullText:
+	text_far _BluesHouseDaisyBagFullText
+	text_end
 
-DaisyUseMapText:
-	TX_FAR _DaisyUseMapText
-	db "@"
+BluesHouseDaisyUseMapText:
+	text_far _BluesHouseDaisyUseMapText
+	text_end
 
-BluesHouseText2: ; Daisy, walking around
-	TX_FAR _BluesHouseText2
-	db "@"
+BluesHouseDaisyWalkingText:
+	text_far _BluesHouseDaisyWalkingText
+	text_end
 
-BluesHouseText3: ; map on table
-	TX_FAR _BluesHouseText3
-	db "@"
+BluesHouseTownMapText:
+	text_far _BluesHouseTownMapText
+	text_end

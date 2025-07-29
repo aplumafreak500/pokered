@@ -2,32 +2,33 @@ ViridianNicknameHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 ViridianNicknameHouse_TextPointers:
-	dw ViridianHouseText1
-	dw ViridianHouseText2
-	dw ViridianHouseText3
-	dw ViridianHouseText4
+	def_text_pointers
+	dw_const ViridianNicknameHouseBaldingGuyText, TEXT_VIRIDIANNICKNAMEHOUSE_BALDING_GUY
+	dw_const ViridianNicknameHouseLittleGirlText, TEXT_VIRIDIANNICKNAMEHOUSE_LITTLE_GIRL
+	dw_const ViridianNicknameHouseSpearowText,    TEXT_VIRIDIANNICKNAMEHOUSE_SPEAROW
+	dw_const ViridianNicknameHouseSpearySignText, TEXT_VIRIDIANNICKNAMEHOUSE_SPEARY_SIGN
 
-ViridianHouseText1:
-	TX_FAR _ViridianHouseText1
-	db "@"
+ViridianNicknameHouseBaldingGuyText:
+	text_far _ViridianNicknameHouseBaldingGuyText
+	text_end
 
-ViridianHouseText2:
-	TX_FAR _ViridianHouseText2
-	db "@"
+ViridianNicknameHouseLittleGirlText:
+	text_far _ViridianNicknameHouseLittleGirlText
+	text_end
 
-ViridianHouseText3:
-	TX_ASM
-	ld hl, ViridianHouseText_1d5b1
+ViridianNicknameHouseSpearowText:
+	text_asm
+	ld hl, .Text
 	call PrintText
 	ld a, SPEAROW
 	call PlayCry
 	call WaitForSoundToFinish
 	jp TextScriptEnd
 
-ViridianHouseText_1d5b1:
-	TX_FAR _ViridianHouseText_1d5b1
-	db "@"
+.Text:
+	text_far _ViridianNicknameHouseSpearowText
+	text_end
 
-ViridianHouseText4:
-	TX_FAR _ViridianHouseText4
-	db "@"
+ViridianNicknameHouseSpearySignText:
+	text_far _ViridianNicknameHouseSpearySignText
+	text_end

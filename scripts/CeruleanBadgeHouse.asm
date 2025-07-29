@@ -1,24 +1,25 @@
 CeruleanBadgeHouse_Script:
-	ld a, $1
+	ld a, 1 << BIT_NO_AUTO_TEXT_BOX
 	ld [wAutoTextBoxDrawingControl], a
 	dec a
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
 	ret
 
 CeruleanBadgeHouse_TextPointers:
-	dw CeruleanHouse2Text1
+	def_text_pointers
+	dw_const CeruleanBadgeHouseMiddleAgedManText, TEXT_CERULEANBADGEHOUSE_MIDDLE_AGED_MAN
 
-CeruleanHouse2Text1:
-	TX_ASM
-	ld hl, CeruleanHouse2Text_74e77
+CeruleanBadgeHouseMiddleAgedManText:
+	text_asm
+	ld hl, .Text
 	call PrintText
 	xor a
 	ld [wCurrentMenuItem], a
 	ld [wListScrollOffset], a
-.asm_74e23
-	ld hl, CeruleanHouse2Text_74e7c
+.loop
+	ld hl, .WhichBadgeText
 	call PrintText
-	ld hl, BadgeItemList
+	ld hl, .BadgeItemList
 	call LoadItemList
 	ld hl, wItemList
 	ld a, l
@@ -31,10 +32,10 @@ CeruleanHouse2Text1:
 	ld a, SPECIALLISTMENU
 	ld [wListMenuID], a
 	call DisplayListMenuID
-	jr c, .asm_74e60
-	ld hl, TextPointers_74e86
-	ld a, [wcf91]
-	sub $15
+	jr c, .done
+	ld hl, CeruleanBadgeHouseBadgeTextPointers
+	ld a, [wCurItem]
+	sub BOULDERBADGE
 	add a
 	ld d, $0
 	ld e, a
@@ -43,67 +44,80 @@ CeruleanHouse2Text1:
 	ld h, [hl]
 	ld l, a
 	call PrintText
-	jr .asm_74e23
-.asm_74e60
+	jr .loop
+.done
 	xor a
 	ld [wListScrollOffset], a
-	ld hl, CeruleanHouse2Text_74e81
+	ld hl, .VisitAnyTimeText
 	call PrintText
 	jp TextScriptEnd
 
-BadgeItemList:
-	db $8,BOULDERBADGE,CASCADEBADGE,THUNDERBADGE,RAINBOWBADGE,SOULBADGE,MARSHBADGE,VOLCANOBADGE,EARTHBADGE,$FF
+.BadgeItemList:
+	table_width 1
+	db NUM_BADGES ; #
+	db BOULDERBADGE
+	db CASCADEBADGE
+	db THUNDERBADGE
+	db RAINBOWBADGE
+	db SOULBADGE
+	db MARSHBADGE
+	db VOLCANOBADGE
+	db EARTHBADGE
+	db -1 ; end
+	assert_table_length NUM_BADGES + 2
 
-CeruleanHouse2Text_74e77:
-	TX_FAR _CeruleanHouse2Text_74e77
-	db "@"
+.Text:
+	text_far _CeruleanBadgeHouseMiddleAgedManText
+	text_end
 
-CeruleanHouse2Text_74e7c:
-	TX_FAR _CeruleanHouse2Text_74e7c
-	db "@"
+.WhichBadgeText:
+	text_far _CeruleanBadgeHouseMiddleAgedManWhichBadgeText
+	text_end
 
-CeruleanHouse2Text_74e81:
-	TX_FAR _CeruleanHouse2Text_74e81
-	db "@"
+.VisitAnyTimeText:
+	text_far _CeruleanBadgeHouseMiddleAgedManVisitAnyTimeText
+	text_end
 
-TextPointers_74e86:
-	dw CeruleanHouse2Text_74e96
-	dw CeruleanHouse2Text_74e9b
-	dw CeruleanHouse2Text_74ea0
-	dw CeruleanHouse2Text_74ea5
-	dw CeruleanHouse2Text_74eaa
-	dw CeruleanHouse2Text_74eaf
-	dw CeruleanHouse2Text_74eb4
-	dw CeruleanHouse2Text_74eb9
+CeruleanBadgeHouseBadgeTextPointers:
+	table_width 2
+	dw CeruleanBadgeHouseBoulderBadgeText
+	dw CeruleanBadgeHouseCascadeBadgeText
+	dw CeruleanBadgeHouseThunderBadgeText
+	dw CeruleanBadgeHouseRainbowBadgeText
+	dw CeruleanBadgeHouseSoulBadgeText
+	dw CeruleanBadgeHouseMarshBadgeText
+	dw CeruleanBadgeHouseVolcanoBadgeText
+	dw CeruleanBadgeHouseEarthBadgeText
+	assert_table_length NUM_BADGES
 
-CeruleanHouse2Text_74e96:
-	TX_FAR _CeruleanHouse2Text_74e96
-	db "@"
+CeruleanBadgeHouseBoulderBadgeText:
+	text_far _CeruleanBadgeHouseBoulderBadgeText
+	text_end
 
-CeruleanHouse2Text_74e9b:
-	TX_FAR _CeruleanHouse2Text_74e9b
-	db "@"
+CeruleanBadgeHouseCascadeBadgeText:
+	text_far _CeruleanBadgeHouseCascadeBadgeText
+	text_end
 
-CeruleanHouse2Text_74ea0:
-	TX_FAR _CeruleanHouse2Text_74ea0
-	db "@"
+CeruleanBadgeHouseThunderBadgeText:
+	text_far _CeruleanBadgeHouseThunderBadgeText
+	text_end
 
-CeruleanHouse2Text_74ea5:
-	TX_FAR _CeruleanHouse2Text_74ea5
-	db "@"
+CeruleanBadgeHouseRainbowBadgeText:
+	text_far _CeruleanBadgeHouseRainbowBadgeText
+	text_end
 
-CeruleanHouse2Text_74eaa:
-	TX_FAR _CeruleanHouse2Text_74eaa
-	db "@"
+CeruleanBadgeHouseSoulBadgeText:
+	text_far _CeruleanBadgeHouseSoulBadgeText
+	text_end
 
-CeruleanHouse2Text_74eaf:
-	TX_FAR _CeruleanHouse2Text_74eaf
-	db "@"
+CeruleanBadgeHouseMarshBadgeText:
+	text_far _CeruleanBadgeHouseMarshBadgeText
+	text_end
 
-CeruleanHouse2Text_74eb4:
-	TX_FAR _CeruleanHouse2Text_74eb4
-	db "@"
+CeruleanBadgeHouseVolcanoBadgeText:
+	text_far _CeruleanBadgeHouseVolcanoBadgeText
+	text_end
 
-CeruleanHouse2Text_74eb9:
-	TX_FAR _CeruleanHouse2Text_74eb9
-	db "@"
+CeruleanBadgeHouseEarthBadgeText:
+	text_far _CeruleanBadgeHouseEarthBadgeText
+	text_end

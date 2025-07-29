@@ -1,30 +1,30 @@
 SilphCo2F_Script:
-	call SilphCo2Script_59d07
+	call SilphCo2FGateCallbackScript
 	call EnableAutoTextBoxDrawing
-	ld hl, SilphCo2TrainerHeader0
+	ld hl, SilphCo2TrainerHeaders
 	ld de, SilphCo2F_ScriptPointers
 	ld a, [wSilphCo2FCurScript]
 	call ExecuteCurMapScriptInTable
 	ld [wSilphCo2FCurScript], a
 	ret
 
-SilphCo2Script_59d07:
+SilphCo2FGateCallbackScript:
 	ld hl, wCurrentMapScriptFlags
-	bit 5, [hl]
-	res 5, [hl]
+	bit BIT_CUR_MAP_LOADED_1, [hl]
+	res BIT_CUR_MAP_LOADED_1, [hl]
 	ret z
-	ld hl, SilphCo2GateCoords
-	call SilphCo2Script_59d43
-	call SilphCo2Script_59d6f
+	ld hl, .GateCoordinates
+	call SilphCo2F_SetCardKeyDoorYScript
+	call SilphCo2F_UnlockedDoorEventScript
 	CheckEvent EVENT_SILPH_CO_2_UNLOCKED_DOOR1
-	jr nz, .asm_59d2e
+	jr nz, .unlock_door1
 	push af
 	ld a, $54
 	ld [wNewTileBlockID], a
 	lb bc, 2, 2
 	predef ReplaceTileBlock
 	pop af
-.asm_59d2e
+.unlock_door1
 	CheckEventAfterBranchReuseA EVENT_SILPH_CO_2_UNLOCKED_DOOR2, EVENT_SILPH_CO_2_UNLOCKED_DOOR1
 	ret nz
 	ld a, $54
@@ -32,12 +32,12 @@ SilphCo2Script_59d07:
 	lb bc, 5, 2
 	predef_jump ReplaceTileBlock
 
-SilphCo2GateCoords:
-	db $02,$02
-	db $05,$02
-	db $FF
+.GateCoordinates:
+	dbmapcoord  2,  2
+	dbmapcoord  2,  5
+	db -1 ; end
 
-SilphCo2Script_59d43:
+SilphCo2F_SetCardKeyDoorYScript:
 	push hl
 	ld hl, wCardKeyDoorY
 	ld a, [hli]
@@ -45,201 +45,177 @@ SilphCo2Script_59d43:
 	ld a, [hl]
 	ld c, a
 	xor a
-	ld [$ffe0], a
+	ldh [hUnlockedSilphCoDoors], a
 	pop hl
-.asm_59d4f
+.loop_check_doors
 	ld a, [hli]
 	cp $ff
-	jr z, .asm_59d6b
+	jr z, .exit_loop
 	push hl
-	ld hl, $ffe0
+	ld hl, hUnlockedSilphCoDoors
 	inc [hl]
 	pop hl
 	cp b
-	jr z, .asm_59d60
+	jr z, .check_y_coord
 	inc hl
-	jr .asm_59d4f
-.asm_59d60
+	jr .loop_check_doors
+.check_y_coord
 	ld a, [hli]
 	cp c
-	jr nz, .asm_59d4f
+	jr nz, .loop_check_doors
 	ld hl, wCardKeyDoorY
 	xor a
 	ld [hli], a
 	ld [hl], a
 	ret
-.asm_59d6b
+.exit_loop
 	xor a
-	ld [$ffe0], a
+	ldh [hUnlockedSilphCoDoors], a
 	ret
 
-SilphCo2Script_59d6f:
+SilphCo2F_UnlockedDoorEventScript:
 	EventFlagAddress hl, EVENT_SILPH_CO_2_UNLOCKED_DOOR1
-	ld a, [$ffe0]
+	ldh a, [hUnlockedSilphCoDoors]
 	and a
 	ret z
 	cp $1
-	jr nz, .next
+	jr nz, .unlock_door1
 	SetEventReuseHL EVENT_SILPH_CO_2_UNLOCKED_DOOR1
 	ret
-.next
+.unlock_door1
 	SetEventAfterBranchReuseHL EVENT_SILPH_CO_2_UNLOCKED_DOOR2, EVENT_SILPH_CO_2_UNLOCKED_DOOR1
 	ret
 
 SilphCo2F_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_SILPHCO2F_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_SILPHCO2F_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_SILPHCO2F_END_BATTLE
 
 SilphCo2F_TextPointers:
-	dw SilphCo2Text1
-	dw SilphCo2Text2
-	dw SilphCo2Text3
-	dw SilphCo2Text4
-	dw SilphCo2Text5
+	def_text_pointers
+	dw_const SilphCo2FSilphWorkerFText, TEXT_SILPHCO2F_SILPH_WORKER_F
+	dw_const SilphCo2FScientist1Text,   TEXT_SILPHCO2F_SCIENTIST1
+	dw_const SilphCo2FScientist2Text,   TEXT_SILPHCO2F_SCIENTIST2
+	dw_const SilphCo2FRocket1Text,      TEXT_SILPHCO2F_ROCKET1
+	dw_const SilphCo2FRocket2Text,      TEXT_SILPHCO2F_ROCKET2
 
+SilphCo2TrainerHeaders:
+	def_trainers 2
 SilphCo2TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_SILPH_CO_2F_TRAINER_0
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SILPH_CO_2F_TRAINER_0
-	dw SilphCo2BattleText1 ; TextBeforeBattle
-	dw SilphCo2AfterBattleText1 ; TextAfterBattle
-	dw SilphCo2EndBattleText1 ; TextEndBattle
-	dw SilphCo2EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_SILPH_CO_2F_TRAINER_0, 3, SilphCo2FScientist1BattleText, SilphCo2FScientist1EndBattleText, SilphCo2FScientist1AfterBattleText
 SilphCo2TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_SILPH_CO_2F_TRAINER_1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SILPH_CO_2F_TRAINER_1
-	dw SilphCo2BattleText2 ; TextBeforeBattle
-	dw SilphCo2AfterBattleText2 ; TextAfterBattle
-	dw SilphCo2EndBattleText2 ; TextEndBattle
-	dw SilphCo2EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_SILPH_CO_2F_TRAINER_1, 4, SilphCo2FScientist2BattleText, SilphCo2FScientist2EndBattleText, SilphCo2FScientist2AfterBattleText
 SilphCo2TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_SILPH_CO_2F_TRAINER_2
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SILPH_CO_2F_TRAINER_2
-	dw SilphCo2BattleText3 ; TextBeforeBattle
-	dw SilphCo2AfterBattleText3 ; TextAfterBattle
-	dw SilphCo2EndBattleText3 ; TextEndBattle
-	dw SilphCo2EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_SILPH_CO_2F_TRAINER_2, 3, SilphCo2FRocket1BattleText, SilphCo2FRocket1EndBattleText, SilphCo2FRocket1AfterBattleText
 SilphCo2TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_SILPH_CO_2F_TRAINER_3
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SILPH_CO_2F_TRAINER_3
-	dw SilphCo2BattleText4 ; TextBeforeBattle
-	dw SilphCo2AfterBattleText4 ; TextAfterBattle
-	dw SilphCo2EndBattleText4 ; TextEndBattle
-	dw SilphCo2EndBattleText4 ; TextEndBattle
+	trainer EVENT_BEAT_SILPH_CO_2F_TRAINER_3, 3, SilphCo2FRocket2BattleText, SilphCo2FRocket2EndBattleText, SilphCo2FRocket2AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-SilphCo2Text1:
-	TX_ASM
+SilphCo2FSilphWorkerFText:
+	text_asm
 	CheckEvent EVENT_GOT_TM36
-	jr nz, .asm_59de4
-	ld hl, SilphCo2Text_59ded
+	jr nz, .already_have_tm
+	ld hl, .PleaseTakeThisText
 	call PrintText
-	lb bc, TM_36, 1
+	lb bc, TM_SELFDESTRUCT, 1
 	call GiveItem
-	ld hl, TM36NoRoomText
-	jr nc, .asm_59de7
+	ld hl, .TM36NoRoomText
+	jr nc, .print_text
 	SetEvent EVENT_GOT_TM36
-	ld hl, ReceivedTM36Text
-	jr .asm_59de7
-.asm_59de4
-	ld hl, TM36ExplanationText
-.asm_59de7
+	ld hl, .ReceivedTM36Text
+	jr .print_text
+.already_have_tm
+	ld hl, .TM36ExplanationText
+.print_text
 	call PrintText
 	jp TextScriptEnd
 
-SilphCo2Text_59ded:
-	TX_FAR _SilphCo2Text_59ded
-	db "@"
+.PleaseTakeThisText:
+	text_far SilphCo2FSilphWorkerFPleaseTakeThisText
+	text_end
 
-ReceivedTM36Text:
-	TX_FAR _ReceivedTM36Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedTM36Text:
+	text_far _SilphCo2FSilphWorkerFReceivedTM36Text
+	sound_get_item_1
+	text_end
 
-TM36ExplanationText:
-	TX_FAR _TM36ExplanationText
-	db "@"
+.TM36ExplanationText:
+	text_far _SilphCo2FSilphWorkerFTM36ExplanationText
+	text_end
 
-TM36NoRoomText:
-	TX_FAR _TM36NoRoomText
-	db "@"
+.TM36NoRoomText:
+	text_far _SilphCo2FSilphWorkerFTM36NoRoomText
+	text_end
 
-SilphCo2Text2:
-	TX_ASM
+SilphCo2FScientist1Text:
+	text_asm
 	ld hl, SilphCo2TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SilphCo2Text3:
-	TX_ASM
+SilphCo2FScientist2Text:
+	text_asm
 	ld hl, SilphCo2TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SilphCo2Text4:
-	TX_ASM
+SilphCo2FRocket1Text:
+	text_asm
 	ld hl, SilphCo2TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SilphCo2Text5:
-	TX_ASM
+SilphCo2FRocket2Text:
+	text_asm
 	ld hl, SilphCo2TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SilphCo2BattleText1:
-	TX_FAR _SilphCo2BattleText1
-	db "@"
+SilphCo2FScientist1BattleText:
+	text_far _SilphCo2FScientist1BattleText
+	text_end
 
-SilphCo2EndBattleText1:
-	TX_FAR _SilphCo2EndBattleText1
-	db "@"
+SilphCo2FScientist1EndBattleText:
+	text_far _SilphCo2FScientist1EndBattleText
+	text_end
 
-SilphCo2AfterBattleText1:
-	TX_FAR _SilphCo2AfterBattleText1
-	db "@"
+SilphCo2FScientist1AfterBattleText:
+	text_far _SilphCo2FScientist1AfterBattleText
+	text_end
 
-SilphCo2BattleText2:
-	TX_FAR _SilphCo2BattleText2
-	db "@"
+SilphCo2FScientist2BattleText:
+	text_far _SilphCo2FScientist2BattleText
+	text_end
 
-SilphCo2EndBattleText2:
-	TX_FAR _SilphCo2EndBattleText2
-	db "@"
+SilphCo2FScientist2EndBattleText:
+	text_far _SilphCo2FScientist2EndBattleText
+	text_end
 
-SilphCo2AfterBattleText2:
-	TX_FAR _SilphCo2AfterBattleText2
-	db "@"
+SilphCo2FScientist2AfterBattleText:
+	text_far _SilphCo2FScientist2AfterBattleText
+	text_end
 
-SilphCo2BattleText3:
-	TX_FAR _SilphCo2BattleText3
-	db "@"
+SilphCo2FRocket1BattleText:
+	text_far _SilphCo2FRocket1BattleText
+	text_end
 
-SilphCo2EndBattleText3:
-	TX_FAR _SilphCo2EndBattleText3
-	db "@"
+SilphCo2FRocket1EndBattleText:
+	text_far _SilphCo2FRocket1EndBattleText
+	text_end
 
-SilphCo2AfterBattleText3:
-	TX_FAR _SilphCo2AfterBattleText3
-	db "@"
+SilphCo2FRocket1AfterBattleText:
+	text_far _SilphCo2FRocket1AfterBattleText
+	text_end
 
-SilphCo2BattleText4:
-	TX_FAR _SilphCo2BattleText4
-	db "@"
+SilphCo2FRocket2BattleText:
+	text_far _SilphCo2FRocket2BattleText
+	text_end
 
-SilphCo2EndBattleText4:
-	TX_FAR _SilphCo2EndBattleText4
-	db "@"
+SilphCo2FRocket2EndBattleText:
+	text_far _SilphCo2FRocket2EndBattleText
+	text_end
 
-SilphCo2AfterBattleText4:
-	TX_FAR _SilphCo2AfterBattleText4
-	db "@"
+SilphCo2FRocket2AfterBattleText:
+	text_far _SilphCo2FRocket2AfterBattleText
+	text_end

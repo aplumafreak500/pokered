@@ -3,46 +3,46 @@ Serial::
 	push bc
 	push de
 	push hl
-	ld a, [hSerialConnectionStatus]
+	ldh a, [hSerialConnectionStatus]
 	inc a
 	jr z, .connectionNotYetEstablished
-	ld a, [rSB]
-	ld [hSerialReceiveData], a
-	ld a, [hSerialSendData]
-	ld [rSB], a
-	ld a, [hSerialConnectionStatus]
+	ldh a, [rSB]
+	ldh [hSerialReceiveData], a
+	ldh a, [hSerialSendData]
+	ldh [rSB], a
+	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr z, .done
 ; using external clock
-	ld a, START_TRANSFER_EXTERNAL_CLOCK
-	ld [rSC], a
+	ld a, SC_START | SC_EXTERNAL
+	ldh [rSC], a
 	jr .done
 .connectionNotYetEstablished
-	ld a, [rSB]
-	ld [hSerialReceiveData], a
-	ld [hSerialConnectionStatus], a
+	ldh a, [rSB]
+	ldh [hSerialReceiveData], a
+	ldh [hSerialConnectionStatus], a
 	cp USING_INTERNAL_CLOCK
 	jr z, .usingInternalClock
 ; using external clock
 	xor a
-	ld [rSB], a
+	ldh [rSB], a
 	ld a, $3
-	ld [rDIV], a
+	ldh [rDIV], a
 .waitLoop
-	ld a, [rDIV]
-	bit 7, a
+	ldh a, [rDIV]
+	bit 7, a ; wait until rDIV has incremented from $3 to $80 or more
 	jr nz, .waitLoop
-	ld a, START_TRANSFER_EXTERNAL_CLOCK
-	ld [rSC], a
+	ld a, SC_START | SC_EXTERNAL
+	ldh [rSC], a
 	jr .done
 .usingInternalClock
 	xor a
-	ld [rSB], a
+	ldh [rSB], a
 .done
 	ld a, $1
-	ld [hSerialReceivedNewData], a
+	ldh [hSerialReceivedNewData], a
 	ld a, SERIAL_NO_DATA_BYTE
-	ld [hSerialSendData], a
+	ldh [hSerialSendData], a
 	pop hl
 	pop de
 	pop bc
@@ -54,10 +54,10 @@ Serial::
 ; bc = length of data
 Serial_ExchangeBytes::
 	ld a, 1
-	ld [hSerialIgnoringInitialData], a
+	ldh [hSerialIgnoringInitialData], a
 .loop
 	ld a, [hl]
-	ld [hSerialSendData], a
+	ldh [hSerialSendData], a
 	call Serial_ExchangeByte
 	push bc
 	ld b, a
@@ -66,7 +66,7 @@ Serial_ExchangeBytes::
 .waitLoop
 	dec a
 	jr nz, .waitLoop
-	ld a, [hSerialIgnoringInitialData]
+	ldh a, [hSerialIgnoringInitialData]
 	and a
 	ld a, b
 	pop bc
@@ -75,7 +75,7 @@ Serial_ExchangeBytes::
 	cp SERIAL_PREAMBLE_BYTE
 	jr nz, .loop
 	xor a
-	ld [hSerialIgnoringInitialData], a
+	ldh [hSerialIgnoringInitialData], a
 	jr .loop
 .storeReceivedByte
 	ld [de], a
@@ -88,17 +88,17 @@ Serial_ExchangeBytes::
 
 Serial_ExchangeByte::
 	xor a
-	ld [hSerialReceivedNewData], a
-	ld a, [hSerialConnectionStatus]
+	ldh [hSerialReceivedNewData], a
+	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr nz, .loop
-	ld a, START_TRANSFER_INTERNAL_CLOCK
-	ld [rSC], a
+	ld a, SC_START | SC_INTERNAL
+	ldh [rSC], a
 .loop
-	ld a, [hSerialReceivedNewData]
+	ldh a, [hSerialReceivedNewData]
 	and a
 	jr nz, .ok
-	ld a, [hSerialConnectionStatus]
+	ldh a, [hSerialConnectionStatus]
 	cp USING_EXTERNAL_CLOCK
 	jr nz, .doNotIncrementUnknownCounter
 	call IsUnknownCounterZero
@@ -116,9 +116,9 @@ Serial_ExchangeByte::
 	jr nz, .loop
 	jp SetUnknownCounterToFFFF
 .doNotIncrementUnknownCounter
-	ld a, [rIE]
-	and (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
-	cp (1 << SERIAL)
+	ldh a, [rIE]
+	and IE_SERIAL | IE_TIMER | IE_STAT | IE_VBLANK
+	cp IE_SERIAL
 	jr nz, .loop
 	ld a, [wUnknownSerialCounter2]
 	dec a
@@ -128,7 +128,7 @@ Serial_ExchangeByte::
 	dec a
 	ld [wUnknownSerialCounter2 + 1], a
 	jr nz, .loop
-	ld a, [hSerialConnectionStatus]
+	ldh a, [hSerialConnectionStatus]
 	cp USING_EXTERNAL_CLOCK
 	jr z, .ok
 	ld a, 255
@@ -137,16 +137,16 @@ Serial_ExchangeByte::
 	jr nz, .waitLoop
 .ok
 	xor a
-	ld [hSerialReceivedNewData], a
-	ld a, [rIE]
-	and (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
-	sub (1 << SERIAL)
+	ldh [hSerialReceivedNewData], a
+	ldh a, [rIE]
+	and IE_SERIAL | IE_TIMER | IE_STAT | IE_VBLANK
+	sub IE_SERIAL
 	jr nz, .skipReloadingUnknownCounter2
 	ld [wUnknownSerialCounter2], a
 	ld a, $50
 	ld [wUnknownSerialCounter2 + 1], a
 .skipReloadingUnknownCounter2
-	ld a, [hSerialReceiveData]
+	ldh a, [hSerialReceiveData]
 	cp SERIAL_NO_DATA_BYTE
 	ret nz
 	call IsUnknownCounterZero
@@ -164,13 +164,13 @@ Serial_ExchangeByte::
 	call IsUnknownCounterZero
 	jr z, SetUnknownCounterToFFFF
 .done
-	ld a, [rIE]
-	and (1 << SERIAL) | (1 << TIMER) | (1 << LCD_STAT) | (1 << VBLANK)
-	cp (1 << SERIAL)
+	ldh a, [rIE]
+	and IE_SERIAL | IE_TIMER | IE_STAT | IE_VBLANK
+	cp IE_SERIAL
 	ld a, SERIAL_NO_DATA_BYTE
 	ret z
 	ld a, [hl]
-	ld [hSerialSendData], a
+	ldh [hSerialSendData], a
 	call DelayFrame
 	jp Serial_ExchangeByte
 
@@ -203,18 +203,18 @@ Serial_ExchangeLinkMenuSelection::
 	ld de, wLinkMenuSelectionReceiveBuffer
 	ld c, 2 ; number of bytes to save
 	ld a, 1
-	ld [hSerialIgnoringInitialData], a
+	ldh [hSerialIgnoringInitialData], a
 .loop
 	call DelayFrame
 	ld a, [hl]
-	ld [hSerialSendData], a
+	ldh [hSerialSendData], a
 	call Serial_ExchangeByte
 	ld b, a
 	inc hl
-	ld a, [hSerialIgnoringInitialData]
+	ldh a, [hSerialIgnoringInitialData]
 	and a
 	ld a, 0
-	ld [hSerialIgnoringInitialData], a
+	ldh [hSerialIgnoringInitialData], a
 	jr nz, .loop
 	ld a, b
 	ld [de], a
@@ -225,11 +225,12 @@ Serial_ExchangeLinkMenuSelection::
 
 Serial_PrintWaitingTextAndSyncAndExchangeNybble::
 	call SaveScreenTilesToBuffer1
-	callab PrintWaitingText
+	callfar PrintWaitingText
 	call Serial_SyncAndExchangeNybble
 	jp LoadScreenTilesFromBuffer1
 
 Serial_SyncAndExchangeNybble::
+	vc_hook Wireless_WaitLinkTransfer
 	ld a, $ff
 	ld [wSerialExchangeNybbleReceiveData], a
 .loop1
@@ -253,13 +254,25 @@ Serial_SyncAndExchangeNybble::
 	ld a, [wSerialExchangeNybbleReceiveData]
 	inc a
 	jr z, .loop1
+	vc_patch Wireless_net_delay_3
+IF DEF(_RED_VC) || DEF(_BLUE_VC) || DEF(_GREEN_VC)
+	ld b, 26
+ELSE
 	ld b, 10
+ENDC
+	vc_patch_end
 .loop2
 	call DelayFrame
 	call Serial_ExchangeNybble
 	dec b
 	jr nz, .loop2
+	vc_patch Wireless_net_delay_4
+IF DEF(_RED_VC) || DEF(_BLUE_VC) || DEF(_GREEN_VC)
+	ld b, 26
+ELSE
 	ld b, 10
+ENDC
+	vc_patch_end
 .loop3
 	call DelayFrame
 	call Serial_SendZeroByte
@@ -267,26 +280,27 @@ Serial_SyncAndExchangeNybble::
 	jr nz, .loop3
 	ld a, [wSerialExchangeNybbleReceiveData]
 	ld [wSerialSyncAndExchangeNybbleReceiveData], a
+	vc_hook Wireless_WaitLinkTransfer_ret
 	ret
 
 Serial_ExchangeNybble::
 	call .doExchange
 	ld a, [wSerialExchangeNybbleSendData]
 	add $60
-	ld [hSerialSendData], a
-	ld a, [hSerialConnectionStatus]
+	ldh [hSerialSendData], a
+	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	jr nz, .doExchange
-	ld a, START_TRANSFER_INTERNAL_CLOCK
-	ld [rSC], a
+	ld a, SC_START | SC_INTERNAL
+	ldh [rSC], a
 .doExchange
-	ld a, [hSerialReceiveData]
+	ldh a, [hSerialReceiveData]
 	ld [wSerialExchangeNybbleTempReceiveData], a
 	and $f0
 	cp $60
 	ret nz
 	xor a
-	ld [hSerialReceiveData], a
+	ldh [hSerialReceiveData], a
 	ld a, [wSerialExchangeNybbleTempReceiveData]
 	and $f
 	ld [wSerialExchangeNybbleReceiveData], a
@@ -294,19 +308,19 @@ Serial_ExchangeNybble::
 
 Serial_SendZeroByte::
 	xor a
-	ld [hSerialSendData], a
-	ld a, [hSerialConnectionStatus]
+	ldh [hSerialSendData], a
+	ldh a, [hSerialConnectionStatus]
 	cp USING_INTERNAL_CLOCK
 	ret nz
-	ld a, START_TRANSFER_INTERNAL_CLOCK
-	ld [rSC], a
+	ld a, SC_START | SC_INTERNAL
+	ldh [rSC], a
 	ret
 
 Serial_TryEstablishingExternallyClockedConnection::
 	ld a, ESTABLISH_CONNECTION_WITH_EXTERNAL_CLOCK
-	ld [rSB], a
+	ldh [rSB], a
 	xor a
-	ld [hSerialReceiveData], a
-	ld a, START_TRANSFER_EXTERNAL_CLOCK
-	ld [rSC], a
+	ldh [hSerialReceiveData], a
+	ld a, SC_START | SC_EXTERNAL
+	ldh [rSC], a
 	ret

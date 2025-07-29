@@ -1,6 +1,6 @@
 Route11_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route11TrainerHeader0
+	ld hl, Route11TrainerHeaders
 	ld de, Route11_ScriptPointers
 	ld a, [wRoute11CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,295 +8,229 @@ Route11_Script:
 	ret
 
 Route11_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE11_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE11_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE11_END_BATTLE
 
 Route11_TextPointers:
-	dw Route11Text1
-	dw Route11Text2
-	dw Route11Text3
-	dw Route11Text4
-	dw Route11Text5
-	dw Route11Text6
-	dw Route11Text7
-	dw Route11Text8
-	dw Route11Text9
-	dw Route11Text10
-	dw Route11Text11
+	def_text_pointers
+	dw_const Route11Gambler1Text,         TEXT_ROUTE11_GAMBLER1
+	dw_const Route11Gambler2Text,         TEXT_ROUTE11_GAMBLER2
+	dw_const Route11Youngster1Text,       TEXT_ROUTE11_YOUNGSTER1
+	dw_const Route11SuperNerd1Text,       TEXT_ROUTE11_SUPER_NERD1
+	dw_const Route11Youngster2Text,       TEXT_ROUTE11_YOUNGSTER2
+	dw_const Route11Gambler3Text,         TEXT_ROUTE11_GAMBLER3
+	dw_const Route11Gambler4Text,         TEXT_ROUTE11_GAMBLER4
+	dw_const Route11Youngster3Text,       TEXT_ROUTE11_YOUNGSTER3
+	dw_const Route11SuperNerd2Text,       TEXT_ROUTE11_SUPER_NERD2
+	dw_const Route11Youngster4Text,       TEXT_ROUTE11_YOUNGSTER4
+	dw_const Route11DiglettsCaveSignText, TEXT_ROUTE11_DIGLETTSCAVE_SIGN
 
+Route11TrainerHeaders:
+	def_trainers
 Route11TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_0
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_0
-	dw Route11BattleText1 ; TextBeforeBattle
-	dw Route11AfterBattleText1 ; TextAfterBattle
-	dw Route11EndBattleText1 ; TextEndBattle
-	dw Route11EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_0, 3, Route11Gambler1BattleText, Route11Gambler1EndBattleText, Route11Gambler1AfterBattleText
 Route11TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_1
-	dw Route11BattleText2 ; TextBeforeBattle
-	dw Route11AfterBattleText2 ; TextAfterBattle
-	dw Route11EndBattleText2 ; TextEndBattle
-	dw Route11EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_1, 2, Route11Gambler2BattleText, Route11Gambler2EndBattleText, Route11Gambler2AfterBattleText
 Route11TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_2
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_2
-	dw Route11BattleText3 ; TextBeforeBattle
-	dw Route11AfterBattleText3 ; TextAfterBattle
-	dw Route11EndBattleText3 ; TextEndBattle
-	dw Route11EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_2, 3, Route11Youngster1BattleText, Route11Youngster1EndBattleText, Route11Youngster1AfterBattleText
 Route11TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_3
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_3
-	dw Route11BattleText4 ; TextBeforeBattle
-	dw Route11AfterBattleText4 ; TextAfterBattle
-	dw Route11EndBattleText4 ; TextEndBattle
-	dw Route11EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_3, 3, Route11SuperNerd1BattleText, Route11SuperNerd1EndBattleText, Route11SuperNerd1AfterBattleText
 Route11TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_4
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_4
-	dw Route11BattleText5 ; TextBeforeBattle
-	dw Route11AfterBattleText5 ; TextAfterBattle
-	dw Route11EndBattleText5 ; TextEndBattle
-	dw Route11EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_4, 4, Route11Youngster2BattleText, Route11Youngster2EndBattleText, Route11Youngster2AfterBattleText
 Route11TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_5
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_5
-	dw Route11BattleText6 ; TextBeforeBattle
-	dw Route11AfterBattleText6 ; TextAfterBattle
-	dw Route11EndBattleText6 ; TextEndBattle
-	dw Route11EndBattleText6 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_5, 3, Route11Gambler3BattleText, Route11Gambler3EndBattleText, Route11Gambler3AfterBattleText
 Route11TrainerHeader6:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_6
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_6
-	dw Route11BattleText7 ; TextBeforeBattle
-	dw Route11AfterBattleText7 ; TextAfterBattle
-	dw Route11EndBattleText7 ; TextEndBattle
-	dw Route11EndBattleText7 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_6, 3, Route11Gambler4BattleText, Route11Gambler4EndBattleText, Route11Gambler4AfterBattleText
 Route11TrainerHeader7:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_7, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_7, 1
-	dw Route11BattleText8 ; TextBeforeBattle
-	dw Route11AfterBattleText8 ; TextAfterBattle
-	dw Route11EndBattleText8 ; TextEndBattle
-	dw Route11EndBattleText8 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_7, 4, Route11Youngster3BattleText, Route11Youngster3EndBattleText, Route11Youngster3AfterBattleText
 Route11TrainerHeader8:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_8, 1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_8, 1
-	dw Route11BattleText9 ; TextBeforeBattle
-	dw Route11AfterBattleText9 ; TextAfterBattle
-	dw Route11EndBattleText9 ; TextEndBattle
-	dw Route11EndBattleText9 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_8, 3, Route11SuperNerd2BattleText, Route11SuperNerd2EndBattleText, Route11SuperNerd2AfterBattleText
 Route11TrainerHeader9:
-	dbEventFlagBit EVENT_BEAT_ROUTE_11_TRAINER_9, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_11_TRAINER_9, 1
-	dw Route11BattleText10 ; TextBeforeBattle
-	dw Route11AfterBattleText10 ; TextAfterBattle
-	dw Route11EndBattleText10 ; TextEndBattle
-	dw Route11EndBattleText10 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_11_TRAINER_9, 4, Route11Youngster4BattleText, Route11Youngster4EndBattleText, Route11Youngster4AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route11Text1:
-	TX_ASM
+Route11Gambler1Text:
+	text_asm
 	ld hl, Route11TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText1:
-	TX_FAR _Route11BattleText1
-	db "@"
+Route11Gambler1BattleText:
+	text_far _Route11Gambler1BattleText
+	text_end
 
-Route11EndBattleText1:
-	TX_FAR _Route11EndBattleText1
-	db "@"
+Route11Gambler1EndBattleText:
+	text_far _Route11Gambler1EndBattleText
+	text_end
 
-Route11AfterBattleText1:
-	TX_FAR _Route11AfterBattleText1
-	db "@"
+Route11Gambler1AfterBattleText:
+	text_far _Route11Gambler1AfterBattleText
+	text_end
 
-Route11Text2:
-	TX_ASM
+Route11Gambler2Text:
+	text_asm
 	ld hl, Route11TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText2:
-	TX_FAR _Route11BattleText2
-	db "@"
+Route11Gambler2BattleText:
+	text_far _Route11Gambler2BattleText
+	text_end
 
-Route11EndBattleText2:
-	TX_FAR _Route11EndBattleText2
-	db "@"
+Route11Gambler2EndBattleText:
+	text_far _Route11Gambler2EndBattleText
+	text_end
 
-Route11AfterBattleText2:
-	TX_FAR _Route11AfterBattleText2
-	db "@"
+Route11Gambler2AfterBattleText:
+	text_far _Route11Gambler2AfterBattleText
+	text_end
 
-Route11Text3:
-	TX_ASM
+Route11Youngster1Text:
+	text_asm
 	ld hl, Route11TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText3:
-	TX_FAR _Route11BattleText3
-	db "@"
+Route11Youngster1BattleText:
+	text_far _Route11Youngster1BattleText
+	text_end
 
-Route11EndBattleText3:
-	TX_FAR _Route11EndBattleText3
-	db "@"
+Route11Youngster1EndBattleText:
+	text_far _Route11Youngster1EndBattleText
+	text_end
 
-Route11AfterBattleText3:
-	TX_FAR _Route11AfterBattleText3
-	db "@"
+Route11Youngster1AfterBattleText:
+	text_far _Route11Youngster1AfterBattleText
+	text_end
 
-Route11Text4:
-	TX_ASM
+Route11SuperNerd1Text:
+	text_asm
 	ld hl, Route11TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText4:
-	TX_FAR _Route11BattleText4
-	db "@"
+Route11SuperNerd1BattleText:
+	text_far _Route11SuperNerd1BattleText
+	text_end
 
-Route11EndBattleText4:
-	TX_FAR _Route11EndBattleText4
-	db "@"
+Route11SuperNerd1EndBattleText:
+	text_far _Route11SuperNerd1EndBattleText
+	text_end
 
-Route11AfterBattleText4:
-	TX_FAR _Route11AfterBattleText4
-	db "@"
+Route11SuperNerd1AfterBattleText:
+	text_far _Route11SuperNerd1AfterBattleText
+	text_end
 
-Route11Text5:
-	TX_ASM
+Route11Youngster2Text:
+	text_asm
 	ld hl, Route11TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText5:
-	TX_FAR _Route11BattleText5
-	db "@"
+Route11Youngster2BattleText:
+	text_far _Route11Youngster2BattleText
+	text_end
 
-Route11EndBattleText5:
-	TX_FAR _Route11EndBattleText5
-	db "@"
+Route11Youngster2EndBattleText:
+	text_far _Route11Youngster2EndBattleText
+	text_end
 
-Route11AfterBattleText5:
-	TX_FAR _Route11AfterBattleText5
-	db "@"
+Route11Youngster2AfterBattleText:
+	text_far _Route11Youngster2AfterBattleText5
+	text_end
 
-Route11Text6:
-	TX_ASM
+Route11Gambler3Text:
+	text_asm
 	ld hl, Route11TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText6:
-	TX_FAR _Route11BattleText6
-	db "@"
+Route11Gambler3BattleText:
+	text_far _Route11Gambler3BattleText
+	text_end
 
-Route11EndBattleText6:
-	TX_FAR _Route11EndBattleText6
-	db "@"
+Route11Gambler3EndBattleText:
+	text_far _Route11Gambler3EndBattleText
+	text_end
 
-Route11AfterBattleText6:
-	TX_FAR _Route11AfterBattleText6
-	db "@"
+Route11Gambler3AfterBattleText:
+	text_far _Route11Gambler3AfterBattleText
+	text_end
 
-Route11Text7:
-	TX_ASM
+Route11Gambler4Text:
+	text_asm
 	ld hl, Route11TrainerHeader6
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText7:
-	TX_FAR _Route11BattleText7
-	db "@"
+Route11Gambler4BattleText:
+	text_far _Route11Gambler4BattleText
+	text_end
 
-Route11EndBattleText7:
-	TX_FAR _Route11EndBattleText7
-	db "@"
+Route11Gambler4EndBattleText:
+	text_far _Route11Gambler4EndBattleText
+	text_end
 
-Route11AfterBattleText7:
-	TX_FAR _Route11AfterBattleText7
-	db "@"
+Route11Gambler4AfterBattleText:
+	text_far _Route11Gambler4AfterBattleText
+	text_end
 
-Route11Text8:
-	TX_ASM
+Route11Youngster3Text:
+	text_asm
 	ld hl, Route11TrainerHeader7
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText8:
-	TX_FAR _Route11BattleText8
-	db "@"
+Route11Youngster3BattleText:
+	text_far _Route11Youngster3BattleText
+	text_end
 
-Route11EndBattleText8:
-	TX_FAR _Route11EndBattleText8
-	db "@"
+Route11Youngster3EndBattleText:
+	text_far _Route11Youngster3EndBattleText
+	text_end
 
-Route11AfterBattleText8:
-	TX_FAR _Route11AfterBattleText8
-	db "@"
+Route11Youngster3AfterBattleText:
+	text_far _Route11Youngster3AfterBattleText
+	text_end
 
-Route11Text9:
-	TX_ASM
+Route11SuperNerd2Text:
+	text_asm
 	ld hl, Route11TrainerHeader8
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText9:
-	TX_FAR _Route11BattleText9
-	db "@"
+Route11SuperNerd2BattleText:
+	text_far _Route11SuperNerd2BattleText
+	text_end
 
-Route11EndBattleText9:
-	TX_FAR _Route11EndBattleText9
-	db "@"
+Route11SuperNerd2EndBattleText:
+	text_far _Route11SuperNerd2EndBattleText
+	text_end
 
-Route11AfterBattleText9:
-	TX_FAR _Route11AfterBattleText9
-	db "@"
+Route11SuperNerd2AfterBattleText:
+	text_far _Route11SuperNerd2AfterBattleText
+	text_end
 
-Route11Text10:
-	TX_ASM
+Route11Youngster4Text:
+	text_asm
 	ld hl, Route11TrainerHeader9
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route11BattleText10:
-	TX_FAR _Route11BattleText10
-	db "@"
+Route11Youngster4BattleText:
+	text_far _Route11Youngster4BattleText
+	text_end
 
-Route11EndBattleText10:
-	TX_FAR _Route11EndBattleText10
-	db "@"
+Route11Youngster4EndBattleText:
+	text_far _Route11Youngster4EndBattleText
+	text_end
 
-Route11AfterBattleText10:
-	TX_FAR _Route11AfterBattleText10
-	db "@"
+Route11Youngster4AfterBattleText:
+	text_far _Route11Youngster4AfterBattleText
+	text_end
 
-Route11Text11:
-	TX_FAR _Route11Text11
-	db "@"
+Route11DiglettsCaveSignText:
+	text_far _Route11DiglettsCaveSignText
+	text_end

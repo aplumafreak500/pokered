@@ -1,32 +1,32 @@
 GameCorner_Script:
-	call CeladonGameCornerScript_48bcf
-	call CeladonGameCornerScript_48bec
+	call GameCornerSelectLuckySlotMachine
+	call GameCornerSetRocketHideoutDoorTile
 	call EnableAutoTextBoxDrawing
 	ld hl, GameCorner_ScriptPointers
 	ld a, [wGameCornerCurScript]
 	jp CallFunctionInTable
 
-CeladonGameCornerScript_48bcf:
+GameCornerSelectLuckySlotMachine:
 	ld hl, wCurrentMapScriptFlags
-	bit 6, [hl]
-	res 6, [hl]
+	bit BIT_CUR_MAP_LOADED_2, [hl]
+	res BIT_CUR_MAP_LOADED_2, [hl]
 	ret z
 	call Random
-	ld a, [hRandomAdd]
+	ldh a, [hRandomAdd]
 	cp $7
-	jr nc, .asm_48be2
+	jr nc, .not_max
 	ld a, $8
-.asm_48be2
+.not_max
 	srl a
 	srl a
 	srl a
 	ld [wLuckySlotHiddenObjectIndex], a
 	ret
 
-CeladonGameCornerScript_48bec:
+GameCornerSetRocketHideoutDoorTile:
 	ld hl, wCurrentMapScriptFlags
-	bit 5, [hl]
-	res 5, [hl]
+	bit BIT_CUR_MAP_LOADED_1, [hl]
+	res BIT_CUR_MAP_LOADED_1, [hl]
 	ret z
 	CheckEvent EVENT_FOUND_ROCKET_HIDEOUT
 	ret nz
@@ -35,53 +35,54 @@ CeladonGameCornerScript_48bec:
 	lb bc, 2, 8
 	predef_jump ReplaceTileBlock
 
-CeladonGameCornerScript_48c07:
-	xor a
+GameCornerReenterMapAfterPlayerLoss:
+	xor a ; SCRIPT_GAMECORNER_DEFAULT
 	ld [wJoyIgnore], a
 	ld [wGameCornerCurScript], a
 	ld [wCurMapScript], a
 	ret
 
 GameCorner_ScriptPointers:
-	dw CeladonGameCornerScript0
-	dw CeladonGameCornerScript1
-	dw CeladonGameCornerScript2
+	def_script_pointers
+	dw_const GameCornerDefaultScript,      SCRIPT_GAMECORNER_DEFAULT
+	dw_const GameCornerRocketBattleScript, SCRIPT_GAMECORNER_ROCKET_BATTLE
+	dw_const GameCornerRocketExitScript,   SCRIPT_GAMECORNER_ROCKET_EXIT
 
-CeladonGameCornerScript0:
+GameCornerDefaultScript:
 	ret
 
-CeladonGameCornerScript1:
+GameCornerRocketBattleScript:
 	ld a, [wIsInBattle]
 	cp $ff
-	jp z, CeladonGameCornerScript_48c07
-	ld a, $f0
+	jp z, GameCornerReenterMapAfterPlayerLoss
+	ld a, PAD_CTRL_PAD
 	ld [wJoyIgnore], a
-	ld a, $d
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_GAMECORNER_ROCKET_AFTER_BATTLE
+	ldh [hTextID], a
 	call DisplayTextID
-	ld a, $b
-	ld [H_SPRITEINDEX], a
+	ld a, GAMECORNER_ROCKET
+	ldh [hSpriteIndex], a
 	call SetSpriteMovementBytesToFF
-	ld de, MovementData_48c5a
+	ld de, GameCornerMovement_Rocket_WalkAroundPlayer
 	ld a, [wYCoord]
-	cp $6
-	jr nz, .asm_48c43
-	ld de, MovementData_48c63
-	jr .asm_48c4d
-.asm_48c43
+	cp 6
+	jr nz, .not_direct_movement
+	ld de, GameCornerMovement_Rocket_WalkDirect
+	jr .got_rocket_movement
+.not_direct_movement
 	ld a, [wXCoord]
-	cp $8
-	jr nz, .asm_48c4d
-	ld de, MovementData_48c63
-.asm_48c4d
-	ld a, $b
-	ld [H_SPRITEINDEX], a
+	cp 8
+	jr nz, .got_rocket_movement
+	ld de, GameCornerMovement_Rocket_WalkDirect
+.got_rocket_movement
+	ld a, GAMECORNER_ROCKET
+	ldh [hSpriteIndex], a
 	call MoveSprite
-	ld a, $2
+	ld a, SCRIPT_GAMECORNER_ROCKET_EXIT
 	ld [wGameCornerCurScript], a
 	ret
 
-MovementData_48c5a:
+GameCornerMovement_Rocket_WalkAroundPlayer:
 	db NPC_MOVEMENT_DOWN
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
@@ -90,19 +91,19 @@ MovementData_48c5a:
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
-	db $FF
+	db -1 ; end
 
-MovementData_48c63:
+GameCornerMovement_Rocket_WalkDirect:
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
-	db $FF
+	db -1 ; end
 
-CeladonGameCornerScript2:
-	ld a, [wd730]
-	bit 0, a
+GameCornerRocketExitScript:
+	ld a, [wStatusFlags5]
+	bit BIT_SCRIPTED_NPC_MOVEMENT, a
 	ret nz
 	xor a
 	ld [wJoyIgnore], a
@@ -110,136 +111,145 @@ CeladonGameCornerScript2:
 	ld [wMissableObjectIndex], a
 	predef HideObject
 	ld hl, wCurrentMapScriptFlags
-	set 5, [hl]
-	set 6, [hl]
-	ld a, $0
+	set BIT_CUR_MAP_LOADED_1, [hl]
+	set BIT_CUR_MAP_LOADED_2, [hl]
+	ld a, SCRIPT_GAMECORNER_DEFAULT
 	ld [wGameCornerCurScript], a
 	ret
 
 GameCorner_TextPointers:
-	dw CeladonGameCornerText1
-	dw CeladonGameCornerText2
-	dw CeladonGameCornerText3
-	dw CeladonGameCornerText4
-	dw CeladonGameCornerText5
-	dw CeladonGameCornerText6
-	dw CeladonGameCornerText7
-	dw CeladonGameCornerText8
-	dw CeladonGameCornerText9
-	dw CeladonGameCornerText10
-	dw CeladonGameCornerText11
-	dw CeladonGameCornerText12
-	dw CeladonGameCornerText13
+	def_text_pointers
+	dw_const GameCornerBeauty1Text,           TEXT_GAMECORNER_BEAUTY1
+	dw_const GameCornerClerk1Text,            TEXT_GAMECORNER_CLERK1
+	dw_const GameCornerMiddleAgedMan1Text,    TEXT_GAMECORNER_MIDDLE_AGED_MAN1
+	dw_const GameCornerBeauty2Text,           TEXT_GAMECORNER_BEAUTY2
+	dw_const GameCornerFishingGuruText,       TEXT_GAMECORNER_FISHING_GURU
+	dw_const GameCornerMiddleAgedWomanText,   TEXT_GAMECORNER_MIDDLE_AGED_WOMAN
+	dw_const GameCornerGymGuideText,          TEXT_GAMECORNER_GYM_GUIDE
+	dw_const GameCornerGamblerText,           TEXT_GAMECORNER_GAMBLER
+	dw_const GameCornerClerk2Text,            TEXT_GAMECORNER_CLERK2
+	dw_const GameCornerGentlemanText,         TEXT_GAMECORNER_GENTLEMAN
+	dw_const GameCornerRocketText,            TEXT_GAMECORNER_ROCKET
+	dw_const GameCornerPosterText,            TEXT_GAMECORNER_POSTER
+	dw_const GameCornerRocketAfterBattleText, TEXT_GAMECORNER_ROCKET_AFTER_BATTLE
 
-CeladonGameCornerText1:
-	TX_FAR _CeladonGameCornerText1
-	db "@"
+GameCornerBeauty1Text:
+	text_far _GameCornerBeauty1Text
+	text_end
 
-CeladonGameCornerText2:
-	TX_ASM
-	call CeladonGameCornerScript_48f1e
-	ld hl, CeladonGameCornerText_48d22
+GameCornerClerk1Text:
+	text_asm
+	; Show player's coins
+	call GameCornerDrawCoinBox
+	ld hl, .DoYouNeedSomeGameCoins
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	and a
-	jr nz, .asm_48d0f
+	jr nz, .declined
+	; Can only get more coins if you
+	; - have the Coin Case
 	ld b, COIN_CASE
 	call IsItemInBag
-	jr z, .asm_48d19
+	jr z, .no_coin_case
+	; - have room in the Coin Case for at least 9 coins
 	call Has9990Coins
-	jr nc, .asm_48d14
+	jr nc, .coin_case_full
+	; - have at least 1000 yen
 	xor a
-	ld [hMoney], a
-	ld [hMoney + 2], a
+	ldh [hMoney], a
+	ldh [hMoney + 2], a
 	ld a, $10
-	ld [hMoney + 1], a
+	ldh [hMoney + 1], a
 	call HasEnoughMoney
-	jr nc, .asm_48cdb
-	ld hl, CeladonGameCornerText_48d31
-	jr .asm_48d1c
-.asm_48cdb
+	jr nc, .buy_coins
+	ld hl, .CantAffordTheCoins
+	jr .print_ret
+.buy_coins
+	; Spend 1000 yen
 	xor a
-	ld [hMoney], a
-	ld [hMoney + 2], a
+	ldh [hMoney], a
+	ldh [hMoney + 2], a
 	ld a, $10
-	ld [hMoney + 1], a
+	ldh [hMoney + 1], a
 	ld hl, hMoney + 2
 	ld de, wPlayerMoney + 2
 	ld c, $3
 	predef SubBCDPredef
+	; Receive 50 coins
 	xor a
-	ld [hUnusedCoinsByte], a
-	ld [hCoins], a
+	ldh [hUnusedCoinsByte], a
+	ldh [hCoins], a
 	ld a, $50
-	ld [hCoins + 1], a
+	ldh [hCoins + 1], a
 	ld de, wPlayerCoins + 1
 	ld hl, hCoins + 1
 	ld c, $2
 	predef AddBCDPredef
-	call CeladonGameCornerScript_48f1e
-	ld hl, CeladonGameCornerText_48d27
-	jr .asm_48d1c
-.asm_48d0f
-	ld hl, CeladonGameCornerText_48d2c
-	jr .asm_48d1c
-.asm_48d14
-	ld hl, CeladonGameCornerText_48d36
-	jr .asm_48d1c
-.asm_48d19
-	ld hl, CeladonGameCornerText_48d3b
-.asm_48d1c
+	; Update display
+	call GameCornerDrawCoinBox
+	ld hl, .ThanksHereAre50Coins
+	jr .print_ret
+.declined
+	ld hl, .PleaseComePlaySometime
+	jr .print_ret
+.coin_case_full
+	ld hl, .CoinCaseIsFull
+	jr .print_ret
+.no_coin_case
+	ld hl, .DontHaveCoinCase
+.print_ret
 	call PrintText
 	jp TextScriptEnd
 
-CeladonGameCornerText_48d22:
-	TX_FAR _CeladonGameCornerText_48d22
-	db "@"
+.DoYouNeedSomeGameCoins:
+	text_far _GameCornerClerk1DoYouNeedSomeGameCoinsText
+	text_end
 
-CeladonGameCornerText_48d27:
-	TX_FAR _CeladonGameCornerText_48d27
-	db "@"
+.ThanksHereAre50Coins:
+	text_far _GameCornerClerk1ThanksHereAre50CoinsText
+	text_end
 
-CeladonGameCornerText_48d2c:
-	TX_FAR _CeladonGameCornerText_48d2c
-	db "@"
+.PleaseComePlaySometime:
+	text_far _GameCornerClerk1PleaseComePlaySometimeText
+	text_end
 
-CeladonGameCornerText_48d31:
-	TX_FAR _CeladonGameCornerText_48d31
-	db "@"
+.CantAffordTheCoins:
+	text_far _GameCornerClerk1CantAffordTheCoinsText
+	text_end
 
-CeladonGameCornerText_48d36:
-	TX_FAR _CeladonGameCornerText_48d36
-	db "@"
+.CoinCaseIsFull:
+	text_far _GameCornerClerk1CoinCaseIsFullText
+	text_end
 
-CeladonGameCornerText_48d3b:
-	TX_FAR _CeladonGameCornerText_48d3b
-	db "@"
+.DontHaveCoinCase:
+	text_far _GameCornerClerk1DontHaveCoinCaseText
+	text_end
 
-CeladonGameCornerText3:
-	TX_FAR _CeladonGameCornerText3
-	db "@"
+GameCornerMiddleAgedMan1Text:
+	text_far _GameCornerMiddleAgedMan1Text
+	text_end
 
-CeladonGameCornerText4:
-	TX_FAR _CeladonGameCornerText4
-	db "@"
+GameCornerBeauty2Text:
+	text_far _GameCornerBeauty2Text
+	text_end
 
-CeladonGameCornerText5:
-	TX_ASM
+GameCornerFishingGuruText:
+	text_asm
 	CheckEvent EVENT_GOT_10_COINS
-	jr nz, .asm_48d89
-	ld hl, CeladonGameCornerText_48d9c
+	jr nz, .alreadyGotNpcCoins
+	ld hl, .WantToPlayText
 	call PrintText
 	ld b, COIN_CASE
 	call IsItemInBag
-	jr z, .asm_48d93
+	jr z, .dontHaveCoinCase
 	call Has9990Coins
-	jr nc, .asm_48d8e
+	jr nc, .coinCaseFull
 	xor a
-	ld [hUnusedCoinsByte], a
-	ld [hCoins], a
+	ldh [hUnusedCoinsByte], a
+	ldh [hCoins], a
 	ld a, $10
-	ld [hCoins + 1], a
+	ldh [hCoins + 1], a
 	ld de, wPlayerCoins + 1
 	ld hl, hCoins + 1
 	ld c, $2
@@ -247,206 +257,206 @@ CeladonGameCornerText5:
 	SetEvent EVENT_GOT_10_COINS
 	ld a, $1
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
-	ld hl, Received10CoinsText
-	jr .asm_48d96
-.asm_48d89
-	ld hl, CeladonGameCornerText_48dac
-	jr .asm_48d96
-.asm_48d8e
-	ld hl, CeladonGameCornerText_48da7
-	jr .asm_48d96
-.asm_48d93
-	ld hl, CeladonGameCornerText_48f19
-.asm_48d96
+	ld hl, .Received10CoinsText
+	jr .print_ret
+.alreadyGotNpcCoins
+	ld hl, .WinsComeAndGoText
+	jr .print_ret
+.coinCaseFull
+	ld hl, .DontNeedMyCoinsText
+	jr .print_ret
+.dontHaveCoinCase
+	ld hl, GameCornerOopsForgotCoinCaseText
+.print_ret
 	call PrintText
 	jp TextScriptEnd
 
-CeladonGameCornerText_48d9c:
-	TX_FAR _CeladonGameCornerText_48d9c
-	db "@"
+.WantToPlayText:
+	text_far _GameCornerFishingGuruWantToPlayText
+	text_end
 
-Received10CoinsText:
-	TX_FAR _Received10CoinsText
-	TX_SFX_ITEM_1
-	db "@"
+.Received10CoinsText:
+	text_far _GameCornerFishingGuruReceived10CoinsText
+	sound_get_item_1
+	text_end
 
-CeladonGameCornerText_48da7:
-	TX_FAR _CeladonGameCornerText_48da7
-	db "@"
+.DontNeedMyCoinsText:
+	text_far _GameCornerFishingGuruDontNeedMyCoinsText
+	text_end
 
-CeladonGameCornerText_48dac:
-	TX_FAR _CeladonGameCornerText_48dac
-	db "@"
+.WinsComeAndGoText:
+	text_far _GameCornerFishingGuruWinsComeAndGoText
+	text_end
 
-CeladonGameCornerText6:
-	TX_FAR _CeladonGameCornerText6
-	db "@"
+GameCornerMiddleAgedWomanText:
+	text_far _GameCornerMiddleAgedWomanText
+	text_end
 
-CeladonGameCornerText7:
-	TX_ASM
+GameCornerGymGuideText:
+	text_asm
 	CheckEvent EVENT_BEAT_ERIKA
-	ld hl, CeladonGameCornerText_48dca
-	jr z, .asm_48dc4
-	ld hl, CeladonGameCornerText_48dcf
-.asm_48dc4
+	ld hl, GameCornerGymGuideChampInMakingText
+	jr z, .not_defeated
+	ld hl, GameCornerGymGuideTheyOfferRarePokemonText
+.not_defeated
 	call PrintText
 	jp TextScriptEnd
 
-CeladonGameCornerText_48dca:
-	TX_FAR _CeladonGameCornerText_48dca
-	db "@"
+GameCornerGymGuideChampInMakingText:
+	text_far _GameCornerGymGuideChampInMakingText
+	text_end
 
-CeladonGameCornerText_48dcf:
-	TX_FAR _CeladonGameCornerText_48dcf
-	db "@"
+GameCornerGymGuideTheyOfferRarePokemonText:
+	text_far _GameCornerGymGuideTheyOfferRarePokemonText
+	text_end
 
-CeladonGameCornerText8:
-	TX_FAR _CeladonGameCornerText8
-	db "@"
+GameCornerGamblerText:
+	text_far _GameCornerGamblerText
+	text_end
 
-CeladonGameCornerText9:
-	TX_ASM
+GameCornerClerk2Text:
+	text_asm
 	CheckEvent EVENT_GOT_20_COINS_2
-	jr nz, .asm_48e13
-	ld hl, CeladonGameCornerText_48e26
+	jr nz, .alreadyGotNpcCoins
+	ld hl, .WantSomeCoinsText
 	call PrintText
 	ld b, COIN_CASE
 	call IsItemInBag
-	jr z, .asm_48e1d
+	jr z, .dontHaveCoinCase
 	call Has9990Coins
-	jr nc, .asm_48e18
+	jr nc, .coinCaseFull
 	xor a
-	ld [hUnusedCoinsByte], a
-	ld [hCoins], a
+	ldh [hUnusedCoinsByte], a
+	ldh [hCoins], a
 	ld a, $20
-	ld [hCoins + 1], a
+	ldh [hCoins + 1], a
 	ld de, wPlayerCoins + 1
 	ld hl, hCoins + 1
 	ld c, $2
 	predef AddBCDPredef
 	SetEvent EVENT_GOT_20_COINS_2
-	ld hl, Received20CoinsText
-	jr .asm_48e20
-.asm_48e13
-	ld hl, CeladonGameCornerText_48e36
-	jr .asm_48e20
-.asm_48e18
-	ld hl, CeladonGameCornerText_48e31
-	jr .asm_48e20
-.asm_48e1d
-	ld hl, CeladonGameCornerText_48f19
-.asm_48e20
+	ld hl, .Received20CoinsText
+	jr .print_ret
+.alreadyGotNpcCoins
+	ld hl, .INeedMoreCoinsText
+	jr .print_ret
+.coinCaseFull
+	ld hl, .YouHaveLotsOfCoinsText
+	jr .print_ret
+.dontHaveCoinCase
+	ld hl, GameCornerOopsForgotCoinCaseText
+.print_ret
 	call PrintText
 	jp TextScriptEnd
 
-CeladonGameCornerText_48e26:
-	TX_FAR _CeladonGameCornerText_48e26
-	db "@"
+.WantSomeCoinsText:
+	text_far _GameCornerClerk2WantSomeCoinsText
+	text_end
 
-Received20CoinsText:
-	TX_FAR _Received20CoinsText
-	TX_SFX_ITEM_1
-	db "@"
+.Received20CoinsText:
+	text_far _GameCornerClerk2Received20CoinsText
+	sound_get_item_1
+	text_end
 
-CeladonGameCornerText_48e31:
-	TX_FAR _CeladonGameCornerText_48e31
-	db "@"
+.YouHaveLotsOfCoinsText:
+	text_far _GameCornerClerk2YouHaveLotsOfCoinsText
+	text_end
 
-CeladonGameCornerText_48e36:
-	TX_FAR _CeladonGameCornerText_48e36
-	db "@"
+.INeedMoreCoinsText:
+	text_far _GameCornerClerk2INeedMoreCoinsText
+	text_end
 
-CeladonGameCornerText10:
-	TX_ASM
+GameCornerGentlemanText:
+	text_asm
 	CheckEvent EVENT_GOT_20_COINS
-	jr nz, .asm_48e75
-	ld hl, CeladonGameCornerText_48e88
+	jr nz, .alreadyGotNpcCoins
+	ld hl, .ThrowingMeOffText
 	call PrintText
 	ld b, COIN_CASE
 	call IsItemInBag
-	jr z, .asm_48e7f
+	jr z, .dontHaveCoinCase
 	call Has9990Coins
-	jr z, .asm_48e7a
+	jr z, .coinCaseFull
 	xor a
-	ld [hUnusedCoinsByte], a
-	ld [hCoins], a
+	ldh [hUnusedCoinsByte], a
+	ldh [hCoins], a
 	ld a, $20
-	ld [hCoins + 1], a
+	ldh [hCoins + 1], a
 	ld de, wPlayerCoins + 1
 	ld hl, hCoins + 1
 	ld c, $2
 	predef AddBCDPredef
 	SetEvent EVENT_GOT_20_COINS
-	ld hl, CeladonGameCornerText_48e8d
-	jr .asm_48e82
-.asm_48e75
-	ld hl, CeladonGameCornerText_48e98
-	jr .asm_48e82
-.asm_48e7a
-	ld hl, CeladonGameCornerText_48e93
-	jr .asm_48e82
-.asm_48e7f
-	ld hl, CeladonGameCornerText_48f19
-.asm_48e82
+	ld hl, .Received20CoinsText
+	jr .print_ret
+.alreadyGotNpcCoins
+	ld hl, .CloselyWatchTheReelsText
+	jr .print_ret
+.coinCaseFull
+	ld hl, .YouGotYourOwnCoinsText
+	jr .print_ret
+.dontHaveCoinCase
+	ld hl, GameCornerOopsForgotCoinCaseText
+.print_ret
 	call PrintText
 	jp TextScriptEnd
 
-CeladonGameCornerText_48e88:
-	TX_FAR _CeladonGameCornerText_48e88
-	db "@"
+.ThrowingMeOffText:
+	text_far _GameCornerGentlemanThrowingMeOffText
+	text_end
 
-CeladonGameCornerText_48e8d:
-	TX_FAR _CeladonGameCornerText_48e8d
-	TX_SFX_ITEM_1
-	db "@"
+.Received20CoinsText:
+	text_far _GameCornerGentlemanReceived20CoinsText
+	sound_get_item_1
+	text_end
 
-CeladonGameCornerText_48e93:
-	TX_FAR _CeladonGameCornerText_48e93
-	db "@"
+.YouGotYourOwnCoinsText:
+	text_far _GameCornerGentlemanYouGotYourOwnCoinsText
+	text_end
 
-CeladonGameCornerText_48e98:
-	TX_FAR _CeladonGameCornerText_48e98
-	db "@"
+.CloselyWatchTheReelsText:
+	text_far _GameCornerGentlemanCloselyWatchTheReelsText
+	text_end
 
-CeladonGameCornerText11:
-	TX_ASM
-	ld hl, CeladonGameCornerText_48ece
+GameCornerRocketText:
+	text_asm
+	ld hl, .ImGuardingThisPosterText
 	call PrintText
-	ld hl, wd72d
-	set 6, [hl]
-	set 7, [hl]
-	ld hl, CeladonGameCornerText_48ed3
-	ld de, CeladonGameCornerText_48ed3
+	ld hl, wStatusFlags3
+	set BIT_TALKED_TO_TRAINER, [hl]
+	set BIT_PRINT_END_BATTLE_TEXT, [hl]
+	ld hl, .BattleEndText
+	ld de, .BattleEndText
 	call SaveEndBattleTextPointers
-	ld a, [H_SPRITEINDEX]
+	ldh a, [hSpriteIndex]
 	ld [wSpriteIndex], a
 	call EngageMapTrainer
 	call InitBattleEnemyParameters
 	xor a
-	ld [hJoyHeld], a
-	ld [hJoyPressed], a
-	ld [hJoyReleased], a
-	ld a, $1
+	ldh [hJoyHeld], a
+	ldh [hJoyPressed], a
+	ldh [hJoyReleased], a
+	ld a, SCRIPT_GAMECORNER_ROCKET_BATTLE
 	ld [wGameCornerCurScript], a
 	jp TextScriptEnd
 
-CeladonGameCornerText_48ece:
-	TX_FAR _CeladonGameCornerText_48ece
-	db "@"
+.ImGuardingThisPosterText:
+	text_far _GameCornerRocketImGuardingThisPosterText
+	text_end
 
-CeladonGameCornerText_48ed3:
-	TX_FAR _CeladonGameCornerText_48ed3
-	db "@"
+.BattleEndText:
+	text_far _GameCornerRocketBattleEndText
+	text_end
 
-CeladonGameCornerText13:
-	TX_FAR _CeladonGameCornerText_48ed8
-	db "@"
+GameCornerRocketAfterBattleText:
+	text_far _GameCornerRocketAfterBattleText
+	text_end
 
-CeladonGameCornerText12:
-	TX_ASM
+GameCornerPosterText:
+	text_asm
 	ld a, $1
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
-	ld hl, CeladonGameCornerText_48f09
+	ld hl, .SwitchBehindPosterText
 	call PrintText
 	call WaitForSoundToFinish
 	ld a, SFX_GO_INSIDE
@@ -459,52 +469,52 @@ CeladonGameCornerText12:
 	predef ReplaceTileBlock
 	jp TextScriptEnd
 
-CeladonGameCornerText_48f09:
-	TX_FAR _CeladonGameCornerText_48f09
-	TX_ASM
+.SwitchBehindPosterText:
+	text_far _GameCornerPosterSwitchBehindPosterText
+	text_asm
 	ld a, SFX_SWITCH
 	call PlaySound
 	call WaitForSoundToFinish
 	jp TextScriptEnd
 
-CeladonGameCornerText_48f19:
-	TX_FAR _CeladonGameCornerText_48f19
-	db "@"
+GameCornerOopsForgotCoinCaseText:
+	text_far _GameCornerOopsForgotCoinCaseText
+	text_end
 
-CeladonGameCornerScript_48f1e:
-	ld hl, wd730
-	set 6, [hl]
-	coord hl, 11, 0
-	ld b, $5
-	ld c, $7
+GameCornerDrawCoinBox:
+	ld hl, wStatusFlags5
+	set BIT_NO_TEXT_DELAY, [hl]
+	hlcoord 11, 0
+	ld b, 5
+	ld c, 7
 	call TextBoxBorder
 	call UpdateSprites
-	coord hl, 12, 1
+	hlcoord 12, 1
 	ld b, 4
 	ld c, 7
 	call ClearScreenArea
-	coord hl, 12, 2
+	hlcoord 12, 2
 	ld de, GameCornerMoneyText
 	call PlaceString
-	coord hl, 12, 3
+	hlcoord 12, 3
 	ld de, GameCornerBlankText1
 	call PlaceString
-	coord hl, 12, 3
+	hlcoord 12, 3
 	ld de, wPlayerMoney
-	ld c, $a3
+	ld c, 3 | MONEY_SIGN | LEADING_ZEROES
 	call PrintBCDNumber
-	coord hl, 12, 4
+	hlcoord 12, 4
 	ld de, GameCornerCoinText
 	call PlaceString
-	coord hl, 12, 5
+	hlcoord 12, 5
 	ld de, GameCornerBlankText2
 	call PlaceString
-	coord hl, 15, 5
+	hlcoord 15, 5
 	ld de, wPlayerCoins
-	ld c, $82
+	ld c, 2 | LEADING_ZEROES
 	call PrintBCDNumber
-	ld hl, wd730
-	res 6, [hl]
+	ld hl, wStatusFlags5
+	res BIT_NO_TEXT_DELAY, [hl]
 	ret
 
 GameCornerMoneyText:
@@ -521,7 +531,7 @@ GameCornerBlankText2:
 
 Has9990Coins:
 	ld a, $99
-	ld [hCoins], a
+	ldh [hCoins], a
 	ld a, $90
-	ld [hCoins + 1], a
+	ldh [hCoins + 1], a
 	jp HasEnoughCoins

@@ -2,56 +2,57 @@ VermilionOldRodHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 VermilionOldRodHouse_TextPointers:
-	dw VermilionHouse2Text1
+	def_text_pointers
+	dw_const VermilionOldRodHouseFishingGuruText, TEXT_VERMILIONOLDRODHOUSE_FISHING_GURU
 
-VermilionHouse2Text1:
-	TX_ASM
-	ld a, [wd728]
-	bit 3, a
-	jr nz, .asm_03ef5
-	ld hl, VermilionHouse2Text_560b1
+VermilionOldRodHouseFishingGuruText:
+	text_asm
+	ld a, [wStatusFlags1]
+	bit BIT_GOT_OLD_ROD, a
+	jr nz, .got_old_rod
+	ld hl, .DoYouLikeToFishText
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	and a
-	jr nz, .asm_eb1b7
+	jr nz, .refused
 	lb bc, OLD_ROD, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, wd728
-	set 3, [hl]
-	ld hl, VermilionHouse2Text_560b6
-	jr .asm_5dd95
-.BagFull
-	ld hl, VermilionHouse2Text_560ca
-	jr .asm_5dd95
-.asm_eb1b7
-	ld hl, VermilionHouse2Text_560c0
-	jr .asm_5dd95
-.asm_03ef5
-	ld hl, VermilionHouse2Text_560c5
-.asm_5dd95
+	jr nc, .bag_full
+	ld hl, wStatusFlags1
+	set BIT_GOT_OLD_ROD, [hl]
+	ld hl, .TakeThisText
+	jr .print_text
+.bag_full
+	ld hl, .NoRoomText
+	jr .print_text
+.refused
+	ld hl, .ThatsSoDisappointingText
+	jr .print_text
+.got_old_rod
+	ld hl, .HowAreTheFishBitingText
+.print_text
 	call PrintText
 	jp TextScriptEnd
 
-VermilionHouse2Text_560b1:
-	TX_FAR _VermilionHouse2Text_560b1
-	db "@"
+.DoYouLikeToFishText:
+	text_far _VermilionOldRodHouseFishingGuruDoYouLikeToFishText
+	text_end
 
-VermilionHouse2Text_560b6:
-	TX_FAR _VermilionHouse2Text_560b6
-	TX_SFX_ITEM_1
-	TX_FAR _VermilionHouse2Text_560bb
-	db "@"
+.TakeThisText:
+	text_far _VermilionOldRodHouseFishingGuruTakeThisText
+	sound_get_item_1
+	text_far _VermilionOldRodHouseFishingGuruFishingIsAWayOfLifeText
+	text_end
 
-VermilionHouse2Text_560c0:
-	TX_FAR _VermilionHouse2Text_560c0
-	db "@"
+.ThatsSoDisappointingText:
+	text_far _VermilionOldRodHouseFishingGuruThatsSoDisappointingText
+	text_end
 
-VermilionHouse2Text_560c5:
-	TX_FAR _VermilionHouse2Text_560c5
-	db "@"
+.HowAreTheFishBitingText:
+	text_far _VermilionOldRodHouseFishingGuruHowAreTheFishBitingText
+	text_end
 
-VermilionHouse2Text_560ca:
-	TX_FAR _VermilionHouse2Text_560ca
-	db "@"
+.NoRoomText:
+	text_far _VermilionOldRodHouseFishingGuruNoRoomText
+	text_end

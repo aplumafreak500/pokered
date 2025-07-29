@@ -1,189 +1,158 @@
 RocketHideoutB1F_Script:
-	call RocketHideout1Script_44be0
+	call RocketHideoutB1FDoorCallbackScript
 	call EnableAutoTextBoxDrawing
-	ld hl, RocketHideout1TrainerHeader0
+	ld hl, RocketHideout1TrainerHeaders
 	ld de, RocketHideoutB1F_ScriptPointers
 	ld a, [wRocketHideoutB1FCurScript]
 	call ExecuteCurMapScriptInTable
 	ld [wRocketHideoutB1FCurScript], a
 	ret
 
-RocketHideout1Script_44be0:
+RocketHideoutB1FDoorCallbackScript:
 	ld hl, wCurrentMapScriptFlags
-	bit 5, [hl]
-	res 5, [hl]
+	bit BIT_CUR_MAP_LOADED_1, [hl]
+	res BIT_CUR_MAP_LOADED_1, [hl]
 	ret z
 	CheckEvent EVENT_677
-	jr nz, .asm_44c01
+	jr nz, .door_open
 	CheckEventReuseA EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4
-	jr nz, .asm_44bf7
-	ld a, $54
-	jr .asm_44c03
-.asm_44bf7
+	jr nz, .play_sound_door_open
+	ld a, $54 ; Door Block
+	jr .set_door_block
+.play_sound_door_open
 	ld a, SFX_GO_INSIDE
 	call PlaySound
 	CheckEventHL EVENT_677
-.asm_44c01
-	ld a, $e
-.asm_44c03
+.door_open
+	ld a, $e ; Floor Block
+.set_door_block
 	ld [wNewTileBlockID], a
 	lb bc, 8, 12
 	predef_jump ReplaceTileBlock
 
 RocketHideoutB1F_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROCKETHIDEOUTB1F_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROCKETHIDEOUTB1F_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROCKETHIDEOUTB1F_END_BATTLE
 
 RocketHideoutB1F_TextPointers:
-	dw RocketHideout1Text1
-	dw RocketHideout1Text2
-	dw RocketHideout1Text3
-	dw RocketHideout1Text4
-	dw RocketHideout1Text5
-	dw PickUpItemText
-	dw PickUpItemText
+	def_text_pointers
+	dw_const RocketHideoutB1FRocket1Text, TEXT_ROCKETHIDEOUTB1F_ROCKET1
+	dw_const RocketHideoutB1FRocket2Text, TEXT_ROCKETHIDEOUTB1F_ROCKET2
+	dw_const RocketHideoutB1FRocket3Text, TEXT_ROCKETHIDEOUTB1F_ROCKET3
+	dw_const RocketHideoutB1FRocket4Text, TEXT_ROCKETHIDEOUTB1F_ROCKET4
+	dw_const RocketHideoutB1FRocket5Text, TEXT_ROCKETHIDEOUTB1F_ROCKET5
+	dw_const PickUpItemText,              TEXT_ROCKETHIDEOUTB1F_ESCAPE_ROPE
+	dw_const PickUpItemText,              TEXT_ROCKETHIDEOUTB1F_HYPER_POTION
 
+RocketHideout1TrainerHeaders:
+	def_trainers
 RocketHideout1TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_0
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_0
-	dw RocketHideout1BattleText2 ; TextBeforeBattle
-	dw RocketHideout1AfterBattleTxt2 ; TextAfterBattle
-	dw RocketHideout1EndBattleText2 ; TextEndBattle
-	dw RocketHideout1EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_0, 3, RocketHideoutB1FRocket1BattleText, RocketHideoutB1FRocket1EndBattleText, RocketHideoutB1FRocket1AfterBattleText
 RocketHideout1TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_1
-	dw RocketHideout1BattleText3 ; TextBeforeBattle
-	dw RocketHideout1AfterBattleTxt3 ; TextAfterBattle
-	dw RocketHideout1EndBattleText3 ; TextEndBattle
-	dw RocketHideout1EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_1, 2, RocketHideoutB1FRocket2BattleText, RocketHideoutB1FRocket2EndBattleText, RocketHideoutB1FRocket2AfterBattleText
 RocketHideout1TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_2
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_2
-	dw RocketHideout1BattleText4 ; TextBeforeBattle
-	dw RocketHideout1AfterBattleTxt4 ; TextAfterBattle
-	dw RocketHideout1EndBattleText4 ; TextEndBattle
-	dw RocketHideout1EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_2, 2, RocketHideoutB1FRocket3BattleText, RocketHideoutB1FRocket3EndBattleText, RocketHideoutB1FRocket3AfterBattleText
 RocketHideout1TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_3
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_3
-	dw RocketHideout1BattleText5 ; TextBeforeBattle
-	dw RocketHideout1AfterBattleTxt5 ; TextAfterBattle
-	dw RocketHideout1EndBattleText5 ; TextEndBattle
-	dw RocketHideout1EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_3, 3, RocketHideoutB1FRocket4BattleText, RocketHideoutB1FRocket4EndBattleText, RocketHideoutB1FRocket4AfterBattleText
 RocketHideout1TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4
-	dw RocketHideout1BattleText6 ; TextBeforeBattle
-	dw RocketHideout1AfterBattleTxt6 ; TextAfterBattle
-	dw RocketHideout1EndBattleText6 ; TextEndBattle
-	dw RocketHideout1EndBattleText6 ; TextEndBattle
+	trainer EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4, 3, RocketHideoutB1FRocket5BattleText, RocketHideoutB1FRocket5EndBattleText, RocketHideoutB1FRocket5AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-RocketHideout1Text1:
-	TX_ASM
+RocketHideoutB1FRocket1Text:
+	text_asm
 	ld hl, RocketHideout1TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-RocketHideout1Text2:
-	TX_ASM
+RocketHideoutB1FRocket2Text:
+	text_asm
 	ld hl, RocketHideout1TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-RocketHideout1Text3:
-	TX_ASM
+RocketHideoutB1FRocket3Text:
+	text_asm
 	ld hl, RocketHideout1TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-RocketHideout1Text4:
-	TX_ASM
+RocketHideoutB1FRocket4Text:
+	text_asm
 	ld hl, RocketHideout1TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-RocketHideout1Text5:
-	TX_ASM
+RocketHideoutB1FRocket5Text:
+	text_asm
 	ld hl, RocketHideout1TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-RocketHideout1EndBattleText6:
-	TX_FAR _RocketHideout1EndBattleText6
-	TX_ASM
+RocketHideoutB1FRocket5EndBattleText:
+	text_far _RocketHideoutB1FRocket5EndBattleText
+	text_asm
 	SetEvent EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4
-	ld hl, RocketHideout1Text_44c9f
+	ld hl, .prompt_end
 	ret
 
-RocketHideout1Text_44c9f:
-	TX_BLINK
-	db "@"
+.prompt_end:
+	text_promptbutton
+	text_end
 
-RocketHideout1BattleText2:
-	TX_FAR _RocketHideout1BattleText2
-	db "@"
+RocketHideoutB1FRocket1BattleText:
+	text_far _RocketHideoutB1FRocket1BattleText
+	text_end
 
-RocketHideout1EndBattleText2:
-	TX_FAR _RocketHideout1EndBattleText2
-	db "@"
+RocketHideoutB1FRocket1EndBattleText:
+	text_far _RocketHideoutB1FRocket1EndBattleText
+	text_end
 
-RocketHideout1AfterBattleTxt2:
-	TX_FAR _RocketHideout1AfterBattleTxt2
-	db "@"
+RocketHideoutB1FRocket1AfterBattleText:
+	text_far _RocketHideoutB1FRocket1AfterBattleText
+	text_end
 
-RocketHideout1BattleText3:
-	TX_FAR _RocketHideout1BattleText3
-	db "@"
+RocketHideoutB1FRocket2BattleText:
+	text_far _RocketHideoutB1FRocket2BattleText
+	text_end
 
-RocketHideout1EndBattleText3:
-	TX_FAR _RocketHideout1EndBattleText3
-	db "@"
+RocketHideoutB1FRocket2EndBattleText:
+	text_far _RocketHideoutB1FRocket2EndBattleText
+	text_end
 
-RocketHideout1AfterBattleTxt3:
-	TX_FAR _RocketHideout1AfterBattleTxt3
-	db "@"
+RocketHideoutB1FRocket2AfterBattleText:
+	text_far _RocketHideoutB1FRocket2AfterBattleText
+	text_end
 
-RocketHideout1BattleText4:
-	TX_FAR _RocketHideout1BattleText4
-	db "@"
+RocketHideoutB1FRocket3BattleText:
+	text_far _RocketHideoutB1FRocket3BattleText
+	text_end
 
-RocketHideout1EndBattleText4:
-	TX_FAR _RocketHideout1EndBattleText4
-	db "@"
+RocketHideoutB1FRocket3EndBattleText:
+	text_far _RocketHideoutB1FRocket3EndBattleText
+	text_end
 
-RocketHideout1AfterBattleTxt4:
-	TX_FAR _RocketHideout1AfterBattleTxt4
-	db "@"
+RocketHideoutB1FRocket3AfterBattleText:
+	text_far _RocketHideoutB1FRocket3AfterBattleText
+	text_end
 
-RocketHideout1BattleText5:
-	TX_FAR _RocketHideout1BattleText5
-	db "@"
+RocketHideoutB1FRocket4BattleText:
+	text_far _RocketHideoutB1FRocket4BattleText
+	text_end
 
-RocketHideout1EndBattleText5:
-	TX_FAR _RocketHideout1EndBattleText5
-	db "@"
+RocketHideoutB1FRocket4EndBattleText:
+	text_far _RocketHideoutB1FRocket4EndBattleText
+	text_end
 
-RocketHideout1AfterBattleTxt5:
-	TX_FAR _RocketHideout1AfterBattleTxt5
-	db "@"
+RocketHideoutB1FRocket4AfterBattleText:
+	text_far _RocketHideoutB1FRocket4AfterBattleText
+	text_end
 
-RocketHideout1BattleText6:
-	TX_FAR _RocketHideout1BattleText6
-	db "@"
+RocketHideoutB1FRocket5BattleText:
+	text_far _RocketHideoutB1FRocket5BattleText
+	text_end
 
-RocketHideout1AfterBattleTxt6:
-	TX_FAR _RocketHideout1AfterBattleTxt6
-	db "@"
+RocketHideoutB1FRocket5AfterBattleText:
+	text_far _RocketHideoutB1FRocket5AfterBattleText
+	text_end

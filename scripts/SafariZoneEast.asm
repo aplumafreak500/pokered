@@ -2,22 +2,23 @@ SafariZoneEast_Script:
 	jp EnableAutoTextBoxDrawing
 
 SafariZoneEast_TextPointers:
-	dw PickUpItemText
-	dw PickUpItemText
-	dw PickUpItemText
-	dw PickUpItemText
-	dw SafariZoneEastText5
-	dw SafariZoneEastText6
-	dw SafariZoneEastText7
+	def_text_pointers
+	dw_const PickUpItemText,                  TEXT_SAFARIZONEEAST_FULL_RESTORE
+	dw_const PickUpItemText,                  TEXT_SAFARIZONEEAST_MAX_RESTORE
+	dw_const PickUpItemText,                  TEXT_SAFARIZONEEAST_CARBOS
+	dw_const PickUpItemText,                  TEXT_SAFARIZONEEAST_TM_EGG_BOMB
+	dw_const SafariZoneEastRestHouseSignText, TEXT_SAFARIZONEEAST_REST_HOUSE_SIGN
+	dw_const SafariZoneEastTrainerTipsText,   TEXT_SAFARIZONEEAST_TRAINER_TIPS
+	dw_const SafariZoneEastSignText,          TEXT_SAFARIZONEEAST_SIGN
 
-SafariZoneEastText5:
-	TX_FAR _SafariZoneEastText5
-	db "@"
+SafariZoneEastRestHouseSignText:
+	text_far _SafariZoneEastRestHouseSignText
+	text_end
 
-SafariZoneEastText6:
-	TX_FAR _SafariZoneEastText6
-	db "@"
+SafariZoneEastTrainerTipsText:
+	text_far _SafariZoneEastTrainerTipsText
+	text_end
 
-SafariZoneEastText7:
-	TX_FAR _SafariZoneEastText7
-	db "@"
+SafariZoneEastSignText:
+	text_far _SafariZoneEastSignText
+	text_end

@@ -2,44 +2,45 @@ SafariZoneSecretHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 SafariZoneSecretHouse_TextPointers:
-	dw SafariZoneSecretHouseText1
+	def_text_pointers
+	dw_const SafariZoneSecretHouseFishingGuruText, TEXT_SAFARIZONESECRETHOUSE_FISHING_GURU
 
-SafariZoneSecretHouseText1:
-	TX_ASM
+SafariZoneSecretHouseFishingGuruText:
+	text_asm
 	CheckEvent EVENT_GOT_HM03
-	jr nz, .asm_20a9b
-	ld hl, SafariZoneSecretHouseText_4a350
+	jr nz, .got_item
+	ld hl, .YouHaveWonText
 	call PrintText
-	lb bc, HM_03, 1
+	lb bc, HM_SURF, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedHM03Text
+	jr nc, .bag_full
+	ld hl, .ReceivedHM03Text
 	call PrintText
 	SetEvent EVENT_GOT_HM03
-	jr .asm_8f1fc
-.BagFull
-	ld hl, HM03NoRoomText
+	jr .done
+.bag_full
+	ld hl, .HM03NoRoomText
 	call PrintText
-	jr .asm_8f1fc
-.asm_20a9b
-	ld hl, HM03ExplanationText
+	jr .done
+.got_item
+	ld hl, .HM03ExplanationText
 	call PrintText
-.asm_8f1fc
+.done
 	jp TextScriptEnd
 
-SafariZoneSecretHouseText_4a350:
-	TX_FAR _SecretHouseText_4a350
-	db "@"
+.YouHaveWonText:
+	text_far _SafariZoneSecretHouseFishingGuruYouHaveWonText
+	text_end
 
-ReceivedHM03Text:
-	TX_FAR _ReceivedHM03Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedHM03Text:
+	text_far _SafariZoneSecretHouseFishingGuruReceivedHM03Text
+	sound_get_item_1
+	text_end
 
-HM03ExplanationText:
-	TX_FAR _HM03ExplanationText
-	db "@"
+.HM03ExplanationText:
+	text_far _SafariZoneSecretHouseFishingGuruHM03ExplanationText
+	text_end
 
-HM03NoRoomText:
-	TX_FAR _HM03NoRoomText
-	db "@"
+.HM03NoRoomText:
+	text_far _SafariZoneSecretHouseFishingGuruHM03NoRoomText
+	text_end

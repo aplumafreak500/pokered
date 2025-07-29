@@ -2,18 +2,19 @@ CeladonMart1F_Script:
 	jp EnableAutoTextBoxDrawing
 
 CeladonMart1F_TextPointers:
-	dw CeladonMart1Text1
-	dw CeladonMart1Text2
-	dw CeladonMart1Text3
+	def_text_pointers
+	dw_const CeladonMart1FReceptionistText,     TEXT_CELADONMART1F_RECEPTIONIST
+	dw_const CeladonMart1FDirectorySignText,    TEXT_CELADONMART1F_DIRECTORY_SIGN
+	dw_const CeladonMart1FCurrentFloorSignText, TEXT_CELADONMART1F_CURRENT_FLOOR_SIGN
 
-CeladonMart1Text1:
-	TX_FAR _CeladonMart1Text1
-	db "@"
+CeladonMart1FReceptionistText:
+	text_far _CeladonMart1FReceptionistText
+	text_end
 
-CeladonMart1Text2:
-	TX_FAR _CeladonMart1Text2
-	db "@"
+CeladonMart1FDirectorySignText:
+	text_far _CeladonMart1FDirectorySignText
+	text_end
 
-CeladonMart1Text3:
-	TX_FAR _CeladonMart1Text3
-	db "@"
+CeladonMart1FCurrentFloorSignText:
+	text_far _CeladonMart1FCurrentFloorSignText
+	text_end

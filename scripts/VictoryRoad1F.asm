@@ -1,10 +1,10 @@
 VictoryRoad1F_Script:
 	ld hl, wCurrentMapScriptFlags
-	bit 5, [hl]
-	res 5, [hl]
+	bit BIT_CUR_MAP_LOADED_1, [hl]
+	res BIT_CUR_MAP_LOADED_1, [hl]
 	call nz, .next
 	call EnableAutoTextBoxDrawing
-	ld hl, VictoryRoad1TrainerHeader0
+	ld hl, VictoryRoad1TrainerHeaders
 	ld de, VictoryRoad1F_ScriptPointers
 	ld a, [wVictoryRoad1FCurScript]
 	call ExecuteCurMapScriptInTable
@@ -19,85 +19,76 @@ VictoryRoad1F_Script:
 	predef_jump ReplaceTileBlock
 
 VictoryRoad1F_ScriptPointers:
-	dw VictoryRoad1Script0
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const VictoryRoad1FDefaultScript,            SCRIPT_VICTORYROAD1F_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_VICTORYROAD1F_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_VICTORYROAD1F_END_BATTLE
 
-VictoryRoad1Script0:
+VictoryRoad1FDefaultScript:
 	CheckEvent EVENT_VICTORY_ROAD_1_BOULDER_ON_SWITCH
 	jp nz, CheckFightingMapTrainers
-	ld hl, CoordsData_5da5c
+	ld hl, .SwitchCoords
 	call CheckBoulderCoords
 	jp nc, CheckFightingMapTrainers
 	ld hl, wCurrentMapScriptFlags
-	set 5, [hl]
+	set BIT_CUR_MAP_LOADED_1, [hl]
 	SetEvent EVENT_VICTORY_ROAD_1_BOULDER_ON_SWITCH
 	ret
 
-CoordsData_5da5c:
-	db $0D,$11,$FF
+.SwitchCoords:
+	dbmapcoord 17, 13
+	db -1 ; end
 
 VictoryRoad1F_TextPointers:
-	dw VictoryRoad1Text1
-	dw VictoryRoad1Text2
-	dw PickUpItemText
-	dw PickUpItemText
-	dw BoulderText
-	dw BoulderText
-	dw BoulderText
+	def_text_pointers
+	dw_const VictoryRoad1FCooltrainerFText, TEXT_VICTORYROAD1F_COOLTRAINER_F
+	dw_const VictoryRoad1FCooltrainerMText, TEXT_VICTORYROAD1F_COOLTRAINER_M
+	dw_const PickUpItemText,                TEXT_VICTORYROAD1F_TM_SKY_ATTACK
+	dw_const PickUpItemText,                TEXT_VICTORYROAD1F_RARE_CANDY
+	dw_const BoulderText,                   TEXT_VICTORYROAD1F_BOULDER1
+	dw_const BoulderText,                   TEXT_VICTORYROAD1F_BOULDER2
+	dw_const BoulderText,                   TEXT_VICTORYROAD1F_BOULDER3
 
+VictoryRoad1TrainerHeaders:
+	def_trainers
 VictoryRoad1TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_VICTORY_ROAD_1_TRAINER_0
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_VICTORY_ROAD_1_TRAINER_0
-	dw VictoryRoad1BattleText1 ; TextBeforeBattle
-	dw VictoryRoad1AfterBattleText1 ; TextAfterBattle
-	dw VictoryRoad1EndBattleText1 ; TextEndBattle
-	dw VictoryRoad1EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_VICTORY_ROAD_1_TRAINER_0, 2, VictoryRoad1FCooltrainerFBattleText, VictoryRoad1FCooltrainerFEndBattleText, VictoryRoad1FCooltrainerFAfterBattleText
 VictoryRoad1TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_VICTORY_ROAD_1_TRAINER_1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_VICTORY_ROAD_1_TRAINER_1
-	dw VictoryRoad1BattleText2 ; TextBeforeBattle
-	dw VictoryRoad1AfterBattleText2 ; TextAfterBattle
-	dw VictoryRoad1EndBattleText2 ; TextEndBattle
-	dw VictoryRoad1EndBattleText2 ; TextEndBattle
+	trainer EVENT_BEAT_VICTORY_ROAD_1_TRAINER_1, 2, VictoryRoad1FCooltrainerMBattleText, VictoryRoad1FCooltrainerMEndBattleText, VictoryRoad1FCooltrainerMAfterBattleText
+	db -1 ; end
 
-	db $ff
-
-VictoryRoad1Text1:
-	TX_ASM
+VictoryRoad1FCooltrainerFText:
+	text_asm
 	ld hl, VictoryRoad1TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-VictoryRoad1Text2:
-	TX_ASM
+VictoryRoad1FCooltrainerMText:
+	text_asm
 	ld hl, VictoryRoad1TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-VictoryRoad1BattleText1:
-	TX_FAR _VictoryRoad1BattleText1
-	db "@"
+VictoryRoad1FCooltrainerFBattleText:
+	text_far _VictoryRoad1FCooltrainerFBattleText
+	text_end
 
-VictoryRoad1EndBattleText1:
-	TX_FAR _VictoryRoad1EndBattleText1
-	db "@"
+VictoryRoad1FCooltrainerFEndBattleText:
+	text_far _VictoryRoad1FCooltrainerFEndBattleText
+	text_end
 
-VictoryRoad1AfterBattleText1:
-	TX_FAR _VictoryRoad1AfterBattleText1
-	db "@"
+VictoryRoad1FCooltrainerFAfterBattleText:
+	text_far _VictoryRoad1FCooltrainerFAfterBattleText
+	text_end
 
-VictoryRoad1BattleText2:
-	TX_FAR _VictoryRoad1BattleText2
-	db "@"
+VictoryRoad1FCooltrainerMBattleText:
+	text_far _VictoryRoad1FCooltrainerMBattleText
+	text_end
 
-VictoryRoad1EndBattleText2:
-	TX_FAR _VictoryRoad1EndBattleText2
-	db "@"
+VictoryRoad1FCooltrainerMEndBattleText:
+	text_far _VictoryRoad1FCooltrainerMEndBattleText
+	text_end
 
-VictoryRoad1AfterBattleText2:
-	TX_FAR _VictoryRoad1AfterBattleText2
-	db "@"
+VictoryRoad1FCooltrainerMAfterBattleText:
+	text_far _VictoryRoad1FCooltrainerMAfterBattleText
+	text_end

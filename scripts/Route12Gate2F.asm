@@ -2,73 +2,74 @@ Route12Gate2F_Script:
 	jp DisableAutoTextBoxDrawing
 
 Route12Gate2F_TextPointers:
-	dw Route12GateUpstairsText1
-	dw Route12GateUpstairsText2
-	dw Route12GateUpstairsText3
+	def_text_pointers
+	dw_const Route12Gate2FBrunetteGirlText,    TEXT_ROUTE12GATE2F_BRUNETTE_GIRL
+	dw_const Route12Gate2FLeftBinocularsText,  TEXT_ROUTE12GATE2F_LEFT_BINOCULARS
+	dw_const Route12Gate2FRightBinocularsText, TEXT_ROUTE12GATE2F_RIGHT_BINOCULARS
 
-Route12GateUpstairsText1:
-	TX_ASM
+Route12Gate2FBrunetteGirlText:
+	text_asm
 	CheckEvent EVENT_GOT_TM39, 1
-	jr c, .asm_0ad3c
-	ld hl, TM39PreReceiveText
+	jr c, .got_item
+	ld hl, .YouCanHaveThisText
 	call PrintText
-	lb bc, TM_39, 1
+	lb bc, TM_SWIFT, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedTM39Text
+	jr nc, .bag_full
+	ld hl, .ReceivedTM39Text
 	call PrintText
 	SetEvent EVENT_GOT_TM39
-	jr .asm_4ba56
-.BagFull
-	ld hl, TM39NoRoomText
+	jr .done
+.bag_full
+	ld hl, .TM39NoRoomText
 	call PrintText
-	jr .asm_4ba56
-.asm_0ad3c
-	ld hl, TM39ExplanationText
+	jr .done
+.got_item
+	ld hl, .TM39ExplanationText
 	call PrintText
-.asm_4ba56
+.done
 	jp TextScriptEnd
 
-TM39PreReceiveText:
-	TX_FAR _TM39PreReceiveText
-	db "@"
+.YouCanHaveThisText:
+	text_far _Route12Gate2FBrunetteGirlYouCanHaveThisText
+	text_end
 
-ReceivedTM39Text:
-	TX_FAR _ReceivedTM39Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedTM39Text:
+	text_far _Route12Gate2FBrunetteGirlReceivedTM39Text
+	sound_get_item_1
+	text_end
 
-TM39ExplanationText:
-	TX_FAR _TM39ExplanationText
-	db "@"
+.TM39ExplanationText:
+	text_far _Route12Gate2FBrunetteGirlTM39ExplanationText
+	text_end
 
-TM39NoRoomText:
-	TX_FAR _TM39NoRoomText
-	db "@"
+.TM39NoRoomText:
+	text_far _Route12Gate2FBrunetteGirlTM39NoRoomText
+	text_end
 
-Route12GateUpstairsText2:
-	TX_ASM
-	ld hl, Route12GateUpstairsText_495b8
+Route12Gate2FLeftBinocularsText:
+	text_asm
+	ld hl, .Text
 	jp GateUpstairsScript_PrintIfFacingUp
 
-Route12GateUpstairsText_495b8:
-	TX_FAR _Route12GateUpstairsText_495b8
-	db "@"
+.Text:
+	text_far _Route12Gate2FLeftBinocularsText
+	text_end
 
-Route12GateUpstairsText3:
-	TX_ASM
-	ld hl, Route12GateUpstairsText_495c4
+Route12Gate2FRightBinocularsText:
+	text_asm
+	ld hl, .Text
 	jp GateUpstairsScript_PrintIfFacingUp
 
-Route12GateUpstairsText_495c4:
-	TX_FAR _Route12GateUpstairsText_495c4
-	db "@"
+.Text:
+	text_far _Route12Gate2FRightBinocularsText
+	text_end
 
 GateUpstairsScript_PrintIfFacingUp:
-	ld a, [wSpriteStateData1 + 9]
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	cp SPRITE_FACING_UP
 	jr z, .up
-	ld a, $1
+	ld a, TRUE
 	jr .done
 .up
 	call PrintText

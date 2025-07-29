@@ -2,43 +2,44 @@ Route15Gate2F_Script:
 	jp DisableAutoTextBoxDrawing
 
 Route15Gate2F_TextPointers:
-	dw Route15GateUpstairsText1
-	dw Route15GateUpstairsText2
+	def_text_pointers
+	dw_const Route15Gate2FOaksAideText,   TEXT_ROUTE15GATE2F_OAKS_AIDE
+	dw_const Route15Gate2FBinocularsText, TEXT_ROUTE15GATE2F_BINOCULARS
 
-Route15GateUpstairsText1:
-	TX_ASM
+Route15Gate2FOaksAideText:
+	text_asm
 	CheckEvent EVENT_GOT_EXP_ALL
-	jr nz, .asm_49683
-	ld a, 50 ; pokemon needed
-	ld [hOaksAideRequirement], a
-	ld a, EXP_ALL ; oak's aide reward
-	ld [hOaksAideRewardItem], a
-	ld [wd11e], a
+	jr nz, .got_item
+	ld a, 50
+	ldh [hOaksAideRequirement], a
+	ld a, EXP_ALL
+	ldh [hOaksAideRewardItem], a
+	ld [wNamedObjectIndex], a
 	call GetItemName
-	ld hl, wcd6d
+	ld hl, wNameBuffer
 	ld de, wOaksAideRewardItemName
 	ld bc, ITEM_NAME_LENGTH
 	call CopyData
 	predef OaksAideScript
-	ld a, [hOaksAideResult]
-	cp $1
-	jr nz, .asm_49689
+	ldh a, [hOaksAideResult]
+	cp OAKS_AIDE_GOT_ITEM
+	jr nz, .no_item
 	SetEvent EVENT_GOT_EXP_ALL
-.asm_49683
-	ld hl, Route15GateUpstairsText_4968c
+.got_item
+	ld hl, .ExpAllText
 	call PrintText
-.asm_49689
+.no_item
 	jp TextScriptEnd
 
-Route15GateUpstairsText_4968c:
-	TX_FAR _Route15GateUpstairsText_4968c
-	db "@"
+.ExpAllText:
+	text_far _Route15Gate2FOaksAideExpAllText
+	text_end
 
-Route15GateUpstairsText2:
-	TX_ASM
-	ld hl, Route15GateUpstairsText_49698
+Route15Gate2FBinocularsText:
+	text_asm
+	ld hl, .Text
 	jp GateUpstairsScript_PrintIfFacingUp
 
-Route15GateUpstairsText_49698:
-	TX_FAR _Route15GateUpstairsText_49698
-	db "@"
+.Text:
+	text_far _Route15Gate2FBinocularsText
+	text_end

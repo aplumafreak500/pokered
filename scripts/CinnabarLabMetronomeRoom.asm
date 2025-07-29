@@ -2,61 +2,61 @@ CinnabarLabMetronomeRoom_Script:
 	jp EnableAutoTextBoxDrawing
 
 CinnabarLabMetronomeRoom_TextPointers:
-	dw Lab3Text1
-	dw Lab3Text2
-	dw Lab3Text3
-	dw Lab3Text4
-	dw Lab3Text5
+	def_text_pointers
+	dw_const CinnabarLabMetronomeRoomScientist1Text, TEXT_CINNABARLABMETRONOMEROOM_SCIENTIST1
+	dw_const CinnabarLabMetronomeRoomScientist2Text, TEXT_CINNABARLABMETRONOMEROOM_SCIENTIST2
+	dw_const CinnabarLabMetronomeRoomPCText,         TEXT_CINNABARLABMETRONOMEROOM_PC_KEYBOARD
+	dw_const CinnabarLabMetronomeRoomPCText,         TEXT_CINNABARLABMETRONOMEROOM_PC_MONITOR
+	dw_const CinnabarLabMetronomeRoomAmberPipeText,  TEXT_CINNABARLABMETRONOMEROOM_AMBER_PIPE
 
-Lab3Text1:
-	TX_ASM
+CinnabarLabMetronomeRoomScientist1Text:
+	text_asm
 	CheckEvent EVENT_GOT_TM35
-	jr nz, .asm_e551a
-	ld hl, TM35PreReceiveText
+	jr nz, .got_item
+	ld hl, .Text
 	call PrintText
-	lb bc, TM_35, 1
+	lb bc, TM_METRONOME, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedTM35Text
+	jr nc, .bag_full
+	ld hl, .ReceivedTM35Text
 	call PrintText
 	SetEvent EVENT_GOT_TM35
-	jr .asm_eb896
-.BagFull
-	ld hl, TM35NoRoomText
+	jr .done
+.bag_full
+	ld hl, .TM35NoRoomText
 	call PrintText
-	jr .asm_eb896
-.asm_e551a
-	ld hl, TM35ExplanationText
+	jr .done
+.got_item
+	ld hl, .TM35ExplanationText
 	call PrintText
-.asm_eb896
+.done
 	jp TextScriptEnd
 
-TM35PreReceiveText:
-	TX_FAR _TM35PreReceiveText
-	db "@"
+.Text:
+	text_far _CinnabarLabMetronomeRoomScientist1Text
+	text_end
 
-ReceivedTM35Text:
-	TX_FAR _ReceivedTM35Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedTM35Text:
+	text_far _CinnabarLabMetronomeRoomScientist1ReceivedTM35Text
+	sound_get_item_1
+	text_end
 
-TM35ExplanationText:
-	TX_FAR _TM35ExplanationText
-	db "@"
+.TM35ExplanationText:
+	text_far _CinnabarLabMetronomeRoomScientist1TM35ExplanationText
+	text_end
 
-TM35NoRoomText:
-	TX_FAR _TM35NoRoomText
-	db "@"
+.TM35NoRoomText:
+	text_far _CinnabarLabMetronomeRoomScientist1TM35NoRoomText
+	text_end
 
-Lab3Text2:
-	TX_FAR _Lab3Text2
-	db "@"
+CinnabarLabMetronomeRoomScientist2Text:
+	text_far _CinnabarLabMetronomeRoomScientist2Text
+	text_end
 
-Lab3Text4:
-Lab3Text3:
-	TX_FAR _Lab3Text3
-	db "@"
+CinnabarLabMetronomeRoomPCText:
+	text_far _CinnabarLabMetronomeRoomPCText
+	text_end
 
-Lab3Text5:
-	TX_FAR _Lab3Text5
-	db "@"
+CinnabarLabMetronomeRoomAmberPipeText:
+	text_far _CinnabarLabMetronomeRoomAmberPipeText
+	text_end

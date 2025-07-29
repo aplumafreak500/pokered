@@ -6,57 +6,58 @@ Route7Gate_Script:
 	ret
 
 Route7Gate_ScriptPointers:
-	dw Route7GateScript0
-	dw Route7GateScript1
+	def_script_pointers
+	dw_const Route7DefaultScript,      SCRIPT_ROUTE7GATE_DEFAULT
+	dw_const Route7PlayerMovingScript, SCRIPT_ROUTE7GATE_PLAYER_MOVING
 
-Route7GateScript_1e111:
-	ld hl, wd730
-	set 7, [hl]
-	ld a, $20
+Route7GateMovePlayerLeftScript:
+	ld hl, wStatusFlags5
+	set BIT_SCRIPTED_MOVEMENT_STATE, [hl]
+	ld a, PAD_LEFT
 	ld [wSimulatedJoypadStatesEnd], a
 	ld a, $1
 	ld [wSimulatedJoypadStatesIndex], a
 	xor a
-	ld [wSpriteStateData2 + $06], a
+	ld [wSpritePlayerStateData2MovementByte1], a
 	ld [wOverrideSimulatedJoypadStatesMask], a
 	ret
 
-Route7GateScript0:
-	ld a, [wd728]
-	bit 6, a
+Route7DefaultScript:
+	ld a, [wStatusFlags1]
+	bit BIT_GAVE_SAFFRON_GUARDS_DRINK, a
 	ret nz
-	ld hl, CoordsData_1e167
+	ld hl, .PlayerInCoordsArray
 	call ArePlayerCoordsInArray
 	ret nc
 	ld a, PLAYER_DIR_UP
 	ld [wPlayerMovingDirection], a
 	xor a
-	ld [hJoyHeld], a
-	callba RemoveGuardDrink
-	ld a, [$ffdb]
+	ldh [hJoyHeld], a
+	farcall RemoveGuardDrink
+	ldh a, [hItemToRemoveID]
 	and a
-	jr nz, .asm_1e15a
-	ld a, $2
-	ld [hSpriteIndexOrTextID], a
+	jr nz, .have_drink
+	ld a, TEXT_ROUTE7GATE_GUARD_GEE_IM_THIRSTY
+	ldh [hTextID], a
 	call DisplayTextID
-	call Route7GateScript_1e111
-	ld a, $1
+	call Route7GateMovePlayerLeftScript
+	ld a, SCRIPT_ROUTE7GATE_PLAYER_MOVING
 	ld [wRoute7GateCurScript], a
 	ret
-.asm_1e15a
-	ld a, $3
-	ld [hSpriteIndexOrTextID], a
+.have_drink
+	ld a, TEXT_ROUTE7GATE_GUARD_GIVE_DRINK
+	ldh [hTextID], a
 	call DisplayTextID
-	ld hl, wd728
-	set 6, [hl]
+	ld hl, wStatusFlags1
+	set BIT_GAVE_SAFFRON_GUARDS_DRINK, [hl]
 	ret
 
-CoordsData_1e167:
-	db 3,3
-	db 4,3
-	db $ff
+.PlayerInCoordsArray:
+	dbmapcoord  3,  3
+	dbmapcoord  3,  4
+	db -1 ; end
 
-Route7GateScript1:
+Route7PlayerMovingScript:
 	ld a, [wSimulatedJoypadStatesIndex]
 	and a
 	ret nz
@@ -68,6 +69,7 @@ Route7GateScript1:
 	ret
 
 Route7Gate_TextPointers:
-	dw Route7GateText1
-	dw Route7GateText2
-	dw Route7GateText3
+	def_text_pointers
+	dw_const SaffronGateGuardText,             TEXT_ROUTE7GATE_GUARD
+	dw_const SaffronGateGuardGeeImThirstyText, TEXT_ROUTE7GATE_GUARD_GEE_IM_THIRSTY
+	dw_const SaffronGateGuardGiveDrinkText,    TEXT_ROUTE7GATE_GUARD_GIVE_DRINK

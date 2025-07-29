@@ -5,74 +5,79 @@ PewterCity_Script:
 	jp CallFunctionInTable
 
 PewterCity_ScriptPointers:
-	dw PewterCityScript0
-	dw PewterCityScript1
-	dw PewterCityScript2
-	dw PewterCityScript3
-	dw PewterCityScript4
-	dw PewterCityScript5
-	dw PewterCityScript6
+	def_script_pointers
+	dw_const PewterCityDefaultScript,                     SCRIPT_PEWTERCITY_DEFAULT
+	dw_const PewterCitySuperNerd1ShowsPlayerMuseumScript, SCRIPT_PEWTERCITY_SUPER_NERD1_SHOWS_PLAYER_MUSEUM
+	dw_const PewterCityHideSuperNerd1Script,              SCRIPT_PEWTERCITY_HIDE_SUPER_NERD1
+	dw_const PewterCityResetSuperNerd1Script,             SCRIPT_PEWTERCITY_RESET_SUPER_NERD1
+	dw_const PewterCityYoungsterShowsPlayerGymScript,     SCRIPT_PEWTERCITY_YOUNGSTER_SHOWS_PLAYER_GYM
+	dw_const PewterCityHideYoungsterScript,               SCRIPT_PEWTERCITY_HIDE_YOUNGSTER
+	dw_const PewterCityResetYoungsterScript,              SCRIPT_PEWTERCITY_RESET_YOUNGSTER
 
-PewterCityScript0:
+PewterCityDefaultScript:
 	xor a
 	ld [wMuseum1FCurScript], a
 	ResetEvent EVENT_BOUGHT_MUSEUM_TICKET
-	call PewterCityScript_1925e
+	call PewterCityCheckPlayerLeavingEastScript
 	ret
 
-PewterCityScript_1925e:
+PewterCityCheckPlayerLeavingEastScript:
 	CheckEvent EVENT_BEAT_BROCK
 	ret nz
-	ld hl, CoordsData_19277
+IF DEF(_DEBUG)
+	call DebugPressedOrHeldB
+	ret nz
+ENDC
+	ld hl, PewterCityPlayerLeavingEastCoords
 	call ArePlayerCoordsInArray
 	ret nc
-	ld a, $f0
+	ld a, PAD_CTRL_PAD
 	ld [wJoyIgnore], a
-	ld a, $5
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_PEWTERCITY_YOUNGSTER
+	ldh [hTextID], a
 	jp DisplayTextID
 
-CoordsData_19277:
-	db $11,$23
-	db $11,$24
-	db $12,$25
-	db $13,$25
-	db $ff
+PewterCityPlayerLeavingEastCoords:
+	dbmapcoord 35, 17
+	dbmapcoord 36, 17
+	dbmapcoord 37, 18
+	dbmapcoord 37, 19
+	db -1 ; end
 
-PewterCityScript1:
+PewterCitySuperNerd1ShowsPlayerMuseumScript:
 	ld a, [wNPCMovementScriptPointerTableNum]
 	and a
 	ret nz
-	ld a, $3
-	ld [H_SPRITEINDEX], a
+	ld a, PEWTERCITY_SUPER_NERD1
+	ldh [hSpriteIndex], a
 	ld a, SPRITE_FACING_UP
-	ld [hSpriteFacingDirection], a
+	ldh [hSpriteFacingDirection], a
 	call SetSpriteFacingDirectionAndDelay
 	ld a, ($3 << 4) | SPRITE_FACING_UP
-	ld [hSpriteImageIndex], a
+	ldh [hSpriteImageIndex], a
 	call SetSpriteImageIndexAfterSettingFacingDirection
 	call PlayDefaultMusic
-	ld hl, wFlags_0xcd60
-	set 4, [hl]
-	ld a, $d
-	ld [hSpriteIndexOrTextID], a
+	ld hl, wMiscFlags
+	set BIT_NO_SPRITE_UPDATES, [hl]
+	ld a, TEXT_PEWTERCITY_SUPER_NERD1_ITS_RIGHT_HERE
+	ldh [hTextID], a
 	call DisplayTextID
 	ld a, $3c
-	ld [$ffeb], a
+	ldh [hSpriteScreenYCoord], a
 	ld a, $30
-	ld [$ffec], a
-	ld a, $c
-	ld [$ffed], a
-	ld a, $11
-	ld [$ffee], a
-	ld a, $3
+	ldh [hSpriteScreenXCoord], a
+	ld a, 12
+	ldh [hSpriteMapYCoord], a
+	ld a, 17
+	ldh [hSpriteMapXCoord], a
+	ld a, PEWTERCITY_SUPER_NERD1
 	ld [wSpriteIndex], a
 	call SetSpritePosition1
-	ld a, $3
-	ld [H_SPRITEINDEX], a
+	ld a, PEWTERCITY_SUPER_NERD1
+	ldh [hSpriteIndex], a
 	ld de, MovementData_PewterMuseumGuyExit
 	call MoveSprite
-	ld a, $2
+	ld a, SCRIPT_PEWTERCITY_HIDE_SUPER_NERD1
 	ld [wPewterCityCurScript], a
 	ret
 
@@ -81,21 +86,21 @@ MovementData_PewterMuseumGuyExit:
 	db NPC_MOVEMENT_DOWN
 	db NPC_MOVEMENT_DOWN
 	db NPC_MOVEMENT_DOWN
-	db $FF
+	db -1 ; end
 
-PewterCityScript2:
-	ld a, [wd730]
-	bit 0, a
+PewterCityHideSuperNerd1Script:
+	ld a, [wStatusFlags5]
+	bit BIT_SCRIPTED_NPC_MOVEMENT, a
 	ret nz
 	ld a, HS_MUSEUM_GUY
 	ld [wMissableObjectIndex], a
 	predef HideObject
-	ld a, $3
+	ld a, SCRIPT_PEWTERCITY_RESET_SUPER_NERD1
 	ld [wPewterCityCurScript], a
 	ret
 
-PewterCityScript3:
-	ld a, $3
+PewterCityResetSuperNerd1Script:
+	ld a, PEWTERCITY_SUPER_NERD1
 	ld [wSpriteIndex], a
 	call SetSpritePosition2
 	ld a, HS_MUSEUM_GUY
@@ -103,44 +108,44 @@ PewterCityScript3:
 	predef ShowObject
 	xor a
 	ld [wJoyIgnore], a
-	ld a, $0
+	ld a, SCRIPT_PEWTERCITY_DEFAULT
 	ld [wPewterCityCurScript], a
 	ret
 
-PewterCityScript4:
+PewterCityYoungsterShowsPlayerGymScript:
 	ld a, [wNPCMovementScriptPointerTableNum]
 	and a
 	ret nz
-	ld a, $5
-	ld [H_SPRITEINDEX], a
+	ld a, PEWTERCITY_YOUNGSTER
+	ldh [hSpriteIndex], a
 	ld a, SPRITE_FACING_LEFT
-	ld [hSpriteFacingDirection], a
+	ldh [hSpriteFacingDirection], a
 	call SetSpriteFacingDirectionAndDelay
 	ld a, ($1 << 4) | SPRITE_FACING_LEFT
-	ld [hSpriteImageIndex], a
+	ldh [hSpriteImageIndex], a
 	call SetSpriteImageIndexAfterSettingFacingDirection
 	call PlayDefaultMusic
-	ld hl, wFlags_0xcd60
-	set 4, [hl]
-	ld a, $e
-	ld [hSpriteIndexOrTextID], a
+	ld hl, wMiscFlags
+	set BIT_NO_SPRITE_UPDATES, [hl]
+	ld a, TEXT_PEWTERCITY_YOUNGSTER_GO_TAKE_ON_BROCK
+	ldh [hTextID], a
 	call DisplayTextID
 	ld a, $3c
-	ld [$ffeb], a
+	ldh [hSpriteScreenYCoord], a
 	ld a, $40
-	ld [$ffec], a
-	ld a, $16
-	ld [$ffed], a
-	ld a, $10
-	ld [$ffee], a
-	ld a, $5
+	ldh [hSpriteScreenXCoord], a
+	ld a, 22
+	ldh [hSpriteMapYCoord], a
+	ld a, 16
+	ldh [hSpriteMapXCoord], a
+	ld a, PEWTERCITY_YOUNGSTER
 	ld [wSpriteIndex], a
 	call SetSpritePosition1
-	ld a, $5
-	ld [H_SPRITEINDEX], a
+	ld a, PEWTERCITY_YOUNGSTER
+	ldh [hSpriteIndex], a
 	ld de, MovementData_PewterGymGuyExit
 	call MoveSprite
-	ld a, $5
+	ld a, SCRIPT_PEWTERCITY_HIDE_YOUNGSTER
 	ld [wPewterCityCurScript], a
 	ret
 
@@ -150,21 +155,21 @@ MovementData_PewterGymGuyExit:
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
 	db NPC_MOVEMENT_RIGHT
-	db $FF
+	db -1 ; end
 
-PewterCityScript5:
-	ld a, [wd730]
-	bit 0, a
+PewterCityHideYoungsterScript:
+	ld a, [wStatusFlags5]
+	bit BIT_SCRIPTED_NPC_MOVEMENT, a
 	ret nz
 	ld a, HS_GYM_GUY
 	ld [wMissableObjectIndex], a
 	predef HideObject
-	ld a, $6
+	ld a, SCRIPT_PEWTERCITY_RESET_YOUNGSTER
 	ld [wPewterCityCurScript], a
 	ret
 
-PewterCityScript6:
-	ld a, $5
+PewterCityResetYoungsterScript:
+	ld a, PEWTERCITY_YOUNGSTER
 	ld [wSpriteIndex], a
 	call SetSpritePosition2
 	ld a, HS_GYM_GUY
@@ -172,151 +177,152 @@ PewterCityScript6:
 	predef ShowObject
 	xor a
 	ld [wJoyIgnore], a
-	ld a, $0
+	ld a, SCRIPT_PEWTERCITY_DEFAULT
 	ld [wPewterCityCurScript], a
 	ret
 
 PewterCity_TextPointers:
-	dw PewterCityText1
-	dw PewterCityText2
-	dw PewterCityText3
-	dw PewterCityText4
-	dw PewterCityText5
-	dw PewterCityText6
-	dw PewterCityText7
-	dw MartSignText
-	dw PokeCenterSignText
-	dw PewterCityText10
-	dw PewterCityText11
-	dw PewterCityText12
-	dw PewterCityText13
-	dw PewterCityText14
+	def_text_pointers
+	dw_const PewterCityCooltrainerFText,           TEXT_PEWTERCITY_COOLTRAINER_F
+	dw_const PewterCityCooltrainerMText,           TEXT_PEWTERCITY_COOLTRAINER_M
+	dw_const PewterCitySuperNerd1Text,             TEXT_PEWTERCITY_SUPER_NERD1
+	dw_const PewterCitySuperNerd2Text,             TEXT_PEWTERCITY_SUPER_NERD2
+	dw_const PewterCityYoungsterText,              TEXT_PEWTERCITY_YOUNGSTER
+	dw_const PewterCityTrainerTipsText,            TEXT_PEWTERCITY_TRAINER_TIPS
+	dw_const PewterCityPoliceNoticeSignText,       TEXT_PEWTERCITY_POLICE_NOTICE_SIGN
+	dw_const MartSignText,                         TEXT_PEWTERCITY_MART_SIGN
+	dw_const PokeCenterSignText,                   TEXT_PEWTERCITY_POKECENTER_SIGN
+	dw_const PewterCityMuseumSignText,             TEXT_PEWTERCITY_MUSEUM_SIGN
+	dw_const PewterCityGymSignText,                TEXT_PEWTERCITY_GYM_SIGN
+	dw_const PewterCitySignText,                   TEXT_PEWTERCITY_SIGN
+	dw_const PewterCitySuperNerd1ItsRightHereText, TEXT_PEWTERCITY_SUPER_NERD1_ITS_RIGHT_HERE
+	dw_const PewterCityYoungsterGoTakeOnBrockText, TEXT_PEWTERCITY_YOUNGSTER_GO_TAKE_ON_BROCK
 
-PewterCityText1:
-	TX_FAR _PewterCityText1
-	db "@"
+PewterCityCooltrainerFText:
+	text_far _PewterCityCooltrainerFText
+	text_end
 
-PewterCityText2:
-	TX_FAR _PewterCityText2
-	db "@"
+PewterCityCooltrainerMText:
+	text_far _PewterCityCooltrainerMText
+	text_end
 
-PewterCityText3:
-	TX_ASM
-	ld hl, PewterCityText_193f1
+PewterCitySuperNerd1Text:
+	text_asm
+	ld hl, .DidYouCheckOutMuseumText
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	and a
-	jr nz, .asm_193c9
-	ld hl, PewterCityText_193f6
+	jr nz, .playerDidNotGoIntoMuseum
+	ld hl, .WerentThoseFossilsAmazingText
 	call PrintText
-	jr .asm_193ee
-.asm_193c9
-	ld hl, PewterCityText_193fb
+	jr .done
+.playerDidNotGoIntoMuseum
+	ld hl, .YouHaveToGoText
 	call PrintText
 	xor a
-	ld [hJoyPressed], a
-	ld [hJoyHeld], a
+	ldh [hJoyPressed], a
+	ldh [hJoyHeld], a
 	ld [wNPCMovementScriptFunctionNum], a
 	ld a, $2
 	ld [wNPCMovementScriptPointerTableNum], a
-	ld a, [H_LOADEDROMBANK]
+	ldh a, [hLoadedROMBank]
 	ld [wNPCMovementScriptBank], a
-	ld a, $3
+	ld a, PEWTERCITY_SUPER_NERD1
 	ld [wSpriteIndex], a
 	call GetSpritePosition2
-	ld a, $1
+	ld a, SCRIPT_PEWTERCITY_SUPER_NERD1_SHOWS_PLAYER_MUSEUM
 	ld [wPewterCityCurScript], a
-.asm_193ee
+.done
 	jp TextScriptEnd
 
-PewterCityText_193f1:
-	TX_FAR _PewterCityText_193f1
-	db "@"
+.DidYouCheckOutMuseumText:
+	text_far _PewterCitySuperNerd1DidYouCheckOutMuseumText
+	text_end
 
-PewterCityText_193f6:
-	TX_FAR _PewterCityText_193f6
-	db "@"
+.WerentThoseFossilsAmazingText:
+	text_far _PewterCitySuperNerd1WerentThoseFossilsAmazingText
+	text_end
 
-PewterCityText_193fb:
-	TX_FAR _PewterCityText_193fb
-	db "@"
+.YouHaveToGoText:
+	text_far _PewterCitySuperNerd1YouHaveToGoText
+	text_end
 
-PewterCityText13:
-	TX_FAR _PewterCityText13
-	db "@"
+PewterCitySuperNerd1ItsRightHereText:
+	text_far _PewterCitySuperNerd1ItsRightHereText
+	text_end
 
-PewterCityText4:
-	TX_ASM
-	ld hl, PewterCityText_19427
+PewterCitySuperNerd2Text:
+	text_asm
+	ld hl, .DoYouKnowWhatImDoingText
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	cp $0
-	jr nz, .asm_1941e
-	ld hl, PewterCityText_1942c
+	jr nz, .playerDoesNotKnow
+	ld hl, .ThatsRightText
 	call PrintText
-	jr .asm_19424
-.asm_1941e
-	ld hl, PewterCityText_19431
+	jr .done
+.playerDoesNotKnow
+	ld hl, .ImSprayingRepelText
 	call PrintText
-.asm_19424
+.done
 	jp TextScriptEnd
 
-PewterCityText_19427:
-	TX_FAR _PewterCityText_19427
-	db "@"
+.DoYouKnowWhatImDoingText:
+	text_far _PewterCitySuperNerd2DoYouKnowWhatImDoingText
+	text_end
 
-PewterCityText_1942c:
-	TX_FAR _PewterCityText_1942c
-	db "@"
+.ThatsRightText:
+	text_far _PewterCitySuperNerd2ThatsRightText
+	text_end
 
-PewterCityText_19431:
-	TX_FAR _PewterCityText_19431
-	db "@"
+.ImSprayingRepelText:
+	text_far _PewterCitySuperNerd2ImSprayingRepelText
+	text_end
 
-PewterCityText5:
-	TX_ASM
-	ld hl, PewterCityText_1945d
+PewterCityYoungsterText:
+	text_asm
+	ld hl, .YoureATrainerFollowMeText
 	call PrintText
 	xor a
-	ld [hJoyHeld], a
+	ldh [hJoyHeld], a
 	ld [wNPCMovementScriptFunctionNum], a
 	ld a, $3
 	ld [wNPCMovementScriptPointerTableNum], a
-	ld a, [H_LOADEDROMBANK]
+	ldh a, [hLoadedROMBank]
 	ld [wNPCMovementScriptBank], a
-	ld a, $5
+	ld a, PEWTERCITY_YOUNGSTER
 	ld [wSpriteIndex], a
 	call GetSpritePosition2
-	ld a, $4
+	ld a, SCRIPT_PEWTERCITY_YOUNGSTER_SHOWS_PLAYER_GYM
 	ld [wPewterCityCurScript], a
 	jp TextScriptEnd
 
-PewterCityText_1945d:
-	TX_FAR _PewterCityText_1945d
-	db "@"
+.YoureATrainerFollowMeText:
+	text_far _PewterCityYoungsterYoureATrainerFollowMeText
+	text_end
 
-PewterCityText14:
-	TX_FAR _PewterCityText14
-	db "@"
+PewterCityYoungsterGoTakeOnBrockText:
+	text_far _PewterCityYoungsterGoTakeOnBrockText
+	text_end
 
-PewterCityText6:
-	TX_FAR _PewterCityText6
-	db "@"
+PewterCityTrainerTipsText:
+	text_far _PewterCityTrainerTipsText
+	text_end
 
-PewterCityText7:
-	TX_FAR _PewterCityText7
-	db "@"
+PewterCityPoliceNoticeSignText:
+	text_far _PewterCityPoliceNoticeSignText
+	text_end
 
-PewterCityText10:
-	TX_FAR _PewterCityText10
-	db "@"
+PewterCityMuseumSignText:
+	text_far _PewterCityMuseumSignText
+	text_end
 
-PewterCityText11:
-	TX_FAR _PewterCityText11
-	db "@"
+PewterCityGymSignText:
+	text_far _PewterCityGymSignText
+	text_end
 
-PewterCityText12:
-	TX_FAR _PewterCityText12
-	db "@"
+PewterCitySignText:
+	text_far _PewterCitySignText
+	text_end

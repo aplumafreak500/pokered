@@ -3,110 +3,111 @@ MrFujisHouse_Script:
 	ret
 
 MrFujisHouse_TextPointers:
-	dw LavenderHouse1Text1
-	dw LavenderHouse1Text2
-	dw LavenderHouse1Text3
-	dw LavenderHouse1Text4
-	dw LavenderHouse1Text5
-	dw LavenderHouse1Text6
+	def_text_pointers
+	dw_const MrFujisHouseSuperNerdText,     TEXT_MRFUJISHOUSE_SUPER_NERD
+	dw_const MrFujisHouseLittleGirlText,    TEXT_MRFUJISHOUSE_LITTLE_GIRL
+	dw_const MrFujisHousePsyduckText,       TEXT_MRFUJISHOUSE_PSYDUCK
+	dw_const MrFujisHouseNidorinoText,      TEXT_MRFUJISHOUSE_NIDORINO
+	dw_const MrFujisHouseMrFujiText,        TEXT_MRFUJISHOUSE_MR_FUJI
+	dw_const MrFujisHouseMrFujiPokedexText, TEXT_MRFUJISHOUSE_POKEDEX
 
-LavenderHouse1Text1:
-	TX_ASM
+MrFujisHouseSuperNerdText:
+	text_asm
 	CheckEvent EVENT_RESCUED_MR_FUJI
-	jr nz, .asm_72e5d
-	ld hl, LavenderHouse1Text_1d8d1
+	jr nz, .rescued_mr_fuji
+	ld hl, .MrFujiIsntHereText
 	call PrintText
-	jr .asm_6957f
-.asm_72e5d
-	ld hl, LavenderHouse1Text_1d8d6
+	jr .done
+.rescued_mr_fuji
+	ld hl, .MrFujiHadBeenPrayingText
 	call PrintText
-.asm_6957f
+.done
 	jp TextScriptEnd
 
-LavenderHouse1Text_1d8d1:
-	TX_FAR _LavenderHouse1Text_1d8d1
-	db "@"
+.MrFujiIsntHereText:
+	text_far _MrFujisHouseSuperNerdMrFujiIsntHereText
+	text_end
 
-LavenderHouse1Text_1d8d6:
-	TX_FAR _LavenderHouse1Text_1d8d6
-	db "@"
+.MrFujiHadBeenPrayingText:
+	text_far _MrFujisHouseSuperNerdMrFujiHadBeenPrayingText
+	text_end
 
-LavenderHouse1Text2:
-	TX_ASM
+MrFujisHouseLittleGirlText:
+	text_asm
 	CheckEvent EVENT_RESCUED_MR_FUJI
-	jr nz, .asm_06470
-	ld hl, LavenderHouse1Text_1d8f4
+	jr nz, .rescued_mr_fuji
+	ld hl, .ThisIsMrFujisHouseText
 	call PrintText
-	jr .asm_3d208
-.asm_06470
-	ld hl, LavenderHouse1Text_1d8f9
+	jr .done
+.rescued_mr_fuji
+	ld hl, .PokemonAreNiceToHugText
 	call PrintText
-.asm_3d208
+.done
 	jp TextScriptEnd
 
-LavenderHouse1Text_1d8f4:
-	TX_FAR _LavenderHouse1Text_1d8f4
-	db "@"
+.ThisIsMrFujisHouseText:
+	text_far _MrFujisHouseLittleGirlThisIsMrFujisHouseText
+	text_end
 
-LavenderHouse1Text_1d8f9:
-	TX_FAR _LavenderHouse1Text_1d8f9
-	db "@"
+.PokemonAreNiceToHugText:
+	text_far _MrFujisHouseLittleGirlPokemonAreNiceToHugText
+	text_end
 
-LavenderHouse1Text3:
-	TX_FAR _LavenderHouse1Text3
-	TX_ASM
+MrFujisHousePsyduckText:
+	text_far _MrFujisHousePsyduckText
+	text_asm
 	ld a, PSYDUCK
 	call PlayCry
 	jp TextScriptEnd
 
-LavenderHouse1Text4:
-	TX_FAR _LavenderHouse1Text4
-	TX_ASM
+MrFujisHouseNidorinoText:
+	text_far _MrFujisHouseNidorinoText
+	text_asm
 	ld a, NIDORINO
 	call PlayCry
 	jp TextScriptEnd
 
-LavenderHouse1Text5:
-	TX_ASM
+MrFujisHouseMrFujiText:
+	text_asm
 	CheckEvent EVENT_GOT_POKE_FLUTE
-	jr nz, .asm_15ac2
-	ld hl, LavenderHouse1Text_1d94c
+	jr nz, .got_item
+	ld hl, .IThinkThisMayHelpYourQuestText
 	call PrintText
 	lb bc, POKE_FLUTE, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedFluteText
+	jr nc, .bag_full
+	ld hl, .ReceivedPokeFluteText
 	call PrintText
 	SetEvent EVENT_GOT_POKE_FLUTE
-	jr .asm_da749
-.BagFull
-	ld hl, FluteNoRoomText
+	jr .done
+.bag_full
+	ld hl, .PokeFluteNoRoomText
 	call PrintText
-	jr .asm_da749
-.asm_15ac2
-	ld hl, MrFujiAfterFluteText
+	jr .done
+.got_item
+	ld hl, .HasMyFluteHelpedYouText
 	call PrintText
-.asm_da749
+.done
 	jp TextScriptEnd
 
-LavenderHouse1Text_1d94c:
-	TX_FAR _LavenderHouse1Text_1d94c
-	db "@"
+.IThinkThisMayHelpYourQuestText:
+	text_far _MrFujisHouseMrFujiIThinkThisMayHelpYourQuestText
+	text_end
 
-ReceivedFluteText:
-	TX_FAR _ReceivedFluteText
-	TX_SFX_KEY_ITEM
-	TX_FAR _FluteExplanationText
-	db "@"
+.ReceivedPokeFluteText:
+	text_far _MrFujisHouseMrFujiReceivedPokeFluteText
+	sound_get_key_item
+	text_far _MrFujisHouseMrFujiPokeFluteExplanationText
+	text_end
 
-FluteNoRoomText:
-	TX_FAR _FluteNoRoomText
-	db "@"
+.PokeFluteNoRoomText:
+	text_far _MrFujisHouseMrFujiPokeFluteNoRoomText
+	text_end
 
-MrFujiAfterFluteText:
-	TX_FAR _MrFujiAfterFluteText
-	db "@"
+.HasMyFluteHelpedYouText:
+	text_far _MrFujisHouseMrFujiHasMyFluteHelpedYouText
+	text_end
 
-LavenderHouse1Text6:
-	TX_FAR _LavenderHouse1Text6
-	db "@"
+MrFujisHouseMrFujiPokedexText:
+	text_far _MrFujisHouseMrFujiPokedexText
+	text_end

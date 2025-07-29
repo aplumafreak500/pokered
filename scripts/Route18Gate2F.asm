@@ -2,31 +2,32 @@ Route18Gate2F_Script:
 	jp DisableAutoTextBoxDrawing
 
 Route18Gate2F_TextPointers:
-	dw Route18GateUpstairsText1
-	dw Route18GateUpstairsText2
-	dw Route18GateUpstairsText3
+	def_text_pointers
+	dw_const Route18Gate2FYoungsterText,       TEXT_ROUTE18GATE2F_YOUNGSTER
+	dw_const Route18Gate2FLeftBinocularsText,  TEXT_ROUTE18GATE2F_LEFT_BINOCULARS
+	dw_const Route18Gate2FRightBinocularsText, TEXT_ROUTE18GATE2F_RIGHT_BINOCULARS
 
-Route18GateUpstairsText1:
-	TX_ASM
-	ld a, $5
+Route18Gate2FYoungsterText:
+	text_asm
+	ld a, TRADE_FOR_MARC
 	ld [wWhichTrade], a
 	predef DoInGameTradeDialogue
 	jp TextScriptEnd
 
-Route18GateUpstairsText2:
-	TX_ASM
-	ld hl, Route18GateUpstairsText_49993
+Route18Gate2FLeftBinocularsText:
+	text_asm
+	ld hl, .Text
 	jp GateUpstairsScript_PrintIfFacingUp
 
-Route18GateUpstairsText_49993:
-	TX_FAR _Route18GateUpstairsText_49993
-	db "@"
+.Text:
+	text_far _Route18Gate2FLeftBinocularsText
+	text_end
 
-Route18GateUpstairsText3:
-	TX_ASM
-	ld hl, Route18GateUpstairsText_4999f
+Route18Gate2FRightBinocularsText:
+	text_asm
+	ld hl, .Text
 	jp GateUpstairsScript_PrintIfFacingUp
 
-Route18GateUpstairsText_4999f:
-	TX_FAR _Route18GateUpstairsText_4999f
-	db "@"
+.Text:
+	text_far _Route18Gate2FRightBinocularsText
+	text_end

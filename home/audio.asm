@@ -10,8 +10,8 @@ PlayDefaultMusicFadeOutCurrent::
 ; Fade out the current music and then play the default music.
 	ld c, 10
 	ld d, 0
-	ld a, [wd72e]
-	bit 5, a ; has a battle just ended?
+	ld a, [wStatusFlags4]
+	bit BIT_BATTLE_OVER_OR_BLACKOUT, a
 	jr z, PlayDefaultMusicCommon
 	xor a
 	ld [wLastMusicSoundID], a
@@ -73,7 +73,6 @@ UpdateMusic6Times::
 	ld b, a
 	cp BANK(Audio1_UpdateMusic)
 	jr nz, .checkForAudio2
-
 ; audio 1
 	ld hl, Audio1_UpdateMusic
 	jr .next
@@ -81,7 +80,6 @@ UpdateMusic6Times::
 .checkForAudio2
 	cp BANK(Audio2_UpdateMusic)
 	jr nz, .audio3
-
 ; audio 2
 	ld hl, Audio2_UpdateMusic
 	jr .next
@@ -148,10 +146,10 @@ PlaySound::
 	and a
 	jr z, .next
 	xor a
-	ld [wChannelSoundIDs + Ch4], a
-	ld [wChannelSoundIDs + Ch5], a
-	ld [wChannelSoundIDs + Ch6], a
-	ld [wChannelSoundIDs + Ch7], a
+	ld [wChannelSoundIDs + CHAN5], a
+	ld [wChannelSoundIDs + CHAN6], a
+	ld [wChannelSoundIDs + CHAN7], a
+	ld [wChannelSoundIDs + CHAN8], a
 .next
 	ld a, [wAudioFadeOutControl]
 	and a ; has a fade-out length been specified?
@@ -170,14 +168,13 @@ PlaySound::
 .noFadeOut
 	xor a
 	ld [wNewSoundID], a
-	ld a, [H_LOADEDROMBANK]
-	ld [hSavedROMBank], a
+	ldh a, [hLoadedROMBank]
+	ldh [hSavedROMBank], a
 	ld a, [wAudioROMBank]
-	ld [H_LOADEDROMBANK], a
-	ld [MBC1RomBank], a
+	ldh [hLoadedROMBank], a
+	ld [rROMB], a
 	cp BANK(Audio1_PlaySound)
 	jr nz, .checkForAudio2
-
 ; audio 1
 	ld a, b
 	call Audio1_PlaySound
@@ -186,7 +183,6 @@ PlaySound::
 .checkForAudio2
 	cp BANK(Audio2_PlaySound)
 	jr nz, .audio3
-
 ; audio 2
 	ld a, b
 	call Audio2_PlaySound
@@ -197,9 +193,9 @@ PlaySound::
 	call Audio3_PlaySound
 
 .next2
-	ld a, [hSavedROMBank]
-	ld [H_LOADEDROMBANK], a
-	ld [MBC1RomBank], a
+	ldh a, [hSavedROMBank]
+	ldh [hLoadedROMBank], a
+	ld [rROMB], a
 	jr .done
 
 .fadeOut

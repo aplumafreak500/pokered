@@ -2,44 +2,45 @@ MrPsychicsHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 MrPsychicsHouse_TextPointers:
-	dw SaffronHouse2Text1
+	def_text_pointers
+	dw_const MrPsychicsHouseMrPsychicText, TEXT_MRPSYCHICSHOUSE_MR_PSYCHIC
 
-SaffronHouse2Text1:
-	TX_ASM
+MrPsychicsHouseMrPsychicText:
+	text_asm
 	CheckEvent EVENT_GOT_TM29
-	jr nz, .asm_9e72b
-	ld hl, TM29PreReceiveText
+	jr nz, .got_item
+	ld hl, .YouWantedThisText
 	call PrintText
-	lb bc, TM_29, 1
+	lb bc, TM_PSYCHIC_M, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedTM29Text
+	jr nc, .bag_full
+	ld hl, .ReceivedTM29Text
 	call PrintText
 	SetEvent EVENT_GOT_TM29
-	jr .asm_fe4e1
-.BagFull
-	ld hl, TM29NoRoomText
+	jr .done
+.bag_full
+	ld hl, .TM29NoRoomText
 	call PrintText
-	jr .asm_fe4e1
-.asm_9e72b
-	ld hl, TM29ExplanationText
+	jr .done
+.got_item
+	ld hl, .TM29ExplanationText
 	call PrintText
-.asm_fe4e1
+.done
 	jp TextScriptEnd
 
-TM29PreReceiveText:
-	TX_FAR _TM29PreReceiveText
-	db "@"
+.YouWantedThisText:
+	text_far _MrPsychicsHouseMrPsychicYouWantedThisText
+	text_end
 
-ReceivedTM29Text:
-	TX_FAR _ReceivedTM29Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedTM29Text:
+	text_far _MrPsychicsHouseMrPsychicReceivedTM29Text
+	sound_get_item_1
+	text_end
 
-TM29ExplanationText:
-	TX_FAR _TM29ExplanationText
-	db "@"
+.TM29ExplanationText:
+	text_far _MrPsychicsHouseMrPsychicTM29ExplanationText
+	text_end
 
-TM29NoRoomText:
-	TX_FAR _TM29NoRoomText
-	db "@"
+.TM29NoRoomText:
+	text_far _MrPsychicsHouseMrPsychicTM29NoRoomText
+	text_end

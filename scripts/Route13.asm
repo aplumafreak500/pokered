@@ -1,6 +1,6 @@
 Route13_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route13TrainerHeader0
+	ld hl, Route13TrainerHeaders
 	ld de, Route13_ScriptPointers
 	ld a, [wRoute13CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,305 +8,239 @@ Route13_Script:
 	ret
 
 Route13_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE13_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE13_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE13_END_BATTLE
 
 Route13_TextPointers:
-	dw Route13Text1
-	dw Route13Text2
-	dw Route13Text3
-	dw Route13Text4
-	dw Route13Text5
-	dw Route13Text6
-	dw Route13Text7
-	dw Route13Text8
-	dw Route13Text9
-	dw Route13Text10
-	dw Route13Text11
-	dw Route13Text12
-	dw Route13Text13
+	def_text_pointers
+	dw_const Route13CooltrainerM1Text, TEXT_ROUTE13_COOLTRAINER_M1
+	dw_const Route13CooltrainerF1Text, TEXT_ROUTE13_COOLTRAINER_F1
+	dw_const Route13CooltrainerF2Text, TEXT_ROUTE13_COOLTRAINER_F2
+	dw_const Route13CooltrainerF3Text, TEXT_ROUTE13_COOLTRAINER_F3
+	dw_const Route13CooltrainerF4Text, TEXT_ROUTE13_COOLTRAINER_F4
+	dw_const Route13CooltrainerM2Text, TEXT_ROUTE13_COOLTRAINER_M2
+	dw_const Route13Beauty1Text,       TEXT_ROUTE13_BEAUTY1
+	dw_const Route13Beauty2Text,       TEXT_ROUTE13_BEAUTY2
+	dw_const Route13BikerText,         TEXT_ROUTE13_BIKER
+	dw_const Route13CooltrainerM3Text, TEXT_ROUTE13_COOLTRAINER_M3
+	dw_const Route13TrainerTips1Text,  TEXT_ROUTE13_TRAINER_TIPS1
+	dw_const Route13TrainerTips2Text,  TEXT_ROUTE13_TRAINER_TIPS2
+	dw_const Route13SignText,          TEXT_ROUTE13_SIGN
 
+Route13TrainerHeaders:
+	def_trainers
 Route13TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_0
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_0
-	dw Route13BattleText2 ; TextBeforeBattle
-	dw Route13AfterBattleText2 ; TextAfterBattle
-	dw Route13EndBattleText2 ; TextEndBattle
-	dw Route13EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_0, 2, Route13CooltrainerM1BattleText, Route13CooltrainerM1EndBattleText, Route13CooltrainerM1AfterBattleText
 Route13TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_1
-	dw Route13BattleText3 ; TextBeforeBattle
-	dw Route13AfterBattleText3 ; TextAfterBattle
-	dw Route13EndBattleText3 ; TextEndBattle
-	dw Route13EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_1, 2, Route13CooltrainerF1BattleText, Route13CooltrainerF1EndBattleText, Route13CooltrainerF1AfterBattleText
 Route13TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_2
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_2
-	dw Route13BattleText4 ; TextBeforeBattle
-	dw Route13AfterBattleText4 ; TextAfterBattle
-	dw Route13EndBattleText4 ; TextEndBattle
-	dw Route13EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_2, 2, Route13CooltrainerF2BattleText, Route13CooltrainerF2EndBattleText, Route13CooltrainerF2AfterBattleText
 Route13TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_3
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_3
-	dw Route13BattleText5 ; TextBeforeBattle
-	dw Route13AfterBattleText5 ; TextAfterBattle
-	dw Route13EndBattleText5 ; TextEndBattle
-	dw Route13EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_3, 2, Route13CooltrainerF3BattleText, Route13CooltrainerF3EndBattleText, Route13CooltrainerF3AfterBattleText
 Route13TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_4
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_4
-	dw Route13BattleText6 ; TextBeforeBattle
-	dw Route13AfterBattleText6 ; TextAfterBattle
-	dw Route13EndBattleText6 ; TextEndBattle
-	dw Route13EndBattleText6 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_4, 4, Route13CooltrainerF4BattleText, Route13CooltrainerF4EndBattleText, Route13CooltrainerF4AfterBattleText
 Route13TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_5
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_5
-	dw Route13BattleText7 ; TextBeforeBattle
-	dw Route13AfterBattleText7 ; TextAfterBattle
-	dw Route13EndBattleText7 ; TextEndBattle
-	dw Route13EndBattleText7 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_5, 2, Route13CooltrainerM2BattleText, Route13CooltrainerM2EndBattleText, Route13CooltrainerM2AfterBattleText
 Route13TrainerHeader6:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_6
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_6
-	dw Route13BattleText8 ; TextBeforeBattle
-	dw Route13AfterBattleText8 ; TextAfterBattle
-	dw Route13EndBattleText8 ; TextEndBattle
-	dw Route13EndBattleText8 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_6, 4, Route13Beauty1BattleText, Route13Beauty1EndBattleText, Route13Beauty1AfterBattleText
 Route13TrainerHeader7:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_7, 1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_7, 1
-	dw Route13BattleText9 ; TextBeforeBattle
-	dw Route13AfterBattleText9 ; TextAfterBattle
-	dw Route13EndBattleText9 ; TextEndBattle
-	dw Route13EndBattleText9 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_7, 2, Route13Beauty2BattleText, Route13Beauty2EndBattleText, Route13Beauty2AfterBattleText
 Route13TrainerHeader8:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_8, 1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_8, 1
-	dw Route13BattleText10 ; TextBeforeBattle
-	dw Route13AfterBattleText10 ; TextAfterBattle
-	dw Route13EndBattleText10 ; TextEndBattle
-	dw Route13EndBattleText10 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_8, 2, Route13BikerBattleText, Route13BikerEndBattleText, Route13BikerAfterBattleText
 Route13TrainerHeader9:
-	dbEventFlagBit EVENT_BEAT_ROUTE_13_TRAINER_9, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_13_TRAINER_9, 1
-	dw Route13BattleText11 ; TextBeforeBattle
-	dw Route13AfterBattleText11 ; TextAfterBattle
-	dw Route13EndBattleText11 ; TextEndBattle
-	dw Route13EndBattleText11 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_13_TRAINER_9, 4, Route13CooltrainerM3BattleText, Route13CooltrainerM3EndBattleText, Route13CooltrainerM3AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route13Text1:
-	TX_ASM
+Route13CooltrainerM1Text:
+	text_asm
 	ld hl, Route13TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText2:
-	TX_FAR _Route13BattleText2
-	db "@"
+Route13CooltrainerM1BattleText:
+	text_far _Route13CooltrainerM1BattleText
+	text_end
 
-Route13EndBattleText2:
-	TX_FAR _Route13EndBattleText2
-	db "@"
+Route13CooltrainerM1EndBattleText:
+	text_far _Route13CooltrainerM1EndBattleText
+	text_end
 
-Route13AfterBattleText2:
-	TX_FAR _Route13AfterBattleText2
-	db "@"
+Route13CooltrainerM1AfterBattleText:
+	text_far _Route13CooltrainerM1AfterBattleText
+	text_end
 
-Route13Text2:
-	TX_ASM
+Route13CooltrainerF1Text:
+	text_asm
 	ld hl, Route13TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText3:
-	TX_FAR _Route13BattleText3
-	db "@"
+Route13CooltrainerF1BattleText:
+	text_far _Route13CooltrainerF1BattleText
+	text_end
 
-Route13EndBattleText3:
-	TX_FAR _Route13EndBattleText3
-	db "@"
+Route13CooltrainerF1EndBattleText:
+	text_far _Route13CooltrainerF1EndBattleText
+	text_end
 
-Route13AfterBattleText3:
-	TX_FAR _Route13AfterBattleText3
-	db "@"
+Route13CooltrainerF1AfterBattleText:
+	text_far _Route13CooltrainerF1AfterBattleText
+	text_end
 
-Route13Text3:
-	TX_ASM
+Route13CooltrainerF2Text:
+	text_asm
 	ld hl, Route13TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText4:
-	TX_FAR _Route13BattleText4
-	db "@"
+Route13CooltrainerF2BattleText:
+	text_far _Route13CooltrainerF2BattleText
+	text_end
 
-Route13EndBattleText4:
-	TX_FAR _Route13EndBattleText4
-	db "@"
+Route13CooltrainerF2EndBattleText:
+	text_far _Route13CooltrainerF2EndBattleText
+	text_end
 
-Route13AfterBattleText4:
-	TX_FAR _Route13AfterBattleText4
-	db "@"
+Route13CooltrainerF2AfterBattleText:
+	text_far _Route13CooltrainerF2AfterBattleText
+	text_end
 
-Route13Text4:
-	TX_ASM
+Route13CooltrainerF3Text:
+	text_asm
 	ld hl, Route13TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText5:
-	TX_FAR _Route13BattleText5
-	db "@"
+Route13CooltrainerF3BattleText:
+	text_far _Route13CooltrainerF3BattleText
+	text_end
 
-Route13EndBattleText5:
-	TX_FAR _Route13EndBattleText5
-	db "@"
+Route13CooltrainerF3EndBattleText:
+	text_far _Route13CooltrainerF3EndBattleText
+	text_end
 
-Route13AfterBattleText5:
-	TX_FAR _Route13AfterBattleText5
-	db "@"
+Route13CooltrainerF3AfterBattleText:
+	text_far _Route13CooltrainerF3AfterBattleText
+	text_end
 
-Route13Text5:
-	TX_ASM
+Route13CooltrainerF4Text:
+	text_asm
 	ld hl, Route13TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText6:
-	TX_FAR _Route13BattleText6
-	db "@"
+Route13CooltrainerF4BattleText:
+	text_far _Route13CooltrainerF4BattleText
+	text_end
 
-Route13EndBattleText6:
-	TX_FAR _Route13EndBattleText6
-	db "@"
+Route13CooltrainerF4EndBattleText:
+	text_far _Route13CooltrainerF4EndBattleText
+	text_end
 
-Route13AfterBattleText6:
-	TX_FAR _Route13AfterBattleText6
-	db "@"
+Route13CooltrainerF4AfterBattleText:
+	text_far _Route13CooltrainerF4AfterBattleText
+	text_end
 
-Route13Text6:
-	TX_ASM
+Route13CooltrainerM2Text:
+	text_asm
 	ld hl, Route13TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText7:
-	TX_FAR _Route13BattleText7
-	db "@"
+Route13CooltrainerM2BattleText:
+	text_far _Route13CooltrainerM2BattleText
+	text_end
 
-Route13EndBattleText7:
-	TX_FAR _Route13EndBattleText7
-	db "@"
+Route13CooltrainerM2EndBattleText:
+	text_far _Route13CooltrainerM2EndBattleText
+	text_end
 
-Route13AfterBattleText7:
-	TX_FAR _Route13AfterBattleText7
-	db "@"
+Route13CooltrainerM2AfterBattleText:
+	text_far _Route13CooltrainerM2AfterBattleText
+	text_end
 
-Route13Text7:
-	TX_ASM
+Route13Beauty1Text:
+	text_asm
 	ld hl, Route13TrainerHeader6
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText8:
-	TX_FAR _Route13BattleText8
-	db "@"
+Route13Beauty1BattleText:
+	text_far _Route13Beauty1BattleText
+	text_end
 
-Route13EndBattleText8:
-	TX_FAR _Route13EndBattleText8
-	db "@"
+Route13Beauty1EndBattleText:
+	text_far _Route13Beauty1EndBattleText
+	text_end
 
-Route13AfterBattleText8:
-	TX_FAR _Route13AfterBattleText8
-	db "@"
+Route13Beauty1AfterBattleText:
+	text_far _Route13Beauty1AfterBattleText
+	text_end
 
-Route13Text8:
-	TX_ASM
+Route13Beauty2Text:
+	text_asm
 	ld hl, Route13TrainerHeader7
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText9:
-	TX_FAR _Route13BattleText9
-	db "@"
+Route13Beauty2BattleText:
+	text_far _Route13Beauty2BattleText
+	text_end
 
-Route13EndBattleText9:
-	TX_FAR _Route13EndBattleText9
-	db "@"
+Route13Beauty2EndBattleText:
+	text_far _Route13Beauty2EndBattleText
+	text_end
 
-Route13AfterBattleText9:
-	TX_FAR _Route13AfterBattleText9
-	db "@"
+Route13Beauty2AfterBattleText:
+	text_far _Route13Beauty2AfterBattleText
+	text_end
 
-Route13Text9:
-	TX_ASM
+Route13BikerText:
+	text_asm
 	ld hl, Route13TrainerHeader8
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText10:
-	TX_FAR _Route13BattleText10
-	db "@"
+Route13BikerBattleText:
+	text_far _Route13BikerBattleText
+	text_end
 
-Route13EndBattleText10:
-	TX_FAR _Route13EndBattleText10
-	db "@"
+Route13BikerEndBattleText:
+	text_far _Route13BikerEndBattleText
+	text_end
 
-Route13AfterBattleText10:
-	TX_FAR _Route13AfterBattleText10
-	db "@"
+Route13BikerAfterBattleText:
+	text_far _Route13BikerAfterBattleText
+	text_end
 
-Route13Text10:
-	TX_ASM
+Route13CooltrainerM3Text:
+	text_asm
 	ld hl, Route13TrainerHeader9
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route13BattleText11:
-	TX_FAR _Route13BattleText11
-	db "@"
+Route13CooltrainerM3BattleText:
+	text_far _Route13CooltrainerM3BattleText
+	text_end
 
-Route13EndBattleText11:
-	TX_FAR _Route13EndBattleText11
-	db "@"
+Route13CooltrainerM3EndBattleText:
+	text_far _Route13CooltrainerM3EndBattleText
+	text_end
 
-Route13AfterBattleText11:
-	TX_FAR _Route13AfterBattleText11
-	db "@"
+Route13CooltrainerM3AfterBattleText:
+	text_far _Route13CooltrainerM3AfterBattleText
+	text_end
 
-Route13Text11:
-	TX_FAR _Route13Text11
-	db "@"
+Route13TrainerTips1Text:
+	text_far _Route13TrainerTips1Text
+	text_end
 
-Route13Text12:
-	TX_FAR _Route13Text12
-	db "@"
+Route13TrainerTips2Text:
+	text_far _Route13TrainerTips2Text
+	text_end
 
-Route13Text13:
-	TX_FAR _Route13Text13
-	db "@"
+Route13SignText:
+	text_far _Route13SignText
+	text_end

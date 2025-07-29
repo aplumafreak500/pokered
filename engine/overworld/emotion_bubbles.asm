@@ -8,20 +8,20 @@ EmotionBubble:
 	ld e, [hl]
 	inc hl
 	ld d, [hl]
-	ld hl, vChars1 + $780
-	lb bc, BANK(EmotionBubbles), $04
+	ld hl, vChars1 tile $78
+	lb bc, BANK(EmotionBubbles), 4
 	call CopyVideoData
 	ld a, [wUpdateSpritesEnabled]
 	push af
 	ld a, $ff
 	ld [wUpdateSpritesEnabled], a
-	ld a, [wd736]
-	bit 6, a ; are the last 4 OAM entries reserved for a shadow or fishing rod?
-	ld hl, wOAMBuffer + 4 * 35 + $3 ; $8f
-	ld de, wOAMBuffer + 4 * 39 + $3 ; $9f
+	ld a, [wMovementFlags]
+	bit BIT_LEDGE_OR_FISHING, a ; are the last 4 OAM entries reserved for a shadow or fishing rod?
+	ld hl, wShadowOAMSprite35Attributes
+	ld de, wShadowOAMSprite39Attributes
 	jr z, .next
-	ld hl, wOAMBuffer + 4 * 31 + $3 ; $7f
-	ld de, wOAMBuffer + 4 * 35 + $3 ; $8f
+	ld hl, wShadowOAMSprite31Attributes
+	ld de, wShadowOAMSprite35Attributes
 
 ; Copy OAM data 16 bytes forward to make room for emotion bubble OAM data at the
 ; start of the OAM buffer.
@@ -38,7 +38,7 @@ EmotionBubble:
 	jr nz, .loop
 
 ; get the screen coordinates of the sprite the bubble is to be displayed above
-	ld hl, wSpriteStateData1 + 4
+	ld hl, wSpritePlayerStateData1YPixels
 	ld a, [wEmotionBubbleSpriteIndex]
 	swap a
 	ld c, a
@@ -51,7 +51,7 @@ EmotionBubble:
 	add $8
 	ld c, a
 
-	ld de, EmotionBubblesOAM
+	ld de, EmotionBubblesOAMBlock
 	xor a
 	call WriteOAMBlock
 	ld c, 60
@@ -62,13 +62,19 @@ EmotionBubble:
 	jp UpdateSprites
 
 EmotionBubblesPointerTable:
-	dw EmotionBubbles
-	dw EmotionBubbles + $40
-	dw EmotionBubbles + $80
+; entries correspond to *_BUBBLE constants
+	dw ShockEmote
+	dw QuestionEmote
+	dw HappyEmote
 
-EmotionBubblesOAM:
-	db $F8,$00,$F9,$00
-	db $FA,$00,$FB,$00
+EmotionBubblesOAMBlock:
+; tile ID, attributes
+	db $f8, 0
+	db $f9, 0
+	db $fa, 0
+	db $fb, 0
 
 EmotionBubbles:
-	INCBIN "gfx/emotion_bubbles.2bpp"
+ShockEmote:    INCBIN "gfx/emotes/shock.2bpp"
+QuestionEmote: INCBIN "gfx/emotes/question.2bpp"
+HappyEmote:    INCBIN "gfx/emotes/happy.2bpp"

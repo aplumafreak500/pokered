@@ -8,19 +8,19 @@ Predef::
 
 	; A hack for LoadDestinationWarpPosition.
 	; See LoadTilesetHeader (predef $19).
-	ld a, [H_LOADEDROMBANK]
+	ldh a, [hLoadedROMBank]
 	ld [wPredefParentBank], a
 
 	push af
 	ld a, BANK(GetPredefPointer)
-	ld [H_LOADEDROMBANK], a
-	ld [MBC1RomBank], a
+	ldh [hLoadedROMBank], a
+	ld [rROMB], a
 
 	call GetPredefPointer
 
 	ld a, [wPredefBank]
-	ld [H_LOADEDROMBANK], a
-	ld [MBC1RomBank], a
+	ldh [hLoadedROMBank], a
+	ld [rROMB], a
 
 	ld de, .done
 	push de
@@ -28,23 +28,23 @@ Predef::
 .done
 
 	pop af
-	ld [H_LOADEDROMBANK], a
-	ld [MBC1RomBank], a
+	ldh [hLoadedROMBank], a
+	ld [rROMB], a
 	ret
 
 GetPredefRegisters::
 ; Restore the contents of register pairs
 ; when GetPredefPointer was called.
-	ld a, [wPredefRegisters + 0]
+	ld a, [wPredefHL]
 	ld h, a
-	ld a, [wPredefRegisters + 1]
+	ld a, [wPredefHL + 1]
 	ld l, a
-	ld a, [wPredefRegisters + 2]
+	ld a, [wPredefDE]
 	ld d, a
-	ld a, [wPredefRegisters + 3]
+	ld a, [wPredefDE + 1]
 	ld e, a
-	ld a, [wPredefRegisters + 4]
+	ld a, [wPredefBC]
 	ld b, a
-	ld a, [wPredefRegisters + 5]
+	ld a, [wPredefBC + 1]
 	ld c, a
 	ret

@@ -1,5 +1,5 @@
-; only used for setting bit 2 of wd736 upon entering a new map
-IsPlayerStandingOnWarp:
+; only used for setting BIT_STANDING_ON_WARP of wMovementFlags upon entering a new map
+IsPlayerStandingOnWarp::
 	ld a, [wNumberOfWarps]
 	and a
 	ret z
@@ -17,9 +17,9 @@ IsPlayerStandingOnWarp:
 	ld a, [hli] ; target warp
 	ld [wDestinationWarpID], a
 	ld a, [hl] ; target map
-	ld [hWarpDestinationMap], a
-	ld hl, wd736
-	set 2, [hl] ; standing on warp flag
+	ldh [hWarpDestinationMap], a
+	ld hl, wMovementFlags
+	set BIT_STANDING_ON_WARP, [hl]
 	ret
 .nextWarp1
 	inc hl
@@ -31,9 +31,9 @@ IsPlayerStandingOnWarp:
 	jr nz, .loop
 	ret
 
-CheckForceBikeOrSurf:
-	ld hl, wd732
-	bit 5, [hl]
+CheckForceBikeOrSurf::
+	ld hl, wStatusFlags6
+	bit BIT_ALWAYS_ON_BIKE, [hl]
 	ret nz
 	ld hl, ForcedBikeOrSurfMaps
 	ld a, [wYCoord]
@@ -45,28 +45,27 @@ CheckForceBikeOrSurf:
 .loop
 	ld a, [hli]
 	cp $ff
-	ret z ;if we reach FF then it's not part of the list
-	cp d ;compare to current map
+	ret z ; if we reach FF then it's not part of the list
+	cp d ; compare to current map
 	jr nz, .incorrectMap
 	ld a, [hli]
-	cp b ;compare y-coord
+	cp b ; compare y-coord
 	jr nz, .incorrectY
 	ld a, [hli]
-	cp c ;compare x-coord
+	cp c ; compare x-coord
 	jr nz, .loop ; incorrect x-coord, check next item
 	ld a, [wCurMap]
 	cp SEAFOAM_ISLANDS_B3F
-	ld a, $2
+	ld a, SCRIPT_SEAFOAMISLANDSB3F_MOVE_OBJECT
 	ld [wSeafoamIslandsB3FCurScript], a
 	jr z, .forceSurfing
 	ld a, [wCurMap]
 	cp SEAFOAM_ISLANDS_B4F
-	ld a, $2
+	ld a, SCRIPT_SEAFOAMISLANDSB4F_MOVE_OBJECT
 	ld [wSeafoamIslandsB4FCurScript], a
 	jr z, .forceSurfing
-	;force bike riding
-	ld hl, wd732
-	set 5, [hl]
+	ld hl, wStatusFlags6
+	set BIT_ALWAYS_ON_BIKE, [hl]
 	ld a, $1
 	ld [wWalkBikeSurfState], a
 	ld [wWalkBikeSurfStateCopy], a
@@ -82,13 +81,13 @@ CheckForceBikeOrSurf:
 	ld [wWalkBikeSurfStateCopy], a
 	jp ForceBikeOrSurf
 
-INCLUDE "data/force_bike_surf.asm"
+INCLUDE "data/maps/force_bike_surf.asm"
 
-IsPlayerFacingEdgeOfMap:
+IsPlayerFacingEdgeOfMap::
 	push hl
 	push de
 	push bc
-	ld a, [wSpriteStateData1 + 9] ; player sprite's facing direction
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	srl a
 	ld c, a
 	ld b, $0
@@ -101,10 +100,10 @@ IsPlayerFacingEdgeOfMap:
 	ld b, a
 	ld a, [wXCoord]
 	ld c, a
-	ld de, .asm_c41e
+	ld de, .return
 	push de
 	jp hl
-.asm_c41e
+.return
 	pop bc
 	pop de
 	pop hl
@@ -150,19 +149,19 @@ IsPlayerFacingEdgeOfMap:
 	scf
 	ret
 
-IsWarpTileInFrontOfPlayer:
+IsWarpTileInFrontOfPlayer::
 	push hl
 	push de
 	push bc
 	call _GetTileAndCoordsInFrontOfPlayer
 	ld a, [wCurMap]
 	cp SS_ANNE_BOW
-	jr z, .ssAnne5
-	ld a, [wSpriteStateData1 + 9] ; player sprite's facing direction
+	jr z, IsSSAnneBowWarpTileInFrontOfPlayer
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	srl a
 	ld c, a
 	ld b, 0
-	ld hl, .warpTileListPointers
+	ld hl, WarpTileListPointers
 	add hl, bc
 	ld a, [hli]
 	ld h, [hl]
@@ -176,39 +175,23 @@ IsWarpTileInFrontOfPlayer:
 	pop hl
 	ret
 
-.warpTileListPointers:
-	dw .facingDownWarpTiles
-	dw .facingUpWarpTiles
-	dw .facingLeftWarpTiles
-	dw .facingRightWarpTiles
+INCLUDE "data/tilesets/warp_carpet_tile_ids.asm"
 
-.facingDownWarpTiles
-	db $01,$12,$17,$3D,$04,$18,$33,$FF
-
-.facingUpWarpTiles
-	db $01,$5C,$FF
-
-.facingLeftWarpTiles
-	db $1A,$4B,$FF
-
-.facingRightWarpTiles
-	db $0F,$4E,$FF
-
-.ssAnne5
+IsSSAnneBowWarpTileInFrontOfPlayer:
 	ld a, [wTileInFrontOfPlayer]
 	cp $15
 	jr nz, .notSSAnne5Warp
 	scf
-	jr .done
+	jr IsWarpTileInFrontOfPlayer.done
 .notSSAnne5Warp
 	and a
-	jr .done
+	jr IsWarpTileInFrontOfPlayer.done
 
-IsPlayerStandingOnDoorTileOrWarpTile:
+IsPlayerStandingOnDoorTileOrWarpTile::
 	push hl
 	push de
 	push bc
-	callba IsPlayerStandingOnDoorTile
+	farcall IsPlayerStandingOnDoorTile
 	jr c, .done
 	ld a, [wCurMapTileset]
 	add a
@@ -220,47 +203,47 @@ IsPlayerStandingOnDoorTileOrWarpTile:
 	ld h, [hl]
 	ld l, a
 	ld de, $1
-	aCoord 8, 9
+	lda_coord 8, 9
 	call IsInArray
 	jr nc, .done
-	ld hl, wd736
-	res 2, [hl]
+	ld hl, wMovementFlags
+	res BIT_STANDING_ON_WARP, [hl]
 .done
 	pop bc
 	pop de
 	pop hl
 	ret
 
-INCLUDE "data/warp_tile_ids.asm"
+INCLUDE "data/tilesets/warp_tile_ids.asm"
 
-PrintSafariZoneSteps:
+PrintSafariZoneSteps::
 	ld a, [wCurMap]
 	cp SAFARI_ZONE_EAST
 	ret c
 	cp CERULEAN_CAVE_2F
 	ret nc
-	coord hl, 0, 0
+	hlcoord 0, 0
 	ld b, 3
 	ld c, 7
 	call TextBoxBorder
-	coord hl, 1, 1
+	hlcoord 1, 1
 	ld de, wSafariSteps
 	lb bc, 2, 3
 	call PrintNumber
-	coord hl, 4, 1
+	hlcoord 4, 1
 	ld de, SafariSteps
 	call PlaceString
-	coord hl, 1, 3
+	hlcoord 1, 3
 	ld de, SafariBallText
 	call PlaceString
 	ld a, [wNumSafariBalls]
 	cp 10
-	jr nc, .asm_c56d
-	coord hl, 5, 3
+	jr nc, .tenOrMore
+	hlcoord 5, 3
 	ld a, " "
 	ld [hl], a
-.asm_c56d
-	coord hl, 6, 3
+.tenOrMore
+	hlcoord 6, 3
 	ld de, wNumSafariBalls
 	lb bc, 1, 2
 	jp PrintNumber
@@ -279,79 +262,86 @@ _GetTileAndCoordsInFrontOfPlayer:
 	ld d, a
 	ld a, [wXCoord]
 	ld e, a
-	ld a, [wSpriteStateData1 + 9] ; player's sprite facing direction
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	and a ; cp SPRITE_FACING_DOWN
 	jr nz, .notFacingDown
 ; facing down
-	aCoord 8, 11
+	lda_coord 8, 11
 	inc d
 	jr .storeTile
 .notFacingDown
 	cp SPRITE_FACING_UP
 	jr nz, .notFacingUp
 ; facing up
-	aCoord 8, 7
+	lda_coord 8, 7
 	dec d
 	jr .storeTile
 .notFacingUp
 	cp SPRITE_FACING_LEFT
 	jr nz, .notFacingLeft
 ; facing left
-	aCoord 6, 9
+	lda_coord 6, 9
 	dec e
 	jr .storeTile
 .notFacingLeft
 	cp SPRITE_FACING_RIGHT
 	jr nz, .storeTile
 ; facing right
-	aCoord 10, 9
+	lda_coord 10, 9
 	inc e
 .storeTile
 	ld c, a
 	ld [wTileInFrontOfPlayer], a
 	ret
 
+; hPlayerFacing
+	const_def
+	const BIT_FACING_DOWN  ; 0
+	const BIT_FACING_UP    ; 1
+	const BIT_FACING_LEFT  ; 2
+	const BIT_FACING_RIGHT ; 3
+
 GetTileTwoStepsInFrontOfPlayer:
 	xor a
-	ld [$ffdb], a
+	ldh [hPlayerFacing], a
 	ld hl, wYCoord
 	ld a, [hli]
 	ld d, a
 	ld e, [hl]
-	ld a, [wSpriteStateData1 + 9] ; player's sprite facing direction
+	ld a, [wSpritePlayerStateData1FacingDirection]
 	and a ; cp SPRITE_FACING_DOWN
 	jr nz, .notFacingDown
 ; facing down
-	ld hl, $ffdb
-	set 0, [hl]
-	aCoord 8, 13
+	ld hl, hPlayerFacing
+	set BIT_FACING_DOWN, [hl]
+	lda_coord 8, 13
 	inc d
 	jr .storeTile
 .notFacingDown
 	cp SPRITE_FACING_UP
 	jr nz, .notFacingUp
 ; facing up
-	ld hl, $ffdb
-	set 1, [hl]
-	aCoord 8, 5
+	ld hl, hPlayerFacing
+	set BIT_FACING_UP, [hl]
+	lda_coord 8, 5
 	dec d
 	jr .storeTile
 .notFacingUp
 	cp SPRITE_FACING_LEFT
 	jr nz, .notFacingLeft
 ; facing left
-	ld hl, $ffdb
-	set 2, [hl]
-	aCoord 4, 9
+	ld hl, hPlayerFacing
+	set BIT_FACING_LEFT, [hl]
+	lda_coord 4, 9
 	dec e
 	jr .storeTile
 .notFacingLeft
 	cp SPRITE_FACING_RIGHT
 	jr nz, .storeTile
 ; facing right
-	ld hl, $ffdb
-	set 3, [hl]
-	aCoord 12, 9
+	ld hl, hPlayerFacing
+	set BIT_FACING_RIGHT, [hl]
+	lda_coord 12, 9
 	inc e
 .storeTile
 	ld c, a
@@ -391,36 +381,37 @@ CheckForBoulderCollisionWithSprites:
 	swap a
 	ld d, 0
 	ld e, a
-	ld hl, wSpriteStateData2 + $14
+	ld hl, wSprite01StateData2MapY
 	add hl, de
 	ld a, [hli] ; map Y position
-	ld [$ffdc], a
+	ldh [hPlayerYCoord], a
 	ld a, [hl] ; map X position
-	ld [$ffdd], a
+	ldh [hPlayerXCoord], a
 	ld a, [wNumSprites]
 	ld c, a
 	ld de, $f
-	ld hl, wSpriteStateData2 + $14
-	ld a, [$ffdb]
-	and $3 ; facing up or down?
+	ld hl, wSprite01StateData2MapY
+	ldh a, [hPlayerFacing]
+	and (1 << BIT_FACING_UP) | (1 << BIT_FACING_DOWN)
 	jr z, .pushingHorizontallyLoop
 .pushingVerticallyLoop
 	inc hl
-	ld a, [$ffdd]
+	ldh a, [hPlayerXCoord]
 	cp [hl]
 	jr nz, .nextSprite1 ; if X coordinates don't match
 	dec hl
 	ld a, [hli]
 	ld b, a
-	ld a, [$ffdb]
+	ldh a, [hPlayerFacing]
+	ASSERT BIT_FACING_DOWN == 0
 	rrca
 	jr c, .pushingDown
 ; pushing up
-	ld a, [$ffdc]
+	ldh a, [hPlayerYCoord]
 	dec a
 	jr .compareYCoords
 .pushingDown
-	ld a, [$ffdc]
+	ldh a, [hPlayerYCoord]
 	inc a
 .compareYCoords
 	cp b
@@ -433,19 +424,19 @@ CheckForBoulderCollisionWithSprites:
 .pushingHorizontallyLoop
 	ld a, [hli]
 	ld b, a
-	ld a, [$ffdc]
+	ldh a, [hPlayerYCoord]
 	cp b
 	jr nz, .nextSprite2
 	ld b, [hl]
-	ld a, [$ffdb]
-	bit 2, a
+	ldh a, [hPlayerFacing]
+	bit BIT_FACING_LEFT, a
 	jr nz, .pushingLeft
 ; pushing right
-	ld a, [$ffdd]
+	ldh a, [hPlayerXCoord]
 	inc a
 	jr .compareXCoords
 .pushingLeft
-	ld a, [$ffdd]
+	ldh a, [hPlayerXCoord]
 	dec a
 .compareXCoords
 	cp b

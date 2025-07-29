@@ -2,107 +2,103 @@ CeladonMart3F_Script:
 	jp EnableAutoTextBoxDrawing
 
 CeladonMart3F_TextPointers:
-	dw CeladonMart3Text1
-	dw CeladonMart3Text2
-	dw CeladonMart3Text3
-	dw CeladonMart3Text4
-	dw CeladonMart3Text5
-	dw CeladonMart3Text6
-	dw CeladonMart3Text7
-	dw CeladonMart3Text8
-	dw CeladonMart3Text9
-	dw CeladonMart3Text10
-	dw CeladonMart3Text11
-	dw CeladonMart3Text12
-	dw CeladonMart3Text13
-	dw CeladonMart3Text14
-	dw CeladonMart3Text15
-	dw CeladonMart3Text16
-	dw CeladonMart3Text17
+	def_text_pointers
+	dw_const CeladonMart3FClerkText,            TEXT_CELADONMART3F_CLERK
+	dw_const CeladonMart3FGameBoyKid1Text,      TEXT_CELADONMART3F_GAMEBOY_KID1
+	dw_const CeladonMart3FGameBoyKid2Text,      TEXT_CELADONMART3F_GAMEBOY_KID2
+	dw_const CeladonMart3FGameBoyKid3Text,      TEXT_CELADONMART3F_GAMEBOY_KID3
+	dw_const CeladonMart3FLittleBoyText,        TEXT_CELADONMART3F_LITTLE_BOY
+	dw_const CeladonMart3FSNESText,             TEXT_CELADONMART3F_SNES1
+	dw_const CeladonMart3FRPGText,              TEXT_CELADONMART3F_RPG
+	dw_const CeladonMart3FSNESText,             TEXT_CELADONMART3F_SNES2
+	dw_const CeladonMart3FSportsGameText,       TEXT_CELADONMART3F_SPORTS_GAME
+	dw_const CeladonMart3FSNESText,             TEXT_CELADONMART3F_SNES3
+	dw_const CeladonMart3FPuzzleGameText,       TEXT_CELADONMART3F_PUZZLE_GAME
+	dw_const CeladonMart3FSNESText,             TEXT_CELADONMART3F_SNES4
+	dw_const CeladonMart3FFightingGameText,     TEXT_CELADONMART3F_FIGHTING_GAME
+	dw_const CeladonMart3FCurrentFloorSignText, TEXT_CELADONMART3F_CURRENT_FLOOR_SIGN
+	dw_const CeladonMart3FPokemonPosterText,    TEXT_CELADONMART3F_POKEMON_POSTER1
+	dw_const CeladonMart3FPokemonPosterText,    TEXT_CELADONMART3F_POKEMON_POSTER2
+	dw_const CeladonMart3FPokemonPosterText,    TEXT_CELADONMART3F_POKEMON_POSTER3
 
-CeladonMart3Text1:
-	TX_ASM
+CeladonMart3FClerkText:
+	text_asm
 	CheckEvent EVENT_GOT_TM18
-	jr nz, .asm_a5463
-	ld hl, TM18PreReceiveText
+	jr nz, .got_item
+	ld hl, .TM18PreReceiveText
 	call PrintText
-	lb bc, TM_18, 1
+	lb bc, TM_COUNTER, 1
 	call GiveItem
-	jr nc, .BagFull
+	jr nc, .bag_full
 	SetEvent EVENT_GOT_TM18
-	ld hl, ReceivedTM18Text
-	jr .asm_81359
-.BagFull
-	ld hl, TM18NoRoomText
-	jr .asm_81359
-.asm_a5463
-	ld hl, TM18ExplanationText
-.asm_81359
+	ld hl, .ReceivedTM18Text
+	jr .done
+.bag_full
+	ld hl, .TM18NoRoomText
+	jr .done
+.got_item
+	ld hl, .TM18ExplanationText
+.done
 	call PrintText
 	jp TextScriptEnd
 
-TM18PreReceiveText:
-	TX_FAR _TM18PreReceiveText
-	db "@"
+.TM18PreReceiveText:
+	text_far _CeladonMart3FClerkTM18PreReceiveText
+	text_end
 
-ReceivedTM18Text:
-	TX_FAR _ReceivedTM18Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedTM18Text:
+	text_far _CeladonMart3FClerkReceivedTM18Text
+	sound_get_item_1
+	text_end
 
-TM18ExplanationText:
-	TX_FAR _TM18ExplanationText
-	db "@"
+.TM18ExplanationText:
+	text_far _CeladonMart3FClerkTM18ExplanationText
+	text_end
 
-TM18NoRoomText:
-	TX_FAR _TM18NoRoomText
-	db "@"
+.TM18NoRoomText:
+	text_far _CeladonMart3FClerkTM18NoRoomText
+	text_end
 
-CeladonMart3Text2:
-	TX_FAR _CeladonMart3Text2
-	db "@"
+CeladonMart3FGameBoyKid1Text:
+	text_far _CeladonMart3FGameBoyKid1Text
+	text_end
 
-CeladonMart3Text3:
-	TX_FAR _CeladonMart3Text3
-	db "@"
+CeladonMart3FGameBoyKid2Text:
+	text_far _CeladonMart3FGameBoyKid2Text
+	text_end
 
-CeladonMart3Text4:
-	TX_FAR _CeladonMart3Text4
-	db "@"
+CeladonMart3FGameBoyKid3Text:
+	text_far _CeladonMart3FGameBoyKid3Text
+	text_end
 
-CeladonMart3Text5:
-	TX_FAR _CeladonMart3Text5
-	db "@"
+CeladonMart3FLittleBoyText:
+	text_far _CeladonMart3FLittleBoyText
+	text_end
 
-CeladonMart3Text12
-CeladonMart3Text10:
-CeladonMart3Text8:
-CeladonMart3Text6:
-	TX_FAR _CeladonMart3Text6
-	db "@"
+CeladonMart3FSNESText:
+	text_far _CeladonMart3FSNESText
+	text_end
 
-CeladonMart3Text7:
-	TX_FAR _CeladonMart3Text7
-	db "@"
+CeladonMart3FRPGText:
+	text_far _CeladonMart3FRPGText
+	text_end
 
-CeladonMart3Text9:
-	TX_FAR _CeladonMart3Text9
-	db "@"
+CeladonMart3FSportsGameText:
+	text_far _CeladonMart3FSportsGameText
+	text_end
 
-CeladonMart3Text11:
-	TX_FAR _CeladonMart3Text11
-	db "@"
+CeladonMart3FPuzzleGameText:
+	text_far _CeladonMart3FPuzzleGameText
+	text_end
 
-CeladonMart3Text13:
-	TX_FAR _CeladonMart3Text13
-	db "@"
+CeladonMart3FFightingGameText:
+	text_far _CeladonMart3FFightingGameText
+	text_end
 
-CeladonMart3Text14:
-	TX_FAR _CeladonMart3Text14
-	db "@"
+CeladonMart3FCurrentFloorSignText:
+	text_far _CeladonMart3FCurrentFloorSignText
+	text_end
 
-CeladonMart3Text17:
-CeladonMart3Text16:
-CeladonMart3Text15:
-	TX_FAR _CeladonMart3Text15
-	db "@"
+CeladonMart3FPokemonPosterText:
+	text_far _CeladonMart3FPokemonPosterText
+	text_end

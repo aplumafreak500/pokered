@@ -3,21 +3,22 @@ CinnabarPokecenter_Script:
 	jp EnableAutoTextBoxDrawing
 
 CinnabarPokecenter_TextPointers:
-	dw CinnabarHealNurseText
-	dw CinnabarPokecenterText2
-	dw CinnabarPokecenterText3
-	dw CinnabarTradeNurseText
+	def_text_pointers
+	dw_const CinnabarPokecenterNurseText,            TEXT_CINNABARPOKECENTER_NURSE
+	dw_const CinnabarPokecenterCooltrainerFText,     TEXT_CINNABARPOKECENTER_COOLTRAINER_F
+	dw_const CinnabarPokecenterGentlemanText,        TEXT_CINNABARPOKECENTER_GENTLEMAN
+	dw_const CinnabarPokecenterLinkReceptionistText, TEXT_CINNABARPOKECENTER_LINK_RECEPTIONIST
 
-CinnabarHealNurseText:
-	TX_POKECENTER_NURSE
+CinnabarPokecenterNurseText:
+	script_pokecenter_nurse
 
-CinnabarPokecenterText2:
-	TX_FAR _CinnabarPokecenterText2
-	db "@"
+CinnabarPokecenterCooltrainerFText:
+	text_far _CinnabarPokecenterCooltrainerFText
+	text_end
 
-CinnabarPokecenterText3:
-	TX_FAR _CinnabarPokecenterText3
-	db "@"
+CinnabarPokecenterGentlemanText:
+	text_far _CinnabarPokecenterGentlemanText
+	text_end
 
-CinnabarTradeNurseText:
-	TX_CABLE_CLUB_RECEPTIONIST
+CinnabarPokecenterLinkReceptionistText:
+	script_cable_club_receptionist

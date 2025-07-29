@@ -1,6 +1,6 @@
 PokemonTower5F_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, PokemonTower5TrainerHeader0
+	ld hl, PokemonTower5TrainerHeaders
 	ld de, PokemonTower5F_ScriptPointers
 	ld a, [wPokemonTower5FCurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,169 +8,145 @@ PokemonTower5F_Script:
 	ret
 
 PokemonTower5F_ScriptPointers:
-	dw PokemonTower5Script0
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const PokemonTower5FDefaultScript,           SCRIPT_POKEMONTOWER5F_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_POKEMONTOWER5F_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_POKEMONTOWER5F_END_BATTLE
 
-PokemonTower5Script0:
-	ld hl, CoordsData_60992
+PokemonTower5FDefaultScript:
+	ld hl, PokemonTower5FPurifiedZoneCoords
 	call ArePlayerCoordsInArray
-	jr c, .asm_60960
-	ld hl, wd72e
-	res 4, [hl]
+	jr c, .in_purified_zone
+	ld hl, wStatusFlags4
+	res BIT_NO_BATTLES, [hl]
 	ResetEvent EVENT_IN_PURIFIED_ZONE
 	jp CheckFightingMapTrainers
-.asm_60960
+.in_purified_zone
 	CheckAndSetEvent EVENT_IN_PURIFIED_ZONE
 	ret nz
 	xor a
-	ld [hJoyHeld], a
-	ld a, $f0
+	ldh [hJoyHeld], a
+	ld a, PAD_CTRL_PAD
 	ld [wJoyIgnore], a
-	ld hl, wd72e
-	set 4, [hl]
+	ld hl, wStatusFlags4
+	set BIT_NO_BATTLES, [hl]
 	predef HealParty
 	call GBFadeOutToWhite
 	call Delay3
 	call Delay3
 	call GBFadeInFromWhite
-	ld a, $7
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_POKEMONTOWER5F_PURIFIEDZONE
+	ldh [hTextID], a
 	call DisplayTextID
 	xor a
 	ld [wJoyIgnore], a
 	ret
 
-CoordsData_60992:
-	db $08,$0A
-	db $08,$0B
-	db $09,$0A
-	db $09,$0B
-	db $FF
+PokemonTower5FPurifiedZoneCoords:
+	dbmapcoord 10,  8
+	dbmapcoord 11,  8
+	dbmapcoord 10,  9
+	dbmapcoord 11,  9
+	db -1 ; end
 
 PokemonTower5F_TextPointers:
-	dw PokemonTower5Text1
-	dw PokemonTower5Text2
-	dw PokemonTower5Text3
-	dw PokemonTower5Text4
-	dw PokemonTower5Text5
-	dw PickUpItemText
-	dw PokemonTower5Text7
+	def_text_pointers
+	dw_const PokemonTower5FChanneler1Text,   TEXT_POKEMONTOWER5F_CHANNELER1
+	dw_const PokemonTower5FChanneler2Text,   TEXT_POKEMONTOWER5F_CHANNELER2
+	dw_const PokemonTower5FChanneler3Text,   TEXT_POKEMONTOWER5F_CHANNELER3
+	dw_const PokemonTower5FChanneler4Text,   TEXT_POKEMONTOWER5F_CHANNELER4
+	dw_const PokemonTower5FChanneler5Text,   TEXT_POKEMONTOWER5F_CHANNELER5
+	dw_const PickUpItemText,                 TEXT_POKEMONTOWER5F_NUGGET
+	dw_const PokemonTower5FPurifiedZoneText, TEXT_POKEMONTOWER5F_PURIFIEDZONE
 
+PokemonTower5TrainerHeaders:
+	def_trainers 2
 PokemonTower5TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_POKEMONTOWER_5_TRAINER_0
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_POKEMONTOWER_5_TRAINER_0
-	dw PokemonTower5BattleText1 ; TextBeforeBattle
-	dw PokemonTower5AfterBattleText1 ; TextAfterBattle
-	dw PokemonTower5EndBattleText1 ; TextEndBattle
-	dw PokemonTower5EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_POKEMONTOWER_5_TRAINER_0, 2, PokemonTower5FChanneler2BattleText, PokemonTower5FChanneler2EndBattleText, PokemonTower5FChanneler2AfterBattleText
 PokemonTower5TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_POKEMONTOWER_5_TRAINER_1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_POKEMONTOWER_5_TRAINER_1
-	dw PokemonTower5BattleText2 ; TextBeforeBattle
-	dw PokemonTower5AfterBattleText2 ; TextAfterBattle
-	dw PokemonTower5EndBattleText2 ; TextEndBattle
-	dw PokemonTower5EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_POKEMONTOWER_5_TRAINER_1, 3, PokemonTower5FChanneler3BattleText, PokemonTower5FChanneler3EndBattleText, PokemonTower5FChanneler3AfterBattleText
 PokemonTower5TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_POKEMONTOWER_5_TRAINER_2
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_POKEMONTOWER_5_TRAINER_2
-	dw PokemonTower5BattleText3 ; TextBeforeBattle
-	dw PokemonTower5AfterBattleText3 ; TextAfterBattle
-	dw PokemonTower5EndBattleText3 ; TextEndBattle
-	dw PokemonTower5EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_POKEMONTOWER_5_TRAINER_2, 2, PokemonTower5FChanneler4BattleText, PokemonTower5FChanneler4EndBattleText, PokemonTower5FChanneler4AfterBattleText
 PokemonTower5TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_POKEMONTOWER_5_TRAINER_3
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_POKEMONTOWER_5_TRAINER_3
-	dw PokemonTower5BattleText4 ; TextBeforeBattle
-	dw PokemonTower5AfterBattleText4 ; TextAfterBattle
-	dw PokemonTower5EndBattleText4 ; TextEndBattle
-	dw PokemonTower5EndBattleText4 ; TextEndBattle
+	trainer EVENT_BEAT_POKEMONTOWER_5_TRAINER_3, 2, PokemonTower5FChanneler5BattleText, PokemonTower5FChanneler5EndBattleText, PokemonTower5FChanneler5AfterBattleText
+	db -1 ; end
 
-	db $ff
+PokemonTower5FChanneler1Text:
+	text_far _PokemonTower5FChanneler1Text
+	text_end
 
-PokemonTower5Text1:
-	TX_FAR _PokemonTower5Text1
-	db "@"
-
-PokemonTower5Text2:
-	TX_ASM
+PokemonTower5FChanneler2Text:
+	text_asm
 	ld hl, PokemonTower5TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-PokemonTower5BattleText1:
-	TX_FAR _PokemonTower5BattleText1
-	db "@"
+PokemonTower5FChanneler2BattleText:
+	text_far _PokemonTower5FChanneler2BattleText
+	text_end
 
-PokemonTower5EndBattleText1:
-	TX_FAR _PokemonTower5EndBattleText1
-	db "@"
+PokemonTower5FChanneler2EndBattleText:
+	text_far _PokemonTower5FChanneler2EndBattleText
+	text_end
 
-PokemonTower5AfterBattleText1:
-	TX_FAR _PokemonTower5AfterBattleText1
-	db "@"
+PokemonTower5FChanneler2AfterBattleText:
+	text_far _PokemonTower5FChanneler2AfterBattleText
+	text_end
 
-PokemonTower5Text3:
-	TX_ASM
+PokemonTower5FChanneler3Text:
+	text_asm
 	ld hl, PokemonTower5TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-PokemonTower5BattleText2:
-	TX_FAR _PokemonTower5BattleText2
-	db "@"
+PokemonTower5FChanneler3BattleText:
+	text_far _PokemonTower5FChanneler3BattleText
+	text_end
 
-PokemonTower5EndBattleText2:
-	TX_FAR _PokemonTower5EndBattleText2
-	db "@"
+PokemonTower5FChanneler3EndBattleText:
+	text_far _PokemonTower5FChanneler3EndBattleText
+	text_end
 
-PokemonTower5AfterBattleText2:
-	TX_FAR _PokemonTower5AfterBattleText2
-	db "@"
+PokemonTower5FChanneler3AfterBattleText:
+	text_far _PokemonTower5FChanneler3AfterBattleText
+	text_end
 
-PokemonTower5Text4:
-	TX_ASM
+PokemonTower5FChanneler4Text:
+	text_asm
 	ld hl, PokemonTower5TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-PokemonTower5BattleText3:
-	TX_FAR _PokemonTower5BattleText3
-	db "@"
+PokemonTower5FChanneler4BattleText:
+	text_far _PokemonTower5FChanneler4BattleText
+	text_end
 
-PokemonTower5EndBattleText3:
-	TX_FAR _PokemonTower5EndBattleText3
-	db "@"
+PokemonTower5FChanneler4EndBattleText:
+	text_far _PokemonTower5FChanneler4EndBattleText
+	text_end
 
-PokemonTower5AfterBattleText3:
-	TX_FAR _PokemonTower5AfterBattleText3
-	db "@"
+PokemonTower5FChanneler4AfterBattleText:
+	text_far _PokemonTower5FChanneler4AfterBattleText
+	text_end
 
-PokemonTower5Text5:
-	TX_ASM
+PokemonTower5FChanneler5Text:
+	text_asm
 	ld hl, PokemonTower5TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-PokemonTower5BattleText4:
-	TX_FAR _PokemonTower5BattleText4
-	db "@"
+PokemonTower5FChanneler5BattleText:
+	text_far _PokemonTower5FChanneler5BattleText
+	text_end
 
-PokemonTower5EndBattleText4:
-	TX_FAR _PokemonTower5EndBattleText4
-	db "@"
+PokemonTower5FChanneler5EndBattleText:
+	text_far _PokemonTower5FChanneler5EndBattleText
+	text_end
 
-PokemonTower5AfterBattleText4:
-	TX_FAR _PokemonTower5AfterBattleText4
-	db "@"
+PokemonTower5FChanneler5AfterBattleText:
+	text_far _PokemonTower5FChanneler5AfterBattleText
+	text_end
 
-PokemonTower5Text7:
-	TX_FAR _PokemonTower5Text7
-	db "@"
+PokemonTower5FPurifiedZoneText:
+	text_far _PokemonTower5FPurifiedZoneText
+	text_end

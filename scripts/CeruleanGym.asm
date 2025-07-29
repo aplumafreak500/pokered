@@ -1,219 +1,209 @@
 CeruleanGym_Script:
 	ld hl, wCurrentMapScriptFlags
-	bit 6, [hl]
-	res 6, [hl]
-	call nz, CeruleanGymScript_5c6d0
+	bit BIT_CUR_MAP_LOADED_2, [hl]
+	res BIT_CUR_MAP_LOADED_2, [hl]
+	call nz, .LoadNames
 	call EnableAutoTextBoxDrawing
-	ld hl, CeruleanGymTrainerHeader0
+	ld hl, CeruleanGymTrainerHeaders
 	ld de, CeruleanGym_ScriptPointers
 	ld a, [wCeruleanGymCurScript]
 	call ExecuteCurMapScriptInTable
 	ld [wCeruleanGymCurScript], a
 	ret
 
-CeruleanGymScript_5c6d0:
-	ld hl, Gym2CityName
-	ld de, Gym2LeaderName
+.LoadNames:
+	ld hl, .CityName
+	ld de, .LeaderName
 	jp LoadGymLeaderAndCityName
 
-Gym2CityName:
+.CityName:
 	db "CERULEAN CITY@"
 
-Gym2LeaderName:
+.LeaderName:
 	db "MISTY@"
 
-CeruleanGymScript_5c6ed:
-	xor a
+CeruleanGymResetScripts:
+	xor a ; SCRIPT_CERULEANGYM_DEFAULT
 	ld [wJoyIgnore], a
 	ld [wCeruleanGymCurScript], a
 	ld [wCurMapScript], a
 	ret
 
 CeruleanGym_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
-	dw CeruleanGymScript3
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_CERULEANGYM_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_CERULEANGYM_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_CERULEANGYM_END_BATTLE
+	dw_const CeruleanGymMistyPostBattleScript,      SCRIPT_CERULEANGYM_MISTY_POST_BATTLE
 
-CeruleanGymScript3:
+CeruleanGymMistyPostBattleScript:
 	ld a, [wIsInBattle]
 	cp $ff
-	jp z, CeruleanGymScript_5c6ed
-	ld a, $f0
+	jp z, CeruleanGymResetScripts
+	ld a, PAD_CTRL_PAD
 	ld [wJoyIgnore], a
 
-CeruleanGymScript_5c70d:
-	ld a, $5
-	ld [hSpriteIndexOrTextID], a
+CeruleanGymReceiveTM11:
+	ld a, TEXT_CERULEANGYM_MISTY_CASCADE_BADGE_INFO
+	ldh [hTextID], a
 	call DisplayTextID
 	SetEvent EVENT_BEAT_MISTY
-	lb bc, TM_11, 1
+	lb bc, TM_BUBBLEBEAM, 1
 	call GiveItem
 	jr nc, .BagFull
-	ld a, $6
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_CERULEANGYM_MISTY_RECEIVED_TM11
+	ldh [hTextID], a
 	call DisplayTextID
 	SetEvent EVENT_GOT_TM11
-	jr .asm_5c736
+	jr .gymVictory
 .BagFull
-	ld a, $7
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_CERULEANGYM_MISTY_TM11_NO_ROOM
+	ldh [hTextID], a
 	call DisplayTextID
-.asm_5c736
+.gymVictory
 	ld hl, wObtainedBadges
-	set 1, [hl]
+	set BIT_CASCADEBADGE, [hl]
 	ld hl, wBeatGymFlags
-	set 1, [hl]
+	set BIT_CASCADEBADGE, [hl]
 
 	; deactivate gym trainers
 	SetEvents EVENT_BEAT_CERULEAN_GYM_TRAINER_0, EVENT_BEAT_CERULEAN_GYM_TRAINER_1
 
-	jp CeruleanGymScript_5c6ed
+	jp CeruleanGymResetScripts
 
 CeruleanGym_TextPointers:
-	dw CeruleanGymText1
-	dw CeruleanGymText2
-	dw CeruleanGymText3
-	dw CeruleanGymText4
-	dw CeruleanGymText5
-	dw CeruleanGymText6
-	dw CeruleanGymText7
+	def_text_pointers
+	dw_const CeruleanGymMistyText,                 TEXT_CERULEANGYM_MISTY
+	dw_const CeruleanGymCooltrainerFText,          TEXT_CERULEANGYM_COOLTRAINER_F
+	dw_const CeruleanGymSwimmerText,               TEXT_CERULEANGYM_SWIMMER
+	dw_const CeruleanGymGymGuideText,              TEXT_CERULEANGYM_GYM_GUIDE
+	dw_const CeruleanGymMistyCascadeBadgeInfoText, TEXT_CERULEANGYM_MISTY_CASCADE_BADGE_INFO
+	dw_const CeruleanGymMistyReceivedTM11Text,     TEXT_CERULEANGYM_MISTY_RECEIVED_TM11
+	dw_const CeruleanGymMistyTM11NoRoomText,       TEXT_CERULEANGYM_MISTY_TM11_NO_ROOM
 
+CeruleanGymTrainerHeaders:
+	def_trainers 2
 CeruleanGymTrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_CERULEAN_GYM_TRAINER_0
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_CERULEAN_GYM_TRAINER_0
-	dw CeruleanGymBattleText1 ; TextBeforeBattle
-	dw CeruleanGymAfterBattleText1 ; TextAfterBattle
-	dw CeruleanGymEndBattleText1 ; TextEndBattle
-	dw CeruleanGymEndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_CERULEAN_GYM_TRAINER_0, 3, CeruleanGymBattleText1, CeruleanGymEndBattleText1, CeruleanGymAfterBattleText1
 CeruleanGymTrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_CERULEAN_GYM_TRAINER_1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_CERULEAN_GYM_TRAINER_1
-	dw CeruleanGymBattleText2 ; TextBeforeBattle
-	dw CeruleanGymAfterBattleText2 ; TextAfterBattle
-	dw CeruleanGymEndBattleText2 ; TextEndBattle
-	dw CeruleanGymEndBattleText2 ; TextEndBattle
+	trainer EVENT_BEAT_CERULEAN_GYM_TRAINER_1, 3, CeruleanGymBattleText2, CeruleanGymEndBattleText2, CeruleanGymAfterBattleText2
+	db -1 ; end
 
-	db $ff
-
-CeruleanGymText1:
-	TX_ASM
+CeruleanGymMistyText:
+	text_asm
 	CheckEvent EVENT_BEAT_MISTY
-	jr z, .asm_5c78d
+	jr z, .beforeBeat
 	CheckEventReuseA EVENT_GOT_TM11
-	jr nz, .asm_5c785
-	call z, CeruleanGymScript_5c70d
+	jr nz, .afterBeat
+	call z, CeruleanGymReceiveTM11
 	call DisableWaitingAfterTextDisplay
-	jr .asm_5c7bb
-.asm_5c785
-	ld hl, CeruleanGymText_5c7c3
+	jr .done
+.afterBeat
+	ld hl, .TM11ExplanationText
 	call PrintText
-	jr .asm_5c7bb
-.asm_5c78d
-	ld hl, CeruleanGymText_5c7be
+	jr .done
+.beforeBeat
+	ld hl, .PreBattleText
 	call PrintText
-	ld hl, wd72d
-	set 6, [hl]
-	set 7, [hl]
-	ld hl, CeruleanGymText_5c7d8
-	ld de, CeruleanGymText_5c7d8
+	ld hl, wStatusFlags3
+	set BIT_TALKED_TO_TRAINER, [hl]
+	set BIT_PRINT_END_BATTLE_TEXT, [hl]
+	ld hl, CeruleanGymMistyReceivedCascadeBadgeText
+	ld de, CeruleanGymMistyReceivedCascadeBadgeText
 	call SaveEndBattleTextPointers
-	ld a, [H_SPRITEINDEX]
+	ldh a, [hSpriteIndex]
 	ld [wSpriteIndex], a
 	call EngageMapTrainer
 	call InitBattleEnemyParameters
 	ld a, $2
 	ld [wGymLeaderNo], a
 	xor a
-	ld [hJoyHeld], a
-	ld a, $3
+	ldh [hJoyHeld], a
+	ld a, SCRIPT_CERULEANGYM_MISTY_POST_BATTLE
 	ld [wCeruleanGymCurScript], a
-.asm_5c7bb
+.done
 	jp TextScriptEnd
 
-CeruleanGymText_5c7be:
-	TX_FAR _CeruleanGymText_5c7be
-	db "@"
+.PreBattleText:
+	text_far _CeruleanGymMistyPreBattleText
+	text_end
 
-CeruleanGymText_5c7c3:
-	TX_FAR _CeruleanGymText_5c7c3
-	db "@"
+.TM11ExplanationText:
+	text_far _CeruleanGymMistyTM11ExplanationText
+	text_end
 
-CeruleanGymText5:
-	TX_FAR _CeruleanGymText_5c7c8
-	db "@"
+CeruleanGymMistyCascadeBadgeInfoText:
+	text_far _CeruleanGymMistyCascadeBadgeInfoText
+	text_end
 
-CeruleanGymText6:
-	TX_FAR _ReceivedTM11Text
-	TX_SFX_ITEM_1
-	db "@"
+CeruleanGymMistyReceivedTM11Text:
+	text_far _CeruleanGymMistyReceivedTM11Text
+	sound_get_item_1
+	text_end
 
-CeruleanGymText7:
-	TX_FAR _CeruleanGymText_5c7d3
-	db "@"
+CeruleanGymMistyTM11NoRoomText:
+	text_far _CeruleanGymMistyTM11NoRoomText
+	text_end
 
-CeruleanGymText_5c7d8:
-	TX_FAR _CeruleanGymText_5c7d8
-	TX_SFX_KEY_ITEM ; actually plays the second channel of SFX_BALL_POOF due to the wrong music bank being loaded
-	TX_BLINK
-	db "@"
+CeruleanGymMistyReceivedCascadeBadgeText:
+	text_far _CeruleanGymMistyReceivedCascadeBadgeText
+	sound_get_key_item ; actually plays the second channel of SFX_BALL_POOF due to the wrong music bank being loaded
+	text_promptbutton
+	text_end
 
-CeruleanGymText2:
-	TX_ASM
+CeruleanGymCooltrainerFText:
+	text_asm
 	ld hl, CeruleanGymTrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
 CeruleanGymBattleText1:
-	TX_FAR _CeruleanGymBattleText1
-	db "@"
+	text_far _CeruleanGymBattleText1
+	text_end
 
 CeruleanGymEndBattleText1:
-	TX_FAR _CeruleanGymEndBattleText1
-	db "@"
+	text_far _CeruleanGymEndBattleText1
+	text_end
 
 CeruleanGymAfterBattleText1:
-	TX_FAR _CeruleanGymAfterBattleText1
-	db "@"
+	text_far _CeruleanGymAfterBattleText1
+	text_end
 
-CeruleanGymText3:
-	TX_ASM
+CeruleanGymSwimmerText:
+	text_asm
 	ld hl, CeruleanGymTrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
 CeruleanGymBattleText2:
-	TX_FAR _CeruleanGymBattleText2
-	db "@"
+	text_far _CeruleanGymBattleText2
+	text_end
 
 CeruleanGymEndBattleText2:
-	TX_FAR _CeruleanGymEndBattleText2
-	db "@"
+	text_far _CeruleanGymEndBattleText2
+	text_end
 
 CeruleanGymAfterBattleText2:
-	TX_FAR _CeruleanGymAfterBattleText2
-	db "@"
+	text_far _CeruleanGymAfterBattleText2
+	text_end
 
-CeruleanGymText4:
-	TX_ASM
+CeruleanGymGymGuideText:
+	text_asm
 	CheckEvent EVENT_BEAT_MISTY
-	jr nz, .asm_5c821
-	ld hl, CeruleanGymText_5c82a
+	jr nz, .afterBeat
+	ld hl, .ChampInMakingText
 	call PrintText
-	jr .asm_5c827
-.asm_5c821
-	ld hl, CeruleanGymText_5c82f
+	jr .done
+.afterBeat
+	ld hl, .BeatMistyText
 	call PrintText
-.asm_5c827
+.done
 	jp TextScriptEnd
 
-CeruleanGymText_5c82a:
-	TX_FAR _CeruleanGymText_5c82a
-	db "@"
+.ChampInMakingText:
+	text_far _CeruleanGymGymGuideChampInMakingText
+	text_end
 
-CeruleanGymText_5c82f:
-	TX_FAR _CeruleanGymText_5c82f
-	db "@"
+.BeatMistyText:
+	text_far _CeruleanGymGymGuideBeatMistyText
+	text_end

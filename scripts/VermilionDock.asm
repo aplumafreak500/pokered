@@ -1,32 +1,32 @@
 VermilionDock_Script:
 	call EnableAutoTextBoxDrawing
 	CheckEventHL EVENT_STARTED_WALKING_OUT_OF_DOCK
-	jr nz, .asm_1db8d
+	jr nz, .walking_out_of_dock
 	CheckEventReuseHL EVENT_GOT_HM01
 	ret z
 	ld a, [wDestinationWarpID]
 	cp $1
 	ret nz
 	CheckEventReuseHL EVENT_SS_ANNE_LEFT
-	jp z, VermilionDock_1db9b
+	jp z, VermilionDockSSAnneLeavesScript
 	SetEventReuseHL EVENT_STARTED_WALKING_OUT_OF_DOCK
 	call Delay3
-	ld hl, wd730
-	set 7, [hl]
+	ld hl, wStatusFlags5
+	set BIT_SCRIPTED_MOVEMENT_STATE, [hl]
 	ld hl, wSimulatedJoypadStatesEnd
-	ld a, D_UP
+	ld a, PAD_UP
 	ld [hli], a
 	ld [hli], a
 	ld [hl], a
 	ld a, $3
 	ld [wSimulatedJoypadStatesIndex], a
 	xor a
-	ld [wSpriteStateData2 + $06], a
+	ld [wSpritePlayerStateData2MovementByte1], a
 	ld [wOverrideSimulatedJoypadStatesMask], a
 	dec a
 	ld [wJoyIgnore], a
 	ret
-.asm_1db8d
+.walking_out_of_dock
 	CheckEventAfterBranchReuseHL EVENT_WALKED_OUT_OF_DOCK, EVENT_STARTED_WALKING_OUT_OF_DOCK
 	ret nz
 	ld a, [wSimulatedJoypadStatesIndex]
@@ -36,33 +36,33 @@ VermilionDock_Script:
 	SetEventReuseHL EVENT_WALKED_OUT_OF_DOCK
 	ret
 
-VermilionDock_1db9b:
+VermilionDockSSAnneLeavesScript:
 	SetEventForceReuseHL EVENT_SS_ANNE_LEFT
-	ld a, $ff
+	ld a, SFX_STOP_ALL_MUSIC
 	ld [wJoyIgnore], a
 	ld [wNewSoundID], a
 	call PlaySound
 	ld c, BANK(Music_Surfing)
 	ld a, MUSIC_SURFING
 	call PlayMusic
-	callba LoadSmokeTileFourTimes
+	farcall LoadSmokeTileFourTimes
 	xor a
-	ld [wSpriteStateData1 + 2], a
+	ld [wSpritePlayerStateData1ImageIndex], a
 	ld c, 120
 	call DelayFrames
 	ld b, $9c
 	call CopyScreenTileBufferToVRAM
-	coord hl, 0, 10
+	hlcoord 0, 10
 	ld bc, SCREEN_WIDTH * 6
 	ld a, $14 ; water tile
 	call FillMemory
 	ld a, 1
-	ld [H_AUTOBGTRANSFERENABLED], a
+	ldh [hAutoBGTransferEnabled], a
 	call Delay3
 	xor a
-	ld [H_AUTOBGTRANSFERENABLED], a
+	ldh [hAutoBGTransferEnabled], a
 	ld [wSSAnneSmokeDriftAmount], a
-	ld [rOBP1], a
+	ldh [rOBP1], a
 	ld a, 88
 	ld [wSSAnneSmokeX], a
 	ld hl, wMapViewVRAMPointer
@@ -77,8 +77,8 @@ VermilionDock_1db9b:
 	ld [wUpdateSpritesEnabled], a
 	ld d, $0
 	ld e, $8
-.asm_1dbfa
-	ld hl, $0002
+.shift_columns_up
+	ld hl, $2
 	add hl, bc
 	ld a, l
 	ld [wMapViewVRAMPointer], a
@@ -90,25 +90,25 @@ VermilionDock_1db9b:
 	call VermilionDock_EmitSmokePuff
 	pop de
 	ld b, $10
-.asm_1dc11
+.smoke_puff_drift_loop
 	call VermilionDock_AnimSmokePuffDriftRight
 	ld c, $8
-.asm_1dc16
-	call VermilionDock_1dc7c
+.delay_between_drifts
+	call VermilionDock_SyncScrollWithLY
 	dec c
-	jr nz, .asm_1dc16
+	jr nz, .delay_between_drifts
 	inc d
 	dec b
-	jr nz, .asm_1dc11
+	jr nz, .smoke_puff_drift_loop
 	pop bc
 	dec e
-	jr nz, .asm_1dbfa
+	jr nz, .shift_columns_up
 	xor a
-	ld [rWY], a
-	ld [hWY], a
+	ldh [rWY], a
+	ldh [hWY], a
 	call VermilionDock_EraseSSAnne
 	ld a, $90
-	ld [hWY], a
+	ldh [hWY], a
 	ld a, $1
 	ld [wUpdateSpritesEnabled], a
 	pop hl
@@ -124,17 +124,17 @@ VermilionDock_1db9b:
 VermilionDock_AnimSmokePuffDriftRight:
 	push bc
 	push de
-	ld hl, wOAMBuffer + $11
+	ld hl, wShadowOAMSprite04XCoord
 	ld a, [wSSAnneSmokeDriftAmount]
 	swap a
 	ld c, a
 	ld de, 4
-.loop
+.drift_loop
 	inc [hl]
 	inc [hl]
 	add hl, de
 	dec c
-	jr nz, .loop
+	jr nz, .drift_loop
 	pop de
 	pop bc
 	ret
@@ -155,38 +155,39 @@ VermilionDock_EmitSmokePuff:
 	ret
 
 VermilionDockOAMBlock:
-	db $fc, $10
-	db $fd, $10
-	db $fe, $10
-	db $ff, $10
+; tile ID, attributes
+	db $fc, OAM_PAL1
+	db $fd, OAM_PAL1
+	db $fe, OAM_PAL1
+	db $ff, OAM_PAL1
 
-VermilionDock_1dc7c:
+VermilionDock_SyncScrollWithLY:
 	ld h, d
 	ld l, $50
-	call .asm_1dc86
+	call .sync_scroll_ly
 	ld h, $0
 	ld l, $80
-.asm_1dc86
-	ld a, [rLY]
+.sync_scroll_ly
+	ldh a, [rLY]
 	cp l
-	jr nz, .asm_1dc86
+	jr nz, .sync_scroll_ly
 	ld a, h
-	ld [rSCX], a
-.asm_1dc8e
-	ld a, [rLY]
+	ldh [rSCX], a
+.wait_for_ly_match
+	ldh a, [rLY]
 	cp h
-	jr z, .asm_1dc8e
+	jr z, .wait_for_ly_match
 	ret
 
 VermilionDock_EraseSSAnne:
 ; Fill the area the S.S. Anne occupies in BG map 0 with water tiles.
 	ld hl, wVermilionDockTileMapBuffer
-	ld bc, (5 * BG_MAP_WIDTH) + SCREEN_WIDTH
+	ld bc, wVermilionDockTileMapBufferEnd - wVermilionDockTileMapBuffer
 	ld a, $14 ; water tile
 	call FillMemory
-	ld hl, vBGMap0 + 10 * BG_MAP_WIDTH
+	hlbgcoord 0, 10
 	ld de, wVermilionDockTileMapBuffer
-	ld bc, (6 * BG_MAP_WIDTH) / 16
+	lb bc, BANK(wVermilionDockTileMapBuffer), 12
 	call CopyVideoData
 
 ; Replace the blocks of the lower half of the ship with water blocks. This
@@ -194,7 +195,7 @@ VermilionDock_EraseSSAnne:
 ; the blocks is unnecessary because the blocks the ship occupies are south of
 ; the player and won't be redrawn when the player automatically walks north and
 ; exits the map. This code could be removed without affecting anything.
-	overworldMapCoord hl, 5, 2, VERMILION_DOCK_WIDTH
+	hlowcoord 5, 2, VERMILION_DOCK_WIDTH
 	ld a, $d ; water block
 	ld [hli], a
 	ld [hli], a
@@ -208,8 +209,9 @@ VermilionDock_EraseSSAnne:
 	ret
 
 VermilionDock_TextPointers:
-	dw VermilionDockText1
+	def_text_pointers
+	dw_const VermilionDockUnusedText, TEXT_VERMILIONDOCK_UNUSED
 
-VermilionDockText1:
-	TX_FAR _VermilionDockText1
-	db "@"
+VermilionDockUnusedText:
+	text_far _VermilionDockUnusedText
+	text_end

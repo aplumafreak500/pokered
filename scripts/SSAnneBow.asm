@@ -1,6 +1,6 @@
 SSAnneBow_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, SSAnne5TrainerHeader0
+	ld hl, SSAnne5TrainerHeaders
 	ld de, SSAnneBow_ScriptPointers
 	ld a, [wSSAnneBowCurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,81 +8,71 @@ SSAnneBow_Script:
 	ret
 
 SSAnneBow_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_SSANNEBOW_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_SSANNEBOW_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_SSANNEBOW_END_BATTLE
 
 SSAnneBow_TextPointers:
-	dw SSAnne5Text1
-	dw SSAnne5Text2
-	dw SSAnne5Text3
-	dw SSAnne5Text4
-	dw SSAnne5Text5
+	def_text_pointers
+	dw_const SSAnneBowSuperNerdText,    TEXT_SSANNEBOW_SUPER_NERD
+	dw_const SSAnneBowSailor1Text,      TEXT_SSANNEBOW_SAILOR1
+	dw_const SSAnneBowCooltrainerMText, TEXT_SSANNEBOW_COOLTRAINER_M
+	dw_const SSAnneBowSailor2Text,      TEXT_SSANNEBOW_SAILOR2
+	dw_const SSAnneBowSailor3Text,      TEXT_SSANNEBOW_SAILOR3
 
+SSAnne5TrainerHeaders:
+	def_trainers 4
 SSAnne5TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_5_TRAINER_0
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_5_TRAINER_0
-	dw SSAnne5BattleText1 ; TextBeforeBattle
-	dw SSAnne5AfterBattleText1 ; TextAfterBattle
-	dw SSAnne5EndBattleText1 ; TextEndBattle
-	dw SSAnne5EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_SS_ANNE_5_TRAINER_0, 3, SSAnneBowSailor2BattleText, SSAnneBowSailor2EndBattleText, SSAnneBowSailor2AfterBattleText
 SSAnne5TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_5_TRAINER_1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_5_TRAINER_1
-	dw SSAnne5BattleText2 ; TextBeforeBattle
-	dw SSAnne5AfterBattleText2 ; TextAfterBattle
-	dw SSAnne5EndBattleText2 ; TextEndBattle
-	dw SSAnne5EndBattleText2 ; TextEndBattle
+	trainer EVENT_BEAT_SS_ANNE_5_TRAINER_1, 3, SSAnneBowSailor3BattleText, SSAnneBowSailor3EndBattleText, SSAnneBowSailor3AfterBattleText
+	db -1 ; end
 
-	db $ff
+SSAnneBowSuperNerdText:
+	text_far _SSAnneBowSuperNerdText
+	text_end
 
-SSAnne5Text1:
-	TX_FAR _SSAnne5Text1
-	db "@"
+SSAnneBowSailor1Text:
+	text_far _SSAnneBowSailor1Text
+	text_end
 
-SSAnne5Text2:
-	TX_FAR _SSAnne5Text2
-	db "@"
+SSAnneBowCooltrainerMText:
+	text_far _SSAnneBowCooltrainerMText
+	text_end
 
-SSAnne5Text3:
-	TX_FAR _SSAnne5Text3
-	db "@"
-
-SSAnne5Text4:
-	TX_ASM
+SSAnneBowSailor2Text:
+	text_asm
 	ld hl, SSAnne5TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne5BattleText1:
-	TX_FAR _SSAnne5BattleText1
-	db "@"
+SSAnneBowSailor2BattleText:
+	text_far _SSAnneBowSailor2BattleText
+	text_end
 
-SSAnne5EndBattleText1:
-	TX_FAR _SSAnne5EndBattleText1
-	db "@"
+SSAnneBowSailor2EndBattleText:
+	text_far _SSAnneBowSailor2EndBattleText
+	text_end
 
-SSAnne5AfterBattleText1:
-	TX_FAR _SSAnne5AfterBattleText1
-	db "@"
+SSAnneBowSailor2AfterBattleText:
+	text_far _SSAnneBowSailor2AfterBattleText
+	text_end
 
-SSAnne5Text5:
-	TX_ASM
+SSAnneBowSailor3Text:
+	text_asm
 	ld hl, SSAnne5TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne5BattleText2:
-	TX_FAR _SSAnne5BattleText2
-	db "@"
+SSAnneBowSailor3BattleText:
+	text_far _SSAnneBowSailor3BattleText
+	text_end
 
-SSAnne5EndBattleText2:
-	TX_FAR _SSAnne5EndBattleText2
-	db "@"
+SSAnneBowSailor3EndBattleText:
+	text_far _SSAnneBowSailor3EndBattleText
+	text_end
 
-SSAnne5AfterBattleText2:
-	TX_FAR _SSAnne5AfterBattleText2
-	db "@"
+SSAnneBowSailor3AfterBattleText:
+	text_far _SSAnneBowSailor3AfterBattleText
+	text_end

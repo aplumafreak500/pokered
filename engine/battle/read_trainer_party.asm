@@ -5,7 +5,7 @@ ReadTrainer:
 	and a
 	ret nz
 
-; set [wEnemyPartyCount] to 0, [wEnemyPartyMons] to FF
+; set [wEnemyPartyCount] to 0, [wEnemyPartySpecies] to FF
 ; XXX first is total enemy pokemon?
 ; XXX second is species of first pokemon?
 	ld hl, wEnemyPartyCount
@@ -16,7 +16,7 @@ ReadTrainer:
 
 ; get the pointer to trainer data for this class
 	ld a, [wCurOpponent]
-	sub $C9 ; convert value from pokemon to trainer
+	sub OPP_ID_OFFSET + 1 ; convert value from pokemon to trainer
 	add a
 	ld hl, TrainerDataPointers
 	ld c, a
@@ -31,14 +31,14 @@ ReadTrainer:
 ; and hl points to the trainer class.
 ; Our next task is to iterate through the trainers,
 ; decrementing b each time, until we get to the right one.
-.outer
+.CheckNextTrainer
 	dec b
 	jr z, .IterateTrainer
-.inner
+.SkipTrainer
 	ld a, [hli]
 	and a
-	jr nz, .inner
-	jr .outer
+	jr nz, .SkipTrainer
+	jr .CheckNextTrainer
 
 ; if the first byte of trainer data is FF,
 ; - each pokemon has a specific level
@@ -49,12 +49,12 @@ ReadTrainer:
 	ld a, [hli]
 	cp $FF ; is the trainer special?
 	jr z, .SpecialTrainer ; if so, check for special moves
-	ld [wCurEnemyLVL], a
+	ld [wCurEnemyLevel], a
 .LoopTrainerData
 	ld a, [hli]
 	and a ; have we reached the end of the trainer data?
 	jr z, .FinishUp
-	ld [wcf91], a ; write species somewhere (XXX why?)
+	ld [wCurPartySpecies], a
 	ld a, ENEMY_PARTY_DATA
 	ld [wMonDataLocation], a
 	push hl
@@ -69,9 +69,9 @@ ReadTrainer:
 	ld a, [hli]
 	and a ; have we reached the end of the trainer data?
 	jr z, .AddLoneMove
-	ld [wCurEnemyLVL], a
+	ld [wCurEnemyLevel], a
 	ld a, [hli]
-	ld [wcf91], a
+	ld [wCurPartySpecies], a
 	ld a, ENEMY_PARTY_DATA
 	ld [wMonDataLocation], a
 	push hl
@@ -79,7 +79,7 @@ ReadTrainer:
 	pop hl
 	jr .SpecialTrainer
 .AddLoneMove
-; does the trainer have a single monster with a different move
+; does the trainer have a single monster with a different move?
 	ld a, [wLoneAttackNo] ; Brock is 01, Misty is 02, Erika is 04, etc
 	and a
 	jr z, .AddTeamMove
@@ -116,7 +116,7 @@ ReadTrainer:
 
 ; no matches found. is this trainer champion rival?
 	ld a, b
-	cp SONY3
+	cp RIVAL3
 	jr z, .ChampionRival
 	jr .FinishUp ; nope
 .GiveTeamMoves
@@ -150,7 +150,7 @@ ReadTrainer:
 	ld [de], a
 	inc de
 	ld [de], a
-	ld a, [wCurEnemyLVL]
+	ld a, [wCurEnemyLevel]
 	ld b, a
 .LastLoop
 ; update wAmountMoneyWon addresses (money to win) based on enemy's level
@@ -162,5 +162,5 @@ ReadTrainer:
 	inc de
 	inc de
 	dec b
-	jr nz, .LastLoop ; repeat wCurEnemyLVL times
+	jr nz, .LastLoop ; repeat wCurEnemyLevel times
 	ret

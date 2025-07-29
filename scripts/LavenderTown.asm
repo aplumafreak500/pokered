@@ -2,62 +2,63 @@ LavenderTown_Script:
 	jp EnableAutoTextBoxDrawing
 
 LavenderTown_TextPointers:
-	dw LavenderTownText1
-	dw LavenderTownText2
-	dw LavenderTownText3
-	dw LavenderTownText4
-	dw LavenderTownText5
-	dw MartSignText
-	dw PokeCenterSignText
-	dw LavenderTownText8
-	dw LavenderTownText9
+	def_text_pointers
+	dw_const LavenderTownLittleGirlText,       TEXT_LAVENDERTOWN_LITTLE_GIRL
+	dw_const LavenderTownCooltrainerMText,     TEXT_LAVENDERTOWN_COOLTRAINER_M
+	dw_const LavenderTownSuperNerdText,        TEXT_LAVENDERTOWN_SUPER_NERD
+	dw_const LavenderTownSignText,             TEXT_LAVENDERTOWN_SIGN
+	dw_const LavenderTownSilphScopeSignText,   TEXT_LAVENDERTOWN_SILPH_SCOPE_SIGN
+	dw_const MartSignText,                     TEXT_LAVENDERTOWN_MART_SIGN
+	dw_const PokeCenterSignText,               TEXT_LAVENDERTOWN_POKECENTER_SIGN
+	dw_const LavenderTownPokemonHouseSignText, TEXT_LAVENDERTOWN_POKEMON_HOUSE_SIGN
+	dw_const LavenderTownPokemonTowerSignText, TEXT_LAVENDERTOWN_POKEMON_TOWER_SIGN
 
-LavenderTownText1:
-	TX_ASM
-	ld hl, LavenderTownText_4413c
+LavenderTownLittleGirlText:
+	text_asm
+	ld hl, .DoYouBelieveInGhostsText
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	and a
-	ld hl, LavenderTownText_44146
-	jr nz, .asm_40831
-	ld hl, LavenderTownText_44141
-.asm_40831
+	ld hl, .HaHaGuessNotText
+	jr nz, .got_text
+	ld hl, .SoThereAreBelieversText
+.got_text
 	call PrintText
 	jp TextScriptEnd
 
-LavenderTownText_4413c:
-	TX_FAR _LavenderTownText_4413c
-	db "@"
+.DoYouBelieveInGhostsText:
+	text_far _LavenderTownLittleGirlDoYouBelieveInGhostsText
+	text_end
 
-LavenderTownText_44141:
-	TX_FAR _LavenderTownText_44141
-	db "@"
+.SoThereAreBelieversText:
+	text_far _LavenderTownLittleGirlSoThereAreBelieversText
+	text_end
 
-LavenderTownText_44146:
-	TX_FAR _LavenderTownText_44146
-	db "@"
+.HaHaGuessNotText:
+	text_far _LavenderTownLittleGirlHaHaGuessNotText
+	text_end
 
-LavenderTownText2:
-	TX_FAR _LavenderTownText2
-	db "@"
+LavenderTownCooltrainerMText:
+	text_far _LavenderTownCooltrainerMText
+	text_end
 
-LavenderTownText3:
-	TX_FAR _LavenderTownText3
-	db "@"
+LavenderTownSuperNerdText:
+	text_far _LavenderTownSuperNerdText
+	text_end
 
-LavenderTownText4:
-	TX_FAR _LavenderTownText4
-	db "@"
+LavenderTownSignText:
+	text_far _LavenderTownSignText
+	text_end
 
-LavenderTownText5:
-	TX_FAR _LavenderTownText5
-	db "@"
+LavenderTownSilphScopeSignText:
+	text_far _LavenderTownSilphScopeSignText
+	text_end
 
-LavenderTownText8:
-	TX_FAR _LavenderTownText8
-	db "@"
+LavenderTownPokemonHouseSignText:
+	text_far _LavenderTownPokemonHouseSignText
+	text_end
 
-LavenderTownText9:
-	TX_FAR _LavenderTownText9
-	db "@"
+LavenderTownPokemonTowerSignText:
+	text_far _LavenderTownPokemonTowerSignText
+	text_end

@@ -2,112 +2,112 @@ WardensHouse_Script:
 	jp EnableAutoTextBoxDrawing
 
 WardensHouse_TextPointers:
-	dw FuchsiaHouse2Text1
-	dw PickUpItemText
-	dw BoulderText
-	dw FuchsiaHouse2Text4
-	dw FuchsiaHouse2Text5
+	def_text_pointers
+	dw_const WardensHouseWardenText,  TEXT_WARDENSHOUSE_WARDEN
+	dw_const PickUpItemText,          TEXT_WARDENSHOUSE_RARE_CANDY
+	dw_const BoulderText,             TEXT_WARDENSHOUSE_BOULDER
+	dw_const WardensHouseDisplayText, TEXT_WARDENSHOUSE_DISPLAY_LEFT
+	dw_const WardensHouseDisplayText, TEXT_WARDENSHOUSE_DISPLAY_RIGHT
 
-FuchsiaHouse2Text1:
-	TX_ASM
+WardensHouseWardenText:
+	text_asm
 	CheckEvent EVENT_GOT_HM04
-	jr nz, .subtract
+	jr nz, .got_item
 	ld b, GOLD_TEETH
 	call IsItemInBag
-	jr nz, .asm_3f30f
+	jr nz, .have_gold_teeth
 	CheckEvent EVENT_GAVE_GOLD_TEETH
-	jr nz, .asm_60cba
-	ld hl, WardenGibberishText1
+	jr nz, .gave_gold_teeth
+	ld hl, .Gibberish1Text
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
 	and a
-	ld hl, WardenGibberishText3
-	jr nz, .asm_61238
-	ld hl, WardenGibberishText2
-.asm_61238
+	ld hl, .Gibberish3Text
+	jr nz, .refused
+	ld hl, .Gibberish2Text
+.refused
 	call PrintText
-	jr .asm_52039
-.asm_3f30f
-	ld hl, WardenTeethText1
+	jr .done
+.have_gold_teeth
+	ld hl, .GaveTheGoldTeethText
 	call PrintText
 	ld a, GOLD_TEETH
-	ld [$ffdb], a
-	callba RemoveItemByID
+	ldh [hItemToRemoveID], a
+	farcall RemoveItemByID
 	SetEvent EVENT_GAVE_GOLD_TEETH
-.asm_60cba
-	ld hl, WardenThankYouText
+.gave_gold_teeth
+	ld hl, .ThanksText
 	call PrintText
-	lb bc, HM_04, 1
+	lb bc, HM_STRENGTH, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, ReceivedHM04Text
+	jr nc, .bag_full
+	ld hl, .ReceivedHM04Text
 	call PrintText
 	SetEvent EVENT_GOT_HM04
-	jr .asm_52039
-.subtract
-	ld hl, HM04ExplanationText
+	jr .done
+.got_item
+	ld hl, .HM04ExplanationText
 	call PrintText
-	jr .asm_52039
-.BagFull
-	ld hl, HM04NoRoomText
+	jr .done
+.bag_full
+	ld hl, .HM04NoRoomText
 	call PrintText
-.asm_52039
+.done
 	jp TextScriptEnd
 
-WardenGibberishText1:
-	TX_FAR _WardenGibberishText1
-	db "@"
+.Gibberish1Text:
+	text_far _WardensHouseWardenGibberish1Text
+	text_end
 
-WardenGibberishText2:
-	TX_FAR _WardenGibberishText2
-	db "@"
+.Gibberish2Text:
+	text_far _WardensHouseWardenGibberish2Text
+	text_end
 
-WardenGibberishText3:
-	TX_FAR _WardenGibberishText3
-	db "@"
+.Gibberish3Text:
+	text_far _WardensHouseWardenGibberish3Text
+	text_end
 
-WardenTeethText1:
-	TX_FAR _WardenTeethText1
-	TX_SFX_ITEM_1
+.GaveTheGoldTeethText:
+	text_far _WardensHouseWardenGaveTheGoldTeethText
+	sound_get_item_1
 
-WardenTeethText2:
-	TX_FAR _WardenTeethText2
-	db "@"
+.PoppedInHisTeethText: ; unreferenced
+	text_far _WardensHouseWardenTeethPoppedInHisTeethText
+	text_end
 
-WardenThankYouText:
-	TX_FAR _WardenThankYouText
-	db "@"
+.ThanksText:
+	text_far _WardensHouseWardenThanksText
+	text_end
 
-ReceivedHM04Text:
-	TX_FAR _ReceivedHM04Text
-	TX_SFX_ITEM_1
-	db "@"
+.ReceivedHM04Text:
+	text_far _WardensHouseWardenReceivedHM04Text
+	sound_get_item_1
+	text_end
 
-HM04ExplanationText:
-	TX_FAR _HM04ExplanationText
-	db "@"
+.HM04ExplanationText:
+	text_far _WardensHouseWardenHM04ExplanationText
+	text_end
 
-HM04NoRoomText:
-	TX_FAR _HM04NoRoomText
-	db "@"
+.HM04NoRoomText:
+	text_far _WardensHouseWardenHM04NoRoomText
+	text_end
 
-FuchsiaHouse2Text5:
-FuchsiaHouse2Text4:
-	TX_ASM
-	ld a, [H_SPRITEINDEX]
-	cp $4
-	ld hl, FuchsiaHouse2Text_7517b
-	jr nz, .asm_4c9a2
-	ld hl, FuchsiaHouse2Text_75176
-.asm_4c9a2
+WardensHouseDisplayText:
+	text_asm
+	ldh a, [hTextID]
+	cp TEXT_WARDENSHOUSE_DISPLAY_LEFT
+	ld hl, .MerchandiseText
+	jr nz, .print_text
+	ld hl, .PhotosAndFossilsText
+.print_text
 	call PrintText
 	jp TextScriptEnd
 
-FuchsiaHouse2Text_75176:
-	TX_FAR _FuchsiaHouse2Text_75176
-	db "@"
+.PhotosAndFossilsText:
+	text_far _WardensHouseDisplayPhotosAndFossilsText
+	text_end
 
-FuchsiaHouse2Text_7517b:
-	TX_FAR _FuchsiaHouse2Text_7517b
-	db "@"
+.MerchandiseText:
+	text_far _WardensHouseDisplayMerchandiseText
+	text_end

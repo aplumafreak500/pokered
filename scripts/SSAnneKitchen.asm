@@ -3,70 +3,71 @@ SSAnneKitchen_Script:
 	ret
 
 SSAnneKitchen_TextPointers:
-	dw SSAnne6Text1
-	dw SSAnne6Text2
-	dw SSAnne6Text3
-	dw SSAnne6Text4
-	dw SSAnne6Text5
-	dw SSAnne6Text6
-	dw SSAnne6Text7
+	def_text_pointers
+	dw_const SSAnneKitchenCook1Text, TEXT_SSANNEKITCHEN_COOK1
+	dw_const SSAnneKitchenCook2Text, TEXT_SSANNEKITCHEN_COOK2
+	dw_const SSAnneKitchenCook3Text, TEXT_SSANNEKITCHEN_COOK3
+	dw_const SSAnneKitchenCook4Text, TEXT_SSANNEKITCHEN_COOK4
+	dw_const SSAnneKitchenCook5Text, TEXT_SSANNEKITCHEN_COOK5
+	dw_const SSAnneKitchenCook6Text, TEXT_SSANNEKITCHEN_COOK6
+	dw_const SSAnneKitchenCook7Text, TEXT_SSANNEKITCHEN_COOK7
 
-SSAnne6Text1:
-	TX_FAR _SSAnne6Text1
-	db "@"
+SSAnneKitchenCook1Text:
+	text_far _SSAnneKitchenCook1Text
+	text_end
 
-SSAnne6Text2:
-	TX_FAR _SSAnne6Text2
-	db "@"
+SSAnneKitchenCook2Text:
+	text_far _SSAnneKitchenCook2Text
+	text_end
 
-SSAnne6Text3:
-	TX_FAR _SSAnne6Text3
-	db "@"
+SSAnneKitchenCook3Text:
+	text_far _SSAnneKitchenCook3Text
+	text_end
 
-SSAnne6Text4:
-	TX_FAR _SSAnne6Text4
-	db "@"
+SSAnneKitchenCook4Text:
+	text_far _SSAnneKitchenCook4Text
+	text_end
 
-SSAnne6Text5:
-	TX_FAR _SSAnne6Text5
-	db "@"
+SSAnneKitchenCook5Text:
+	text_far _SSAnneKitchenCook5Text
+	text_end
 
-SSAnne6Text6:
-	TX_FAR _SSAnne6Text6
-	db "@"
+SSAnneKitchenCook6Text:
+	text_far _SSAnneKitchenCook6Text
+	text_end
 
-SSAnne6Text7:
-	TX_ASM
-	ld hl, SSAnne6Text_61807
+SSAnneKitchenCook7Text:
+	text_asm
+	ld hl, .MainCourseIsText
 	call PrintText
-	ld a, [hRandomAdd]
+	ldh a, [hRandomAdd]
 	bit 7, a
-	jr z, .asm_93eb1
-	ld hl, SSAnne6Text_6180c
-	jr .asm_63292
-.asm_93eb1
+	jr z, .not_dialog_1
+	ld hl, .SalmonDuSaladText
+	jr .done
+.not_dialog_1
 	bit 4, a
-	jr z, .asm_7436c
-	ld hl, SSAnne6Text_61811
-	jr .asm_63292
-.asm_7436c
-	ld hl, SSAnne6Text_61816
-.asm_63292
+	jr z, .not_dialog_2
+	ld hl, .EelsAuBarbecueText
+	jr .done
+.not_dialog_2
+	ld hl, .PrimeBeefSteakText
+.done
 	call PrintText
 	jp TextScriptEnd
 
-SSAnne6Text_61807:
-	TX_FAR _SSAnne6Text_61807
-	db "@"
+.MainCourseIsText:
+	text_far _SSAnneKitchenCook7MainCourseIsText
+	text_end
 
-SSAnne6Text_6180c:
-	TX_FAR _SSAnne6Text_6180c
-	db "@"
+.SalmonDuSaladText:
+	text_far SSAnneKitchenCook7SalmonDuSaladText
+	text_end
 
-SSAnne6Text_61811:
-	TX_FAR _SSAnne6Text_61811
-	db "@"
+.EelsAuBarbecueText:
+	text_far SSAnneKitchenCook7EelsAuBarbecueText
+	text_end
 
-SSAnne6Text_61816:
-	TX_FAR _SSAnne6Text_61816
-	db "@"
+.PrimeBeefSteakText:
+	text_far SSAnneKitchenCook7PrimeBeefSteakText
+	text_end

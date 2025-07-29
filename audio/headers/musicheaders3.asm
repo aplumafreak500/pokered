@@ -1,56 +1,116 @@
 Music_TitleScreen::
-	audio Music_TitleScreen, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_TitleScreen_Ch1
+	channel 2, Music_TitleScreen_Ch2
+	channel 3, Music_TitleScreen_Ch3
+	channel 4, Music_TitleScreen_Ch4
 
 Music_Credits::
-	audio Music_Credits, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_Credits_Ch1
+	channel 2, Music_Credits_Ch2
+	channel 3, Music_Credits_Ch3
 
 Music_HallOfFame::
-	audio Music_HallOfFame, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_HallOfFame_Ch1
+	channel 2, Music_HallOfFame_Ch2
+	channel 3, Music_HallOfFame_Ch3
 
 Music_OaksLab::
-	audio Music_OaksLab, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_OaksLab_Ch1
+	channel 2, Music_OaksLab_Ch2
+	channel 3, Music_OaksLab_Ch3
 
 Music_JigglypuffSong::
-	audio Music_JigglypuffSong, Ch0, Ch1
+	channel_count 2
+	channel 1, Music_JigglypuffSong_Ch1
+	channel 2, Music_JigglypuffSong_Ch2
 
 Music_BikeRiding::
-	audio Music_BikeRiding, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_BikeRiding_Ch1
+	channel 2, Music_BikeRiding_Ch2
+	channel 3, Music_BikeRiding_Ch3
+	channel 4, Music_BikeRiding_Ch4
 
 Music_Surfing::
-	audio Music_Surfing, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_Surfing_Ch1
+	channel 2, Music_Surfing_Ch2
+	channel 3, Music_Surfing_Ch3
 
 Music_GameCorner::
-	audio Music_GameCorner, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_GameCorner_Ch1
+	channel 2, Music_GameCorner_Ch2
+	channel 3, Music_GameCorner_Ch3
 
 Music_IntroBattle::
-	audio Music_IntroBattle, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_IntroBattle_Ch1
+	channel 2, Music_IntroBattle_Ch2
+	channel 3, Music_IntroBattle_Ch3
+	channel 4, Music_IntroBattle_Ch4
 
 ; Power Plant, Cerulean Cave, Rocket HQ
 Music_Dungeon1::
-	audio Music_Dungeon1, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_Dungeon1_Ch1
+	channel 2, Music_Dungeon1_Ch2
+	channel 3, Music_Dungeon1_Ch3
+	channel 4, Music_Dungeon1_Ch4
 
 ; Viridian Forest, Seafoam Islands
 Music_Dungeon2::
-	audio Music_Dungeon2, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_Dungeon2_Ch1
+	channel 2, Music_Dungeon2_Ch2
+	channel 3, Music_Dungeon2_Ch3
+	channel 4, Music_Dungeon2_Ch4
 
 ; Mt. Moon, Rock Tunnel, Victory Road
 Music_Dungeon3::
-	audio Music_Dungeon3, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_Dungeon3_Ch1
+	channel 2, Music_Dungeon3_Ch2
+	channel 3, Music_Dungeon3_Ch3
+	channel 4, Music_Dungeon3_Ch4
 
 Music_CinnabarMansion::
-	audio Music_CinnabarMansion, Ch0, Ch1, Ch2, Ch3
+	channel_count 4
+	channel 1, Music_CinnabarMansion_Ch1
+	channel 2, Music_CinnabarMansion_Ch2
+	channel 3, Music_CinnabarMansion_Ch3
+	channel 4, Music_CinnabarMansion_Ch4
 
 Music_PokemonTower::
-	audio Music_PokemonTower, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_PokemonTower_Ch1
+	channel 2, Music_PokemonTower_Ch2
+	channel 3, Music_PokemonTower_Ch3
 
 Music_SilphCo::
-	audio Music_SilphCo, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_SilphCo_Ch1
+	channel 2, Music_SilphCo_Ch2
+	channel 3, Music_SilphCo_Ch3
 
 Music_MeetEvilTrainer::
-	audio Music_MeetEvilTrainer, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_MeetEvilTrainer_Ch1
+	channel 2, Music_MeetEvilTrainer_Ch2
+	channel 3, Music_MeetEvilTrainer_Ch3
 
 Music_MeetFemaleTrainer::
-	audio Music_MeetFemaleTrainer, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_MeetFemaleTrainer_Ch1
+	channel 2, Music_MeetFemaleTrainer_Ch2
+	channel 3, Music_MeetFemaleTrainer_Ch3
 
 Music_MeetMaleTrainer::
-	audio Music_MeetMaleTrainer, Ch0, Ch1, Ch2
+	channel_count 3
+	channel 1, Music_MeetMaleTrainer_Ch1
+	channel 2, Music_MeetMaleTrainer_Ch2
+	channel 3, Music_MeetMaleTrainer_Ch3

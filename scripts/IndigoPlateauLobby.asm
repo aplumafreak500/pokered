@@ -2,35 +2,36 @@ IndigoPlateauLobby_Script:
 	call Serial_TryEstablishingExternallyClockedConnection
 	call EnableAutoTextBoxDrawing
 	ld hl, wCurrentMapScriptFlags
-	bit 6, [hl]
-	res 6, [hl]
+	bit BIT_CUR_MAP_LOADED_2, [hl]
+	res BIT_CUR_MAP_LOADED_2, [hl]
 	ret z
 	ResetEvent EVENT_VICTORY_ROAD_1_BOULDER_ON_SWITCH
-	ld hl, wBeatLorelei
-	bit 1, [hl]
-	res 1, [hl]
+	; Reset Elite Four events if the player started challenging them before
+	ld hl, wElite4Flags
+	bit BIT_STARTED_ELITE_4, [hl]
+	res BIT_STARTED_ELITE_4, [hl]
 	ret z
-	; Elite 4 events
-	ResetEventRange ELITE4_EVENTS_START, EVENT_LANCES_ROOM_LOCK_DOOR
+	ResetEventRange INDIGO_PLATEAU_EVENTS_START, EVENT_LANCES_ROOM_LOCK_DOOR
 	ret
 
 IndigoPlateauLobby_TextPointers:
-	dw IndigoHealNurseText
-	dw IndigoPlateauLobbyText2
-	dw IndigoPlateauLobbyText3
-	dw IndigoCashierText
-	dw IndigoTradeNurseText
+	def_text_pointers
+	dw_const IndigoPlateauLobbyNurseText,            TEXT_INDIGOPLATEAULOBBY_NURSE
+	dw_const IndigoPlateauLobbyGymGuideText,         TEXT_INDIGOPLATEAULOBBY_GYM_GUIDE
+	dw_const IndigoPlateauLobbyCooltrainerFText,     TEXT_INDIGOPLATEAULOBBY_COOLTRAINER_F
+	dw_const IndigoPlateauLobbyClerkText,            TEXT_INDIGOPLATEAULOBBY_CLERK
+	dw_const IndigoPlateauLobbyLinkReceptionistText, TEXT_INDIGOPLATEAULOBBY_LINK_RECEPTIONIST
 
-IndigoHealNurseText:
-	TX_POKECENTER_NURSE
+IndigoPlateauLobbyNurseText:
+	script_pokecenter_nurse
 
-IndigoPlateauLobbyText2:
-	TX_FAR _IndigoPlateauLobbyText2
-	db "@"
+IndigoPlateauLobbyGymGuideText:
+	text_far _IndigoPlateauLobbyGymGuideText
+	text_end
 
-IndigoPlateauLobbyText3:
-	TX_FAR _IndigoPlateauLobbyText3
-	db "@"
+IndigoPlateauLobbyCooltrainerFText:
+	text_far _IndigoPlateauLobbyCooltrainerFText
+	text_end
 
-IndigoTradeNurseText:
-	TX_CABLE_CLUB_RECEPTIONIST
+IndigoPlateauLobbyLinkReceptionistText:
+	script_cable_club_receptionist

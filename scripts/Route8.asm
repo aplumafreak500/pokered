@@ -1,6 +1,6 @@
 Route8_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route8TrainerHeader0
+	ld hl, Route8TrainerHeaders
 	ld de, Route8_ScriptPointers
 	ld a, [wRoute8CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,267 +8,208 @@ Route8_Script:
 	ret
 
 Route8_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE8_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE8_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE8_END_BATTLE
 
 Route8_TextPointers:
-	dw Route8Text1
-	dw Route8Text2
-	dw Route8Text3
-	dw Route8Text4
-	dw Route8Text5
-	dw Route8Text6
-	dw Route8Text7
-	dw Route8Text8
-	dw Route8Text9
-	dw Route8Text10
+	def_text_pointers
+	dw_const Route8SuperNerd1Text,      TEXT_ROUTE8_SUPER_NERD1
+	dw_const Route8Gambler1Text,        TEXT_ROUTE8_GAMBLER1
+	dw_const Route8SuperNerd2Text,      TEXT_ROUTE8_SUPER_NERD2
+	dw_const Route8CooltrainerF1Text,   TEXT_ROUTE8_COOLTRAINER_F1
+	dw_const Route8SuperNerd3Text,      TEXT_ROUTE8_SUPER_NERD3
+	dw_const Route8CooltrainerF2Text,   TEXT_ROUTE8_COOLTRAINER_F2
+	dw_const Route8CooltrainerF3Text,   TEXT_ROUTE8_COOLTRAINER_F3
+	dw_const Route8Gambler2Text,        TEXT_ROUTE8_GAMBLER2
+	dw_const Route8CooltrainerF4Text,   TEXT_ROUTE8_COOLTRAINER_F4
+	dw_const Route8UndergroundSignText, TEXT_ROUTE8_UNDERGROUND_SIGN
 
+Route8TrainerHeaders:
+	def_trainers
 Route8TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_0
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_0
-	dw Route8BattleText1 ; TextBeforeBattle
-	dw Route8AfterBattleText1 ; TextAfterBattle
-	dw Route8EndBattleText1 ; TextEndBattle
-	dw Route8EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_0, 4, Route8SuperNerd1BattleText, Route8SuperNerd1EndBattleText, Route8SuperNerd1AfterBattleText
 Route8TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_1
-	dw Route8BattleText2 ; TextBeforeBattle
-	dw Route8AfterBattleText2 ; TextAfterBattle
-	dw Route8EndBattleText2 ; TextEndBattle
-	dw Route8EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_1, 4, Route8Gambler1BattleText, Route8Gambler1EndBattleText, Route8Gambler1AfterBattleText
 Route8TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_2
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_2
-	dw Route8BattleText3 ; TextBeforeBattle
-	dw Route8AfterBattleText3 ; TextAfterBattle
-	dw Route8EndBattleText3 ; TextEndBattle
-	dw Route8EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_2, 4, Route8SuperNerd2BattleText, Route8SuperNerd2EndBattleText, Route8SuperNerd2AfterBattleText
 Route8TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_3
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_3
-	dw Route8BattleText4 ; TextBeforeBattle
-	dw Route8AfterBattleText4 ; TextAfterBattle
-	dw Route8EndBattleText4 ; TextEndBattle
-	dw Route8EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_3, 2, Route8CooltrainerF1BattleText, Route8CooltrainerF1EndBattleText, Route8CooltrainerF1AfterBattleText
 Route8TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_4
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_4
-	dw Route8BattleText5 ; TextBeforeBattle
-	dw Route8AfterBattleText5 ; TextAfterBattle
-	dw Route8EndBattleText5 ; TextEndBattle
-	dw Route8EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_4, 3, Route8SuperNerd3BattleText, Route8SuperNerd3EndBattleText, Route8SuperNerd3AfterBattleText
 Route8TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_5
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_5
-	dw Route8BattleText6 ; TextBeforeBattle
-	dw Route8AfterBattleText6 ; TextAfterBattle
-	dw Route8EndBattleText6 ; TextEndBattle
-	dw Route8EndBattleText6 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_5, 3, Route8CooltrainerF2BattleText, Route8CooltrainerF2EndBattleText, Route8CooltrainerF2AfterBattleText
 Route8TrainerHeader6:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_6
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_6
-	dw Route8BattleText7 ; TextBeforeBattle
-	dw Route8AfterBattleText7 ; TextAfterBattle
-	dw Route8EndBattleText7 ; TextEndBattle
-	dw Route8EndBattleText7 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_6, 2, Route8CooltrainerF3BattleText, Route8CooltrainerF3EndBattleText, Route8CooltrainerF3AfterBattleText
 Route8TrainerHeader7:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_7, 1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_7, 1
-	dw Route8BattleText8 ; TextBeforeBattle
-	dw Route8AfterBattleText8 ; TextAfterBattle
-	dw Route8EndBattleText8 ; TextEndBattle
-	dw Route8EndBattleText8 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_7, 2, Route8Gambler2BattleText, Route8Gambler2EndBattleText, Route8Gambler2AfterBattleText
 Route8TrainerHeader8:
-	dbEventFlagBit EVENT_BEAT_ROUTE_8_TRAINER_8, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_8_TRAINER_8, 1
-	dw Route8BattleText9 ; TextBeforeBattle
-	dw Route8AfterBattleText9 ; TextAfterBattle
-	dw Route8EndBattleText9 ; TextEndBattle
-	dw Route8EndBattleText9 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_8_TRAINER_8, 4, Route8CooltrainerF4BattleText, Route8CooltrainerF4EndBattleText, Route8CooltrainerF4AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route8Text1:
-	TX_ASM
+Route8SuperNerd1Text:
+	text_asm
 	ld hl, Route8TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText1:
-	TX_FAR _Route8BattleText1
-	db "@"
+Route8SuperNerd1BattleText:
+	text_far _Route8SuperNerd1BattleText
+	text_end
 
-Route8EndBattleText1:
-	TX_FAR _Route8EndBattleText1
-	db "@"
+Route8SuperNerd1EndBattleText:
+	text_far _Route8SuperNerd1EndBattleText
+	text_end
 
-Route8AfterBattleText1:
-	TX_FAR _Route8AfterBattleText1
-	db "@"
+Route8SuperNerd1AfterBattleText:
+	text_far _Route8SuperNerd1AfterBattleText
+	text_end
 
-Route8Text2:
-	TX_ASM
+Route8Gambler1Text:
+	text_asm
 	ld hl, Route8TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText2:
-	TX_FAR _Route8BattleText2
-	db "@"
+Route8Gambler1BattleText:
+	text_far _Route8Gambler1BattleText
+	text_end
 
-Route8EndBattleText2:
-	TX_FAR _Route8EndBattleText2
-	db "@"
+Route8Gambler1EndBattleText:
+	text_far _Route8Gambler1EndBattleText
+	text_end
 
-Route8AfterBattleText2:
-	TX_FAR _Route8AfterBattleText2
-	db "@"
+Route8Gambler1AfterBattleText:
+	text_far _Route8Gambler1AfterBattleText
+	text_end
 
-Route8Text3:
-	TX_ASM
+Route8SuperNerd2Text:
+	text_asm
 	ld hl, Route8TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText3:
-	TX_FAR _Route8BattleText3
-	db "@"
+Route8SuperNerd2BattleText:
+	text_far _Route8SuperNerd2BattleText
+	text_end
 
-Route8EndBattleText3:
-	TX_FAR _Route8EndBattleText3
-	db "@"
+Route8SuperNerd2EndBattleText:
+	text_far _Route8SuperNerd2EndBattleText
+	text_end
 
-Route8AfterBattleText3:
-	TX_FAR _Route8AfterBattleText3
-	db "@"
+Route8SuperNerd2AfterBattleText:
+	text_far _Route8SuperNerd2AfterBattleText
+	text_end
 
-Route8Text4:
-	TX_ASM
+Route8CooltrainerF1Text:
+	text_asm
 	ld hl, Route8TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText4:
-	TX_FAR _Route8BattleText4
-	db "@"
+Route8CooltrainerF1BattleText:
+	text_far _Route8CooltrainerF1BattleText
+	text_end
 
-Route8EndBattleText4:
-	TX_FAR _Route8EndBattleText4
-	db "@"
+Route8CooltrainerF1EndBattleText:
+	text_far _Route8CooltrainerF1EndBattleText
+	text_end
 
-Route8AfterBattleText4:
-	TX_FAR _Route8AfterBattleText4
-	db "@"
+Route8CooltrainerF1AfterBattleText:
+	text_far _Route8CooltrainerF1AfterBattleText
+	text_end
 
-Route8Text5:
-	TX_ASM
+Route8SuperNerd3Text:
+	text_asm
 	ld hl, Route8TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText5:
-	TX_FAR _Route8BattleText5
-	db "@"
+Route8SuperNerd3BattleText:
+	text_far _Route8SuperNerd3BattleText
+	text_end
 
-Route8EndBattleText5:
-	TX_FAR _Route8EndBattleText5
-	db "@"
+Route8SuperNerd3EndBattleText:
+	text_far _Route8SuperNerd3EndBattleText
+	text_end
 
-Route8AfterBattleText5:
-	TX_FAR _Route8AfterBattleText5
-	db "@"
+Route8SuperNerd3AfterBattleText:
+	text_far _Route8SuperNerd3AfterBattleText
+	text_end
 
-Route8Text6:
-	TX_ASM
+Route8CooltrainerF2Text:
+	text_asm
 	ld hl, Route8TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText6:
-	TX_FAR _Route8BattleText6
-	db "@"
+Route8CooltrainerF2BattleText:
+	text_far _Route8CooltrainerF2BattleText
+	text_end
 
-Route8EndBattleText6:
-	TX_FAR _Route8EndBattleText6
-	db "@"
+Route8CooltrainerF2EndBattleText:
+	text_far _Route8CooltrainerF2EndBattleText
+	text_end
 
-Route8AfterBattleText6:
-	TX_FAR _Route8AfterBattleText6
-	db "@"
+Route8CooltrainerF2AfterBattleText:
+	text_far _Route8CooltrainerF2AfterBattleText
+	text_end
 
-Route8Text7:
-	TX_ASM
+Route8CooltrainerF3Text:
+	text_asm
 	ld hl, Route8TrainerHeader6
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText7:
-	TX_FAR _Route8BattleText7
-	db "@"
+Route8CooltrainerF3BattleText:
+	text_far _Route8CooltrainerF3BattleText
+	text_end
 
-Route8EndBattleText7:
-	TX_FAR _Route8EndBattleText7
-	db "@"
+Route8CooltrainerF3EndBattleText:
+	text_far _Route8CooltrainerF3EndBattleText
+	text_end
 
-Route8AfterBattleText7:
-	TX_FAR _Route8AfterBattleText7
-	db "@"
+Route8CooltrainerF3AfterBattleText:
+	text_far _Route8CooltrainerF3AfterBattleText
+	text_end
 
-Route8Text8:
-	TX_ASM
+Route8Gambler2Text:
+	text_asm
 	ld hl, Route8TrainerHeader7
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText8:
-	TX_FAR _Route8BattleText8
-	db "@"
+Route8Gambler2BattleText:
+	text_far _Route8Gambler2BattleText
+	text_end
 
-Route8EndBattleText8:
-	TX_FAR _Route8EndBattleText8
-	db "@"
+Route8Gambler2EndBattleText:
+	text_far _Route8Gambler2EndBattleText
+	text_end
 
-Route8AfterBattleText8:
-	TX_FAR _Route8AfterBattleText8
-	db "@"
+Route8Gambler2AfterBattleText:
+	text_far _Route8Gambler2AfterBattleText
+	text_end
 
-Route8Text9:
-	TX_ASM
+Route8CooltrainerF4Text:
+	text_asm
 	ld hl, Route8TrainerHeader8
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route8BattleText9:
-	TX_FAR _Route8BattleText9
-	db "@"
+Route8CooltrainerF4BattleText:
+	text_far _Route8CooltrainerF4BattleText
+	text_end
 
-Route8EndBattleText9:
-	TX_FAR _Route8EndBattleText9
-	db "@"
+Route8CooltrainerF4EndBattleText:
+	text_far _Route8CooltrainerF4EndBattleText
+	text_end
 
-Route8AfterBattleText9:
-	TX_FAR _Route8AfterBattleText9
-	db "@"
+Route8CooltrainerF4AfterBattleText:
+	text_far _Route8CooltrainerF4AfterBattleText
+	text_end
 
-Route8Text10:
-	TX_FAR _Route8Text10
-	db "@"
+Route8UndergroundSignText:
+	text_far _Route8UndergroundSignText
+	text_end

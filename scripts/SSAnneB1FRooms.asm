@@ -1,6 +1,6 @@
 SSAnneB1FRooms_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, SSAnne10TrainerHeader0
+	ld hl, SSAnne10TrainerHeaders
 	ld de, SSAnneB1FRooms_ScriptPointers
 	ld a, [wSSAnneB1FRoomsCurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,194 +8,156 @@ SSAnneB1FRooms_Script:
 	ret
 
 SSAnneB1FRooms_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_SSANNEB1FROOMS_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_SSANNEB1FROOMS_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_SSANNEB1FROOMS_END_BATTLE
 
 SSAnneB1FRooms_TextPointers:
-	dw SSAnne10Text1
-	dw SSAnne10Text2
-	dw SSAnne10Text3
-	dw SSAnne10Text4
-	dw SSAnne10Text5
-	dw SSAnne10Text6
-	dw SSAnne10Text7
-	dw SSAnne10Text8
-	dw PickUpItemText
-	dw PickUpItemText
-	dw PickUpItemText
+	def_text_pointers
+	dw_const SSAnneB1FRoomsSailor1Text,   TEXT_SSANNEB1FROOMS_SAILOR1
+	dw_const SSAnneB1FRoomsSailor2Text,   TEXT_SSANNEB1FROOMS_SAILOR2
+	dw_const SSAnneB1FRoomsSailor3Text,   TEXT_SSANNEB1FROOMS_SAILOR3
+	dw_const SSAnneB1FRoomsSailor4Text,   TEXT_SSANNEB1FROOMS_SAILOR4
+	dw_const SSAnneB1FRoomsSailor5Text,   TEXT_SSANNEB1FROOMS_SAILOR5
+	dw_const SSAnneB1FRoomsFisherText,    TEXT_SSANNEB1FROOMS_FISHER
+	dw_const SSAnneB1FRoomsSuperNerdText, TEXT_SSANNEB1FROOMS_SUPER_NERD
+	dw_const SSAnneB1FRoomsMachokeText,   TEXT_SSANNEB1FROOMS_MACHOKE
+	dw_const PickUpItemText,              TEXT_SSANNEB1FROOMS_ETHER
+	dw_const PickUpItemText,              TEXT_SSANNEB1FROOMS_TM_REST
+	dw_const PickUpItemText,              TEXT_SSANNEB1FROOMS_MAX_POTION
 
+SSAnne10TrainerHeaders:
+	def_trainers
 SSAnne10TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_10_TRAINER_0
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_10_TRAINER_0
-	dw SSAnne10BattleText1 ; TextBeforeBattle
-	dw SSAnne10AfterBattleText1 ; TextAfterBattle
-	dw SSAnne10EndBattleText1 ; TextEndBattle
-	dw SSAnne10EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_SS_ANNE_10_TRAINER_0, 2, SSAnneB1FRoomsSailor1BattleText, SSAnneB1FRoomsSailor1EndBattleText, SSAnneB1FRoomsSailor1AfterBattleText
 SSAnne10TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_10_TRAINER_1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_10_TRAINER_1
-	dw SSAnne10BattleText2 ; TextBeforeBattle
-	dw SSAnne10AfterBattleText2 ; TextAfterBattle
-	dw SSAnne10EndBattleText2 ; TextEndBattle
-	dw SSAnne10EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_SS_ANNE_10_TRAINER_1, 3, SSAnneB1FRoomsSailor2BattleText, SSAnneB1FRoomsSailor2EndBattleText, SSAnneB1FRoomsSailor2AfterBattleText
 SSAnne10TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_10_TRAINER_2
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_10_TRAINER_2
-	dw SSAnne10BattleText3 ; TextBeforeBattle
-	dw SSAnne10AfterBattleText3 ; TextAfterBattle
-	dw SSAnne10EndBattleText3 ; TextEndBattle
-	dw SSAnne10EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_SS_ANNE_10_TRAINER_2, 2, SSAnneB1FRoomsSailor3BattleText, SSAnneB1FRoomsSailor3EndBattleText, SSAnneB1FRoomsSailor3AfterBattleText
 SSAnne10TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_10_TRAINER_3
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_10_TRAINER_3
-	dw SSAnne10BattleText4 ; TextBeforeBattle
-	dw SSAnne10AfterBattleText4 ; TextAfterBattle
-	dw SSAnne10EndBattleText4 ; TextEndBattle
-	dw SSAnne10EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_SS_ANNE_10_TRAINER_3, 2, SSAnneB1FRoomsSailor4BattleText, SSAnneB1FRoomsSailor4EndBattleText, SSAnneB1FRoomsSailor4AfterBattleText
 SSAnne10TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_10_TRAINER_4
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_10_TRAINER_4
-	dw SSAnne10BattleText5 ; TextBeforeBattle
-	dw SSAnne10AfterBattleText5 ; TextAfterBattle
-	dw SSAnne10EndBattleText5 ; TextEndBattle
-	dw SSAnne10EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_SS_ANNE_10_TRAINER_4, 2, SSAnneB1FRoomsSailor5BattleText, SSAnneB1FRoomsSailor5EndBattleText, SSAnneB1FRoomsSailor5AfterBattleText
 SSAnne10TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_SS_ANNE_10_TRAINER_5
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_SS_ANNE_10_TRAINER_5
-	dw SSAnne10BattleText6 ; TextBeforeBattle
-	dw SSAnne10AfterBattleText6 ; TextAfterBattle
-	dw SSAnne10EndBattleText6 ; TextEndBattle
-	dw SSAnne10EndBattleText6 ; TextEndBattle
+	trainer EVENT_BEAT_SS_ANNE_10_TRAINER_5, 3, SSAnneB1FRoomsFisherBattleText, SSAnneB1FRoomsFisherEndBattleText, SSAnneB1FRoomsFisherAfterBattleText
+	db -1 ; end
 
-	db $ff
-
-SSAnne10Text1:
-	TX_ASM
+SSAnneB1FRoomsSailor1Text:
+	text_asm
 	ld hl, SSAnne10TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne10Text2:
-	TX_ASM
+SSAnneB1FRoomsSailor2Text:
+	text_asm
 	ld hl, SSAnne10TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne10Text3:
-	TX_ASM
+SSAnneB1FRoomsSailor3Text:
+	text_asm
 	ld hl, SSAnne10TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne10Text4:
-	TX_ASM
+SSAnneB1FRoomsSailor4Text:
+	text_asm
 	ld hl, SSAnne10TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne10Text5:
-	TX_ASM
+SSAnneB1FRoomsSailor5Text:
+	text_asm
 	ld hl, SSAnne10TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne10Text6:
-	TX_ASM
+SSAnneB1FRoomsFisherText:
+	text_asm
 	ld hl, SSAnne10TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-SSAnne10Text8:
-	TX_FAR _SSAnne10Text8
-	TX_ASM
+SSAnneB1FRoomsMachokeText:
+	text_far _SSAnneB1FRoomsMachokeText
+	text_asm
 	ld a, MACHOKE
 	call PlayCry
 	jp TextScriptEnd
 
-SSAnne10BattleText1:
-	TX_FAR _SSAnne10BattleText1
-	db "@"
+SSAnneB1FRoomsSailor1BattleText:
+	text_far _SSAnneB1FRoomsSailor1BattleText
+	text_end
 
-SSAnne10EndBattleText1:
-	TX_FAR _SSAnne10EndBattleText1
-	db "@"
+SSAnneB1FRoomsSailor1EndBattleText:
+	text_far _SSAnneB1FRoomsSailor1EndBattleText
+	text_end
 
-SSAnne10AfterBattleText1:
-	TX_FAR _SSAnne10AfterBattleText1
-	db "@"
+SSAnneB1FRoomsSailor1AfterBattleText:
+	text_far _SSAnneB1FRoomsSailor1AfterBattleText
+	text_end
 
-SSAnne10BattleText2:
-	TX_FAR _SSAnne10BattleText2
-	db "@"
+SSAnneB1FRoomsSailor2BattleText:
+	text_far _SSAnneB1FRoomsSailor2BattleText
+	text_end
 
-SSAnne10EndBattleText2:
-	TX_FAR _SSAnne10EndBattleText2
-	db "@"
+SSAnneB1FRoomsSailor2EndBattleText:
+	text_far _SSAnneB1FRoomsSailor2EndBattleText
+	text_end
 
-SSAnne10AfterBattleText2:
-	TX_FAR _SSAnne10AfterBattleText2
-	db "@"
+SSAnneB1FRoomsSailor2AfterBattleText:
+	text_far _SSAnneB1FRoomsSailor2AfterBattleText
+	text_end
 
-SSAnne10BattleText3:
-	TX_FAR _SSAnne10BattleText3
-	db "@"
+SSAnneB1FRoomsSailor3BattleText:
+	text_far _SSAnneB1FRoomsSailor3BattleText
+	text_end
 
-SSAnne10EndBattleText3:
-	TX_FAR _SSAnne10EndBattleText3
-	db "@"
+SSAnneB1FRoomsSailor3EndBattleText:
+	text_far _SSAnneB1FRoomsSailor3EndBattleText
+	text_end
 
-SSAnne10AfterBattleText3:
-	TX_FAR _SSAnne10AfterBattleText3
-	db "@"
+SSAnneB1FRoomsSailor3AfterBattleText:
+	text_far _SSAnneB1FRoomsSailor3AfterBattleText
+	text_end
 
-SSAnne10BattleText4:
-	TX_FAR _SSAnne10BattleText4
-	db "@"
+SSAnneB1FRoomsSailor4BattleText:
+	text_far _SSAnneB1FRoomsSailor4BattleText
+	text_end
 
-SSAnne10EndBattleText4:
-	TX_FAR _SSAnne10EndBattleText4
-	db "@"
+SSAnneB1FRoomsSailor4EndBattleText:
+	text_far _SSAnneB1FRoomsSailor4EndBattleText
+	text_end
 
-SSAnne10AfterBattleText4:
-	TX_FAR _SSAnne10AfterBattleText4
-	db "@"
+SSAnneB1FRoomsSailor4AfterBattleText:
+	text_far _SSAnneB1FRoomsSailor4AfterBattleText
+	text_end
 
-SSAnne10BattleText5:
-	TX_FAR _SSAnne10BattleText5
-	db "@"
+SSAnneB1FRoomsSailor5BattleText:
+	text_far _SSAnneB1FRoomsSailor5BattleText
+	text_end
 
-SSAnne10EndBattleText5:
-	TX_FAR _SSAnne10EndBattleText5
-	db "@"
+SSAnneB1FRoomsSailor5EndBattleText:
+	text_far _SSAnneB1FRoomsSailor5EndBattleText
+	text_end
 
-SSAnne10AfterBattleText5:
-	TX_FAR _SSAnne10AfterBattleText5
-	db "@"
+SSAnneB1FRoomsSailor5AfterBattleText:
+	text_far _SSAnneB1FRoomsSailor5AfterBattleText
+	text_end
 
-SSAnne10BattleText6:
-	TX_FAR _SSAnne10BattleText6
-	db "@"
+SSAnneB1FRoomsFisherBattleText:
+	text_far _SSAnneB1FRoomsFisherBattleText
+	text_end
 
-SSAnne10EndBattleText6:
-	TX_FAR _SSAnne10EndBattleText6
-	db "@"
+SSAnneB1FRoomsFisherEndBattleText:
+	text_far _SSAnneB1FRoomsFisherEndBattleText
+	text_end
 
-SSAnne10AfterBattleText6:
-	TX_FAR _SSAnne10AfterBattleText6
-	db "@"
+SSAnneB1FRoomsFisherAfterBattleText:
+	text_far _SSAnneB1FRoomsFisherAfterBattleText
+	text_end
 
-SSAnne10Text7:
-	TX_FAR _SSAnne10Text7
-	db "@"
+SSAnneB1FRoomsSuperNerdText:
+	text_far _SSAnneB1FRoomsSuperNerdText
+	text_end

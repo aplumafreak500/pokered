@@ -2,16 +2,17 @@ LavenderMart_Script:
 	jp EnableAutoTextBoxDrawing
 
 LavenderMart_TextPointers:
-	dw LavenderCashierText
-	dw LavenderMartText2
-	dw LavenderMartText3
+	def_text_pointers
+	dw_const LavenderMartClerkText,        TEXT_LAVENDERMART_CLERK
+	dw_const LavenderMartBaldingGuyText,   TEXT_LAVENDERMART_BALDING_GUY
+	dw_const LavenderMartCooltrainerMText, TEXT_LAVENDERMART_COOLTRAINER_M
 
-LavenderMartText2:
-	TX_FAR _LavenderMartText2
-	db "@"
+LavenderMartBaldingGuyText:
+	text_far _LavenderMartBaldingGuyText
+	text_end
 
-LavenderMartText3:
-	TX_ASM
+LavenderMartCooltrainerMText:
+	text_asm
 	CheckEvent EVENT_RESCUED_MR_FUJI
 	jr nz, .Nugget
 	ld hl, .ReviveText
@@ -24,9 +25,9 @@ LavenderMartText3:
 	jp TextScriptEnd
 
 .ReviveText
-	TX_FAR _LavenderMartReviveText
-	db "@"
+	text_far _LavenderMartCooltrainerMReviveText
+	text_end
 
 .NuggetText
-	TX_FAR _LavenderMartNuggetText
-	db "@"
+	text_far _LavenderMartCooltrainerMNuggetText
+	text_end

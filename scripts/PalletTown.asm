@@ -9,127 +9,128 @@ PalletTown_Script:
 	jp CallFunctionInTable
 
 PalletTown_ScriptPointers:
-	dw PalletTownScript0
-	dw PalletTownScript1
-	dw PalletTownScript2
-	dw PalletTownScript3
-	dw PalletTownScript4
-	dw PalletTownScript5
-	dw PalletTownScript6
+	def_script_pointers
+	dw_const PalletTownDefaultScript,              SCRIPT_PALLETTOWN_DEFAULT
+	dw_const PalletTownOakHeyWaitScript,           SCRIPT_PALLETTOWN_OAK_HEY_WAIT
+	dw_const PalletTownOakWalksToPlayerScript,     SCRIPT_PALLETTOWN_OAK_WALKS_TO_PLAYER
+	dw_const PalletTownOakNotSafeComeWithMeScript, SCRIPT_PALLETTOWN_OAK_NOT_SAFE_COME_WITH_ME
+	dw_const PalletTownPlayerFollowsOakScript,     SCRIPT_PALLETTOWN_PLAYER_FOLLOWS_OAK
+	dw_const PalletTownDaisyScript,                SCRIPT_PALLETTOWN_DAISY
+	dw_const PalletTownNoopScript,                 SCRIPT_PALLETTOWN_NOOP
 
-PalletTownScript0:
+PalletTownDefaultScript:
 	CheckEvent EVENT_FOLLOWED_OAK_INTO_LAB
 	ret nz
 	ld a, [wYCoord]
 	cp 1 ; is player near north exit?
 	ret nz
 	xor a
-	ld [hJoyHeld], a
+	ldh [hJoyHeld], a
 	ld a, PLAYER_DIR_DOWN
 	ld [wPlayerMovingDirection], a
-	ld a, $FF
-	call PlaySound ; stop music
+	ld a, SFX_STOP_ALL_MUSIC
+	call PlaySound
 	ld a, BANK(Music_MeetProfOak)
 	ld c, a
-	ld a, MUSIC_MEET_PROF_OAK ; “oak appears” music
+	ld a, MUSIC_MEET_PROF_OAK ; "oak appears" music
 	call PlayMusic
-	ld a, $FC
+	ld a, PAD_SELECT | PAD_START | PAD_CTRL_PAD
 	ld [wJoyIgnore], a
 	SetEvent EVENT_OAK_APPEARED_IN_PALLET
 
 	; trigger the next script
-	ld a, 1
+	ld a, SCRIPT_PALLETTOWN_OAK_HEY_WAIT
 	ld [wPalletTownCurScript], a
 	ret
 
-PalletTownScript1:
+PalletTownOakHeyWaitScript:
 	xor a
-	ld [wcf0d], a
-	ld a, 1
-	ld [hSpriteIndexOrTextID], a
+	ld [wOakWalkedToPlayer], a
+	ld a, TEXT_PALLETTOWN_OAK
+	ldh [hTextID], a
 	call DisplayTextID
-	ld a, $FF
+	ld a, PAD_BUTTONS | PAD_CTRL_PAD
 	ld [wJoyIgnore], a
 	ld a, HS_PALLET_TOWN_OAK
 	ld [wMissableObjectIndex], a
 	predef ShowObject
 
 	; trigger the next script
-	ld a, 2
+	ld a, SCRIPT_PALLETTOWN_OAK_WALKS_TO_PLAYER
 	ld [wPalletTownCurScript], a
 	ret
 
-PalletTownScript2:
-	ld a, 1
-	ld [H_SPRITEINDEX], a
+PalletTownOakWalksToPlayerScript:
+	ld a, PALLETTOWN_OAK
+	ldh [hSpriteIndex], a
 	ld a, SPRITE_FACING_UP
-	ld [hSpriteFacingDirection], a
+	ldh [hSpriteFacingDirection], a
 	call SetSpriteFacingDirectionAndDelay
 	call Delay3
 	ld a, 1
 	ld [wYCoord], a
 	ld a, 1
-	ld [hNPCPlayerRelativePosPerspective], a
+	ldh [hNPCPlayerRelativePosPerspective], a
 	ld a, 1
 	swap a
-	ld [hNPCSpriteOffset], a
+	ldh [hNPCSpriteOffset], a
 	predef CalcPositionOfPlayerRelativeToNPC
 	ld hl, hNPCPlayerYDistance
 	dec [hl]
-	predef FindPathToPlayer ; load Oak’s movement into wNPCMovementDirections2
+	predef FindPathToPlayer ; load Oak's movement into wNPCMovementDirections2
 	ld de, wNPCMovementDirections2
-	ld a, 1 ; oak
-	ld [H_SPRITEINDEX], a
+	ld a, PALLETTOWN_OAK
+	ldh [hSpriteIndex], a
 	call MoveSprite
-	ld a, $FF
+	ld a, PAD_BUTTONS | PAD_CTRL_PAD
 	ld [wJoyIgnore], a
 
 	; trigger the next script
-	ld a, 3
+	ld a, SCRIPT_PALLETTOWN_OAK_NOT_SAFE_COME_WITH_ME
 	ld [wPalletTownCurScript], a
 	ret
 
-PalletTownScript3:
-	ld a, [wd730]
-	bit 0, a
+PalletTownOakNotSafeComeWithMeScript:
+	ld a, [wStatusFlags5]
+	bit BIT_SCRIPTED_NPC_MOVEMENT, a
 	ret nz
 	xor a ; ld a, SPRITE_FACING_DOWN
-	ld [wSpriteStateData1 + 9], a
-	ld a, 1
-	ld [wcf0d], a
-	ld a, $FC
+	ld [wSpritePlayerStateData1FacingDirection], a
+	ld a, TRUE
+	ld [wOakWalkedToPlayer], a
+	ld a, PAD_SELECT | PAD_START | PAD_CTRL_PAD
 	ld [wJoyIgnore], a
-	ld a, 1
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_PALLETTOWN_OAK
+	ldh [hTextID], a
 	call DisplayTextID
 ; set up movement script that causes the player to follow Oak to his lab
-	ld a, $FF
+	ld a, PAD_BUTTONS | PAD_CTRL_PAD
 	ld [wJoyIgnore], a
-	ld a, 1
+	ld a, PALLETTOWN_OAK
 	ld [wSpriteIndex], a
 	xor a
 	ld [wNPCMovementScriptFunctionNum], a
 	ld a, 1
 	ld [wNPCMovementScriptPointerTableNum], a
-	ld a, [H_LOADEDROMBANK]
+	ldh a, [hLoadedROMBank]
 	ld [wNPCMovementScriptBank], a
 
 	; trigger the next script
-	ld a, 4
+	ld a, SCRIPT_PALLETTOWN_PLAYER_FOLLOWS_OAK
 	ld [wPalletTownCurScript], a
 	ret
 
-PalletTownScript4:
+PalletTownPlayerFollowsOakScript:
 	ld a, [wNPCMovementScriptPointerTableNum]
 	and a ; is the movement script over?
 	ret nz
 
 	; trigger the next script
-	ld a, 5
+	ld a, SCRIPT_PALLETTOWN_DAISY
 	ld [wPalletTownCurScript], a
 	ret
 
-PalletTownScript5:
+PalletTownDaisyScript:
 	CheckEvent EVENT_DAISY_WALKING
 	jr nz, .next
 	CheckBothEventsSet EVENT_GOT_TOWN_MAP, EVENT_ENTERED_BLUES_HOUSE, 1
@@ -145,36 +146,37 @@ PalletTownScript5:
 	CheckEvent EVENT_GOT_POKEBALLS_FROM_OAK
 	ret z
 	SetEvent EVENT_PALLET_AFTER_GETTING_POKEBALLS_2
-PalletTownScript6:
+PalletTownNoopScript:
 	ret
 
 PalletTown_TextPointers:
-	dw PalletTownText1
-	dw PalletTownText2
-	dw PalletTownText3
-	dw PalletTownText4
-	dw PalletTownText5
-	dw PalletTownText6
-	dw PalletTownText7
+	def_text_pointers
+	dw_const PalletTownOakText,              TEXT_PALLETTOWN_OAK
+	dw_const PalletTownGirlText,             TEXT_PALLETTOWN_GIRL
+	dw_const PalletTownFisherText,           TEXT_PALLETTOWN_FISHER
+	dw_const PalletTownOaksLabSignText,      TEXT_PALLETTOWN_OAKSLAB_SIGN
+	dw_const PalletTownSignText,             TEXT_PALLETTOWN_SIGN
+	dw_const PalletTownPlayersHouseSignText, TEXT_PALLETTOWN_PLAYERSHOUSE_SIGN
+	dw_const PalletTownRivalsHouseSignText,  TEXT_PALLETTOWN_RIVALSHOUSE_SIGN
 
-PalletTownText1:
-	TX_ASM
-	ld a, [wcf0d]
+PalletTownOakText:
+	text_asm
+	ld a, [wOakWalkedToPlayer]
 	and a
 	jr nz, .next
 	ld a, 1
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
-	ld hl, OakAppearsText
+	ld hl, .HeyWaitDontGoOutText
 	jr .done
 .next
-	ld hl, OakWalksUpText
+	ld hl, .ItsUnsafeText
 .done
 	call PrintText
 	jp TextScriptEnd
 
-OakAppearsText:
-	TX_FAR _OakAppearsText
-	TX_ASM
+.HeyWaitDontGoOutText:
+	text_far _PalletTownOakHeyWaitDontGoOutText
+	text_asm
 	ld c, 10
 	call DelayFrames
 	xor a
@@ -185,30 +187,30 @@ OakAppearsText:
 	ld [wPlayerMovingDirection], a
 	jp TextScriptEnd
 
-OakWalksUpText:
-	TX_FAR _OakWalksUpText
-	db "@"
+.ItsUnsafeText:
+	text_far _PalletTownOakItsUnsafeText
+	text_end
 
-PalletTownText2: ; girl
-	TX_FAR _PalletTownText2
-	db "@"
+PalletTownGirlText:
+	text_far _PalletTownGirlText
+	text_end
 
-PalletTownText3: ; fat man
-	TX_FAR _PalletTownText3
-	db "@"
+PalletTownFisherText:
+	text_far _PalletTownFisherText
+	text_end
 
-PalletTownText4: ; sign by lab
-	TX_FAR _PalletTownText4
-	db "@"
+PalletTownOaksLabSignText:
+	text_far _PalletTownOaksLabSignText
+	text_end
 
-PalletTownText5: ; sign by fence
-	TX_FAR _PalletTownText5
-	db "@"
+PalletTownSignText:
+	text_far _PalletTownSignText
+	text_end
 
-PalletTownText6: ; sign by Red’s house
-	TX_FAR _PalletTownText6
-	db "@"
+PalletTownPlayersHouseSignText:
+	text_far _PalletTownPlayersHouseSignText
+	text_end
 
-PalletTownText7: ; sign by Blue’s house
-	TX_FAR _PalletTownText7
-	db "@"
+PalletTownRivalsHouseSignText:
+	text_far _PalletTownRivalsHouseSignText
+	text_end

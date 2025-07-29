@@ -1,7 +1,7 @@
 LoreleisRoom_Script:
 	call LoreleiShowOrHideExitBlock
 	call EnableAutoTextBoxDrawing
-	ld hl, LoreleiTrainerHeader0
+	ld hl, LoreleisRoomTrainerHeaders
 	ld de, LoreleisRoom_ScriptPointers
 	ld a, [wLoreleisRoomCurScript]
 	call ExecuteCurMapScriptInTable
@@ -11,11 +11,11 @@ LoreleisRoom_Script:
 LoreleiShowOrHideExitBlock:
 ; Blocks or clears the exit to the next room.
 	ld hl, wCurrentMapScriptFlags
-	bit 5, [hl]
-	res 5, [hl]
+	bit BIT_CUR_MAP_LOADED_1, [hl]
+	res BIT_CUR_MAP_LOADED_1, [hl]
 	ret z
-	ld hl, wBeatLorelei
-	set 1, [hl]
+	ld hl, wElite4Flags
+	set BIT_STARTED_ELITE_4, [hl]
 	CheckEvent EVENT_BEAT_LORELEIS_ROOM_TRAINER_0
 	jr z, .blockExitToNextRoom
 	ld a, $5
@@ -28,24 +28,25 @@ LoreleiShowOrHideExitBlock:
 	predef_jump ReplaceTileBlock
 
 ResetLoreleiScript:
-	xor a
+	xor a ; SCRIPT_LORELEISROOM_DEFAULT
 	ld [wLoreleisRoomCurScript], a
 	ret
 
 LoreleisRoom_ScriptPointers:
-	dw LoreleiScript0
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw LoreleiScript2
-	dw LoreleiScript3
-	dw LoreleiScript4
+	def_script_pointers
+	dw_const LoreleisRoomDefaultScript,             SCRIPT_LORELEISROOM_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_LORELEISROOM_LORELEI_START_BATTLE
+	dw_const LoreleisRoomLoreleiEndBattleScript,    SCRIPT_LORELEISROOM_LORELEI_END_BATTLE
+	dw_const LoreleisRoomPlayerIsMovingScript,      SCRIPT_LORELEISROOM_PLAYER_IS_MOVING
+	dw_const LoreleisRoomNoopScript,                SCRIPT_LORELEISROOM_NOOP
 
-LoreleiScript4:
+LoreleisRoomNoopScript:
 	ret
 
 LoreleiScriptWalkIntoRoom:
 ; Walk six steps upward.
 	ld hl, wSimulatedJoypadStatesEnd
-	ld a, D_UP
+	ld a, PAD_UP
 	ld [hli], a
 	ld [hli], a
 	ld [hli], a
@@ -55,18 +56,18 @@ LoreleiScriptWalkIntoRoom:
 	ld a, $6
 	ld [wSimulatedJoypadStatesIndex], a
 	call StartSimulatingJoypadStates
-	ld a, $3
+	ld a, SCRIPT_LORELEISROOM_PLAYER_IS_MOVING
 	ld [wLoreleisRoomCurScript], a
 	ld [wCurMapScript], a
 	ret
 
-LoreleiScript0:
+LoreleisRoomDefaultScript:
 	ld hl, LoreleiEntranceCoords
 	call ArePlayerCoordsInArray
 	jp nc, CheckFightingMapTrainers
 	xor a
-	ld [hJoyPressed], a
-	ld [hJoyHeld], a
+	ldh [hJoyPressed], a
+	ldh [hJoyHeld], a
 	ld [wSimulatedJoypadStatesEnd], a
 	ld [wSimulatedJoypadStatesIndex], a
 	ld a, [wCoordIndex]
@@ -75,27 +76,27 @@ LoreleiScript0:
 	CheckAndSetEvent EVENT_AUTOWALKED_INTO_LORELEIS_ROOM
 	jr z, LoreleiScriptWalkIntoRoom
 .stopPlayerFromLeaving
-	ld a, $2
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_LORELEISROOM_DONT_RUN_AWAY
+	ldh [hTextID], a
 	call DisplayTextID  ; "Don't run away!"
-	ld a, D_UP
+	ld a, PAD_UP
 	ld [wSimulatedJoypadStatesEnd], a
 	ld a, $1
 	ld [wSimulatedJoypadStatesIndex], a
 	call StartSimulatingJoypadStates
-	ld a, $3
+	ld a, SCRIPT_LORELEISROOM_PLAYER_IS_MOVING
 	ld [wLoreleisRoomCurScript], a
 	ld [wCurMapScript], a
 	ret
 
 LoreleiEntranceCoords:
-	db $0A,$04
-	db $0A,$05
-	db $0B,$04
-	db $0B,$05
-	db $FF
+	dbmapcoord  4, 10
+	dbmapcoord  5, 10
+	dbmapcoord  4, 11
+	dbmapcoord  5, 11
+	db -1 ; end
 
-LoreleiScript3:
+LoreleisRoomPlayerIsMovingScript:
 	ld a, [wSimulatedJoypadStatesIndex]
 	and a
 	ret nz
@@ -106,48 +107,44 @@ LoreleiScript3:
 	ld [wCurMapScript], a
 	ret
 
-LoreleiScript2:
+LoreleisRoomLoreleiEndBattleScript:
 	call EndTrainerBattle
 	ld a, [wIsInBattle]
 	cp $ff
 	jp z, ResetLoreleiScript
-	ld a, $1
-	ld [hSpriteIndexOrTextID], a
+	ld a, TEXT_LORELEISROOM_LORELEI
+	ldh [hTextID], a
 	jp DisplayTextID
 
 LoreleisRoom_TextPointers:
-	dw LoreleiText1
-	dw LoreleiDontRunAwayText
+	def_text_pointers
+	dw_const LoreleisRoomLoreleiText,            TEXT_LORELEISROOM_LORELEI
+	dw_const LoreleisRoomLoreleiDontRunAwayText, TEXT_LORELEISROOM_DONT_RUN_AWAY
 
-LoreleiTrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_LORELEIS_ROOM_TRAINER_0
-	db ($0 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_LORELEIS_ROOM_TRAINER_0
-	dw LoreleiBeforeBattleText ; TextBeforeBattle
-	dw LoreleiAfterBattleText ; TextAfterBattle
-	dw LoreleiEndBattleText ; TextEndBattle
-	dw LoreleiEndBattleText ; TextEndBattle
+LoreleisRoomTrainerHeaders:
+	def_trainers
+LoreleisRoomTrainerHeader0:
+	trainer EVENT_BEAT_LORELEIS_ROOM_TRAINER_0, 0, LoreleisRoomLoreleiBeforeBattleText, LoreleisRoomLoreleiEndBattleText, LoreleisRoomLoreleiAfterBattleText
+	db -1 ; end
 
-	db $ff
-
-LoreleiText1:
-	TX_ASM
-	ld hl, LoreleiTrainerHeader0
+LoreleisRoomLoreleiText:
+	text_asm
+	ld hl, LoreleisRoomTrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-LoreleiBeforeBattleText:
-	TX_FAR _LoreleiBeforeBattleText
-	db "@"
+LoreleisRoomLoreleiBeforeBattleText:
+	text_far _LoreleisRoomLoreleiBeforeBattleText
+	text_end
 
-LoreleiEndBattleText:
-	TX_FAR _LoreleiEndBattleText
-	db "@"
+LoreleisRoomLoreleiEndBattleText:
+	text_far _LoreleisRoomLoreleiEndBattleText
+	text_end
 
-LoreleiAfterBattleText:
-	TX_FAR _LoreleiAfterBattleText
-	db "@"
+LoreleisRoomLoreleiAfterBattleText:
+	text_far _LoreleisRoomLoreleiAfterBattleText
+	text_end
 
-LoreleiDontRunAwayText:
-	TX_FAR _LoreleiDontRunAwayText
-	db "@"
+LoreleisRoomLoreleiDontRunAwayText:
+	text_far _LoreleisRoomLoreleiDontRunAwayText
+	text_end

@@ -1,28 +1,28 @@
 SilphCoElevator_Script:
 	ld hl, wCurrentMapScriptFlags
-	bit 5, [hl]
-	res 5, [hl]
+	bit BIT_CUR_MAP_LOADED_1, [hl]
+	res BIT_CUR_MAP_LOADED_1, [hl]
 	push hl
-	call nz, SilphCoElevatorScript_457dc
+	call nz, SilphCoElevatorStoreWarpEntriesScript
 	pop hl
-	bit 7, [hl]
-	res 7, [hl]
-	call nz, SilphCoElevatorScript_45827
+	bit BIT_CUR_MAP_USED_ELEVATOR, [hl]
+	res BIT_CUR_MAP_USED_ELEVATOR, [hl]
+	call nz, SilphCoElevatorShakeScript
 	xor a
 	ld [wAutoTextBoxDrawingControl], a
 	inc a
 	ld [wDoNotWaitForButtonPressAfterDisplayingText], a
 	ret
 
-SilphCoElevatorScript_457dc:
+SilphCoElevatorStoreWarpEntriesScript:
 	ld hl, wWarpEntries
 	ld a, [wWarpedFromWhichWarp]
 	ld b, a
 	ld a, [wWarpedFromWhichMap]
 	ld c, a
-	call SilphCoElevatorScript_457ea
-
-SilphCoElevatorScript_457ea:
+	call .StoreWarpEntry
+	; fallthrough
+.StoreWarpEntry:
 	inc hl
 	inc hl
 	ld a, b
@@ -31,17 +31,17 @@ SilphCoElevatorScript_457ea:
 	ld [hli], a
 	ret
 
-SilphCoElevatorScript_457f1:
+SilphCoElevatorCopyWarpMapsScript:
 	ld hl, SilphCoElevatorFloors
 	call LoadItemList
 	ld hl, SilphCoElevatorWarpMaps
 	ld de, wElevatorWarpMaps
-	ld bc, SilphCoElevatorWarpMapsEnd - SilphCoElevatorWarpMaps
+	ld bc, SilphCoElevatorWarpMaps.End - SilphCoElevatorWarpMaps
 	call CopyData
 	ret
 
 SilphCoElevatorFloors:
-	db $0B ; num elements in list
+	db 11 ; #
 	db FLOOR_1F
 	db FLOOR_2F
 	db FLOOR_3F
@@ -53,36 +53,36 @@ SilphCoElevatorFloors:
 	db FLOOR_9F
 	db FLOOR_10F
 	db FLOOR_11F
-	db $FF ; terminator
+	db -1 ; end
 
-SilphCoElevatorWarpMaps:
-; first byte is warp number
-; second byte is map number
 ; These specify where the player goes after getting out of the elevator.
-	db $03, SILPH_CO_1F
-	db $02, SILPH_CO_2F
-	db $02, SILPH_CO_3F
-	db $02, SILPH_CO_4F
-	db $02, SILPH_CO_5F
-	db $02, SILPH_CO_6F
-	db $02, SILPH_CO_7F
-	db $02, SILPH_CO_8F
-	db $02, SILPH_CO_9F
-	db $02, SILPH_CO_10F
-	db $01, SILPH_CO_11F
-SilphCoElevatorWarpMapsEnd:
+SilphCoElevatorWarpMaps:
+	; warp number, map id
+	db 3, SILPH_CO_1F
+	db 2, SILPH_CO_2F
+	db 2, SILPH_CO_3F
+	db 2, SILPH_CO_4F
+	db 2, SILPH_CO_5F
+	db 2, SILPH_CO_6F
+	db 2, SILPH_CO_7F
+	db 2, SILPH_CO_8F
+	db 2, SILPH_CO_9F
+	db 2, SILPH_CO_10F
+	db 1, SILPH_CO_11F
+.End:
 
-SilphCoElevatorScript_45827:
+SilphCoElevatorShakeScript:
 	call Delay3
-	callba ShakeElevator
+	farcall ShakeElevator
 	ret
 
 SilphCoElevator_TextPointers:
-	dw SilphCoElevatorText1
+	def_text_pointers
+	dw_const SilphCoElevatorElevatorText, TEXT_SILPHCOELEVATOR_ELEVATOR
 
-SilphCoElevatorText1:
-	TX_ASM
-	call SilphCoElevatorScript_457f1
+SilphCoElevatorElevatorText:
+	text_asm
+	call SilphCoElevatorCopyWarpMapsScript
 	ld hl, SilphCoElevatorWarpMaps
 	predef DisplayElevatorFloorMenu
 	jp TextScriptEnd

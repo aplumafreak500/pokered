@@ -1,40 +1,32 @@
-# Pokémon Red, Green and Blue
+# Pokémon Red, Blue, and Green
 
-[**CURRENT BUILD IS OUTDATED.**]
+This is a revision of Pokémon Red and Blue (with a fan-made Green.). It is a continuation of [RonaldMcFrickinDonald's rgbstarterpak](https://github.com/JuicyChickenThighs/pokergb) made to work with modern [upstream pokered](https://github.com/pret/pokered) and rgbds, even coming with a debug variant and a 3DS VC patch.
 
-This is a revision of Pokémon Red and Blue (with a fan-made Green.).
+It builds the following ROMs:
 
-It builds the following roms:
-
-* Pokémon Red (UE) [S][!].gb  `md5: 3d45c1ee9abd5738df46d2bdda8b57dc`
-* Pokémon Green (UE) [S][!].gb`md5: 787df5ffa3cd64617e6c567b8a09e6d5`
-* Pokémon Blue (UE) [S][!].gb `md5: 8ad6477e54eba492a198e391dd647303`
+- Pokemon Red (Starterpak) (UE) [S][!].gb
+- Pokemon Blue (Starterpak) (UE) [S][!].gb
+- Pokemon Green (Starterpak) (UE) [S][!].gb
+- REDMONS.GB (debug build)
+- BLUEMONS.GB (debug build)
+- GREENMONS.GB (debug build)
+- dmgapae0.e69.patch
+- dmgapbe0.e69.patch
+- dmgapee0.e68.patch
 
 To set up the repository, see [**INSTALL.md**](INSTALL.md).
 
-## See Pret's other disassemblies:
+## See also
 
-* Disassembly of [**Pokémon Red/Blue**][pokered]
-* Disassembly of [**Pokémon Yellow**][pokeyellow]
-* Disassembly of [**Pokémon Gold/Silver**][pokegold]
-* Disassembly of [**Pokémon Crystal**][pokecrystal]
-* Disassembly of [**Pokémon Pinball**][pokepinball]
-* Disassembly of [**Pokémon TCG**][poketcg]
-* Disassembly of [**Pokémon Ruby/Sapphire**][pokeruby]
-* Disassembly of [**Pokémon Fire Red**][pokefirered]
-* Disassembly of [**Pokémon Emerald**][pokeemerald]
-* Discord: [**pret**][Discord]
-* irc: **irc.freenode.net** [**#pret**][irc]
+- [**Upstream Wiki**][wiki] (includes [tutorials][tutorials])
+- [**Upstream `symbols` branch**][symbols]
+- [**Tools**][tools]
 
-[pokered]: https://github.com/pret/pokered
-[pokeyellow]: https://github.com/pret/pokeyellow
-[pokegold]: https://github.com/pret/pokegold
-[pokecrystal]: https://github.com/pret/pokecrystal
-[pokepinball]: https://github.com/pret/pokepinball
-[poketcg]: https://github.com/pret/poketcg
-[pokeruby]: https://github.com/pret/pokeruby
-[pokefirered]: https://github.com/pret/pokefirered
-[pokeemerald]: https://github.com/pret/pokeemerald
-[Discord]: https://discord.gg/6EuWgX9
-[irc]: https://kiwiirc.com/client/irc.freenode.net/?#pret
+You can find us on [Discord (pret, #pokered)](https://discord.gg/d5dubZ3).
 
+For other pret projects, see [pret.github.io](https://pret.github.io/).
+
+[wiki]: https://github.com/pret/pokered/wiki
+[tutorials]: https://github.com/pret/pokered/wiki/Tutorials
+[symbols]: https://github.com/pret/pokered/tree/symbols
+[tools]: https://github.com/pret/gb-asm-tools

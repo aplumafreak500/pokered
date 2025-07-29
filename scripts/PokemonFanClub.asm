@@ -1,7 +1,7 @@
 PokemonFanClub_Script:
 	jp EnableAutoTextBoxDrawing
 
-FanClubBikeInBag:
+PokemonFanClub_CheckBikeInBag:
 ; check if any bike paraphernalia in bag
 	CheckEvent EVENT_GOT_BIKE_VOUCHER
 	ret nz
@@ -12,98 +12,94 @@ FanClubBikeInBag:
 	jp IsItemInBag
 
 PokemonFanClub_TextPointers:
-	dw FanClubText1
-	dw FanClubText2
-	dw FanClubText3
-	dw FanClubText4
-	dw FanClubText5
-	dw FanClubText6
-	dw FanClubText7
-	dw FanClubText8
+	def_text_pointers
+	dw_const PokemonFanClubPikachuFanText,   TEXT_POKEMONFANCLUB_PIKACHU_FAN
+	dw_const PokemonFanClubSeelFanText,      TEXT_POKEMONFANCLUB_SEEL_FAN
+	dw_const PokemonFanClubPikachuText,      TEXT_POKEMONFANCLUB_PIKACHU
+	dw_const PokemonFanClubSeelText,         TEXT_POKEMONFANCLUB_SEEL
+	dw_const PokemonFanClubChairmanText,     TEXT_POKEMONFANCLUB_CHAIRMAN
+	dw_const PokemonFanClubReceptionistText, TEXT_POKEMONFANCLUB_RECEPTIONIST
+	dw_const PokemonFanClubSign1Text,        TEXT_POKEMONFANCLUB_SIGN_1
+	dw_const PokemonFanClubSign2Text,        TEXT_POKEMONFANCLUB_SIGN_2
 
-FanClubText1:
-; pikachu fan
-	TX_ASM
+PokemonFanClubPikachuFanText:
+	text_asm
 	CheckEvent EVENT_PIKACHU_FAN_BOAST
 	jr nz, .mineisbetter
-	ld hl, .normaltext
+	ld hl, .NormalText
 	call PrintText
 	SetEvent EVENT_SEEL_FAN_BOAST
 	jr .done
 .mineisbetter
-	ld hl, .bettertext
+	ld hl, .BetterText
 	call PrintText
 	ResetEvent EVENT_PIKACHU_FAN_BOAST
 .done
 	jp TextScriptEnd
 
-.normaltext
-	TX_FAR PikachuFanText
-	db "@"
+.NormalText:
+	text_far _PokemonFanClubPikachuFanNormalText
+	text_end
 
-.bettertext
-	TX_FAR PikachuFanBetterText
-	db "@"
+.BetterText:
+	text_far _PokemonFanClubPikachuFanBetterText
+	text_end
 
-FanClubText2:
-; seel fan
-	TX_ASM
+PokemonFanClubSeelFanText:
+	text_asm
 	CheckEvent EVENT_SEEL_FAN_BOAST
 	jr nz, .mineisbetter
-	ld hl, .normaltext
+	ld hl, .NormalText
 	call PrintText
 	SetEvent EVENT_PIKACHU_FAN_BOAST
 	jr .done
 .mineisbetter
-	ld hl, .bettertext
+	ld hl, .BetterText
 	call PrintText
 	ResetEvent EVENT_SEEL_FAN_BOAST
 .done
 	jp TextScriptEnd
 
-.normaltext
-	TX_FAR SeelFanText
-	db "@"
+.NormalText:
+	text_far _PokemonFanClubSeelFanNormalText
+	text_end
 
-.bettertext
-	TX_FAR SeelFanBetterText
-	db "@"
+.BetterText:
+	text_far _PokemonFanClubSeelFanBetterText
+	text_end
 
-FanClubText3:
-; pikachu
-	TX_ASM
-	ld hl, .text
+PokemonFanClubPikachuText:
+	text_asm
+	ld hl, .Text
 	call PrintText
 	ld a, PIKACHU
 	call PlayCry
 	call WaitForSoundToFinish
 	jp TextScriptEnd
 
-.text
-	TX_FAR FanClubPikachuText
-	db "@"
+.Text
+	text_far _PokemonFanClubPikachuText
+	text_end
 
-FanClubText4:
-; seel
-	TX_ASM
-	ld hl, .text
+PokemonFanClubSeelText:
+	text_asm
+	ld hl, .Text
 	call PrintText
 	ld a, SEEL
 	call PlayCry
 	call WaitForSoundToFinish
 	jp TextScriptEnd
 
-.text
-	TX_FAR FanClubSeelText
-	db "@"
+.Text:
+	text_far _PokemonFanClubSeelText
+	text_end
 
-FanClubText5:
-; chair
-	TX_ASM
-	call FanClubBikeInBag
+PokemonFanClubChairmanText:
+	text_asm
+	call PokemonFanClub_CheckBikeInBag
 	jr nz, .nothingleft
 
-	ld hl, .meetchairtext
+	ld hl, .IntroText
 	call PrintText
 	call YesNoChoice
 	ld a, [wCurrentMenuItem]
@@ -111,63 +107,63 @@ FanClubText5:
 	jr nz, .nothanks
 
 	; tell the story
-	ld hl, .storytext
+	ld hl, .StoryText
 	call PrintText
 	lb bc, BIKE_VOUCHER, 1
 	call GiveItem
-	jr nc, .BagFull
-	ld hl, .receivedvouchertext
+	jr nc, .bag_full
+	ld hl, .BikeVoucherText
 	call PrintText
 	SetEvent EVENT_GOT_BIKE_VOUCHER
 	jr .done
-.BagFull
-	ld hl, .bagfulltext
+.bag_full
+	ld hl, .BagFullText
 	call PrintText
 	jr .done
 .nothanks
-	ld hl, .nostorytext
+	ld hl, .NoStoryText
 	call PrintText
 	jr .done
 .nothingleft
-	ld hl, .finaltext
+	ld hl, .FinalText
 	call PrintText
 .done
 	jp TextScriptEnd
 
-.meetchairtext
-	TX_FAR FanClubMeetChairText
-	db "@"
+.IntroText:
+	text_far _PokemonFanClubChairmanIntroText
+	text_end
 
-.storytext
-	TX_FAR FanClubChairStoryText
-	db "@"
+.StoryText:
+	text_far _PokemonFanClubChairmanStoryText
+	text_end
 
-.receivedvouchertext
-	TX_FAR ReceivedBikeVoucherText
-	TX_SFX_KEY_ITEM
-	TX_FAR ExplainBikeVoucherText
-	db "@"
+.BikeVoucherText:
+	text_far _PokemonFanClubReceivedBikeVoucherText
+	sound_get_key_item
+	text_far _PokemonFanClubExplainBikeVoucherText
+	text_end
 
-.nostorytext
-	TX_FAR FanClubNoStoryText
-	db "@"
+.NoStoryText:
+	text_far _PokemonFanClubNoStoryText
+	text_end
 
-.finaltext
-	TX_FAR FanClubChairFinalText
-	db "@"
+.FinalText:
+	text_far _PokemonFanClubChairFinalText
+	text_end
 
-.bagfulltext
-	TX_FAR FanClubBagFullText
-	db "@"
+.BagFullText:
+	text_far _PokemonFanClubBagFullText
+	text_end
 
-FanClubText6:
-	TX_FAR _FanClubText6
-	db "@"
+PokemonFanClubReceptionistText:
+	text_far _PokemonFanClubReceptionistText
+	text_end
 
-FanClubText7:
-	TX_FAR _FanClubText7
-	db "@"
+PokemonFanClubSign1Text:
+	text_far _PokemonFanClubSign1Text
+	text_end
 
-FanClubText8:
-	TX_FAR _FanClubText8
-	db "@"
+PokemonFanClubSign2Text:
+	text_far _PokemonFanClubSign2Text
+	text_end

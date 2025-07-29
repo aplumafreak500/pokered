@@ -1,6 +1,6 @@
 Route19_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route19TrainerHeader0
+	ld hl, Route19TrainerHeaders
 	ld de, Route19_ScriptPointers
 	ld a, [wRoute19CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,295 +8,229 @@ Route19_Script:
 	ret
 
 Route19_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE19_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE19_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE19_END_BATTLE
 
 Route19_TextPointers:
-	dw Route19Text1
-	dw Route19Text2
-	dw Route19Text3
-	dw Route19Text4
-	dw Route19Text5
-	dw Route19Text6
-	dw Route19Text7
-	dw Route19Text8
-	dw Route19Text9
-	dw Route19Text10
-	dw Route19Text11
+	def_text_pointers
+	dw_const Route19CooltrainerM1Text, TEXT_ROUTE19_COOLTRAINER_M1
+	dw_const Route19CooltrainerM2Text, TEXT_ROUTE19_COOLTRAINER_M2
+	dw_const Route19Swimmer1Text,      TEXT_ROUTE19_SWIMMER1
+	dw_const Route19Swimmer2Text,      TEXT_ROUTE19_SWIMMER2
+	dw_const Route19Swimmer3Text,      TEXT_ROUTE19_SWIMMER3
+	dw_const Route19Swimmer4Text,      TEXT_ROUTE19_SWIMMER4
+	dw_const Route19Swimmer5Text,      TEXT_ROUTE19_SWIMMER5
+	dw_const Route19Swimmer6Text,      TEXT_ROUTE19_SWIMMER6
+	dw_const Route19Swimmer7Text,      TEXT_ROUTE19_SWIMMER7
+	dw_const Route19Swimmer8Text,      TEXT_ROUTE19_SWIMMER8
+	dw_const Route19SignText,          TEXT_ROUTE19_SIGN
 
+Route19TrainerHeaders:
+	def_trainers
 Route19TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_0
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_0
-	dw Route19BattleText1 ; TextBeforeBattle
-	dw Route19AfterBattleText1 ; TextAfterBattle
-	dw Route19EndBattleText1 ; TextEndBattle
-	dw Route19EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_0, 4, Route19CooltrainerM1BattleText, Route19CooltrainerM1EndBattleText, Route19CooltrainerM1AfterBattleText
 Route19TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_1
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_1
-	dw Route19BattleText2 ; TextBeforeBattle
-	dw Route19AfterBattleText2 ; TextAfterBattle
-	dw Route19EndBattleText2 ; TextEndBattle
-	dw Route19EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_1, 3, Route19CooltrainerM2BattleText, Route19CooltrainerM2EndBattleText, Route19CooltrainerM2AfterBattleText
 Route19TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_2
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_2
-	dw Route19BattleText3 ; TextBeforeBattle
-	dw Route19AfterBattleText3 ; TextAfterBattle
-	dw Route19EndBattleText3 ; TextEndBattle
-	dw Route19EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_2, 3, Route19Swimmer1BattleText, Route19Swimmer1EndBattleText, Route19Swimmer1AfterBattleText
 Route19TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_3
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_3
-	dw Route19BattleText4 ; TextBeforeBattle
-	dw Route19AfterBattleText4 ; TextAfterBattle
-	dw Route19EndBattleText4 ; TextEndBattle
-	dw Route19EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_3, 4, Route19Swimmer2BattleText, Route19Swimmer2EndBattleText, Route19Swimmer2AfterBattleText
 Route19TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_4
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_4
-	dw Route19BattleText5 ; TextBeforeBattle
-	dw Route19AfterBattleText5 ; TextAfterBattle
-	dw Route19EndBattleText5 ; TextEndBattle
-	dw Route19EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_4, 4, Route19Swimmer3BattleText, Route19Swimmer3EndBattleText, Route19Swimmer3AfterBattleText
 Route19TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_5
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_5
-	dw Route19BattleText6 ; TextBeforeBattle
-	dw Route19AfterBattleText6 ; TextAfterBattle
-	dw Route19EndBattleText6 ; TextEndBattle
-	dw Route19EndBattleText6 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_5, 4, Route19Swimmer4BattleText, Route19Swimmer4EndBattleText, Route19Swimmer4AfterBattleText
 Route19TrainerHeader6:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_6
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_6
-	dw Route19BattleText7 ; TextBeforeBattle
-	dw Route19AfterBattleText7 ; TextAfterBattle
-	dw Route19EndBattleText7 ; TextEndBattle
-	dw Route19EndBattleText7 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_6, 3, Route19Swimmer5BattleText, Route19Swimmer5EndBattleText, Route19Swimmer5AfterBattleText
 Route19TrainerHeader7:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_7, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_7, 1
-	dw Route19BattleText8 ; TextBeforeBattle
-	dw Route19AfterBattleText8 ; TextAfterBattle
-	dw Route19EndBattleText8 ; TextEndBattle
-	dw Route19EndBattleText8 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_7, 4, Route19Swimmer6BattleText, Route19Swimmer6EndBattleText, Route19Swimmer6AfterBattleText
 Route19TrainerHeader8:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_8, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_8, 1
-	dw Route19BattleText9 ; TextBeforeBattle
-	dw Route19AfterBattleText9 ; TextAfterBattle
-	dw Route19EndBattleText9 ; TextEndBattle
-	dw Route19EndBattleText9 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_8, 4, Route19Swimmer7BattleText, Route19Swimmer7EndBattleText, Route19Swimmer7AfterBattleText
 Route19TrainerHeader9:
-	dbEventFlagBit EVENT_BEAT_ROUTE_19_TRAINER_9, 1
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_19_TRAINER_9, 1
-	dw Route19BattleText10 ; TextBeforeBattle
-	dw Route19AfterBattleText10 ; TextAfterBattle
-	dw Route19EndBattleText10 ; TextEndBattle
-	dw Route19EndBattleText10 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_19_TRAINER_9, 4, Route19Swimmer8BattleText, Route19Swimmer8EndBattleText, Route19Swimmer8AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route19Text1:
-	TX_ASM
+Route19CooltrainerM1Text:
+	text_asm
 	ld hl, Route19TrainerHeader0
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text2:
-	TX_ASM
+Route19CooltrainerM2Text:
+	text_asm
 	ld hl, Route19TrainerHeader1
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text3:
-	TX_ASM
+Route19Swimmer1Text:
+	text_asm
 	ld hl, Route19TrainerHeader2
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text4:
-	TX_ASM
+Route19Swimmer2Text:
+	text_asm
 	ld hl, Route19TrainerHeader3
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text5:
-	TX_ASM
+Route19Swimmer3Text:
+	text_asm
 	ld hl, Route19TrainerHeader4
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text6:
-	TX_ASM
+Route19Swimmer4Text:
+	text_asm
 	ld hl, Route19TrainerHeader5
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text7:
-	TX_ASM
+Route19Swimmer5Text:
+	text_asm
 	ld hl, Route19TrainerHeader6
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text8:
-	TX_ASM
+Route19Swimmer6Text:
+	text_asm
 	ld hl, Route19TrainerHeader7
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text9:
-	TX_ASM
+Route19Swimmer7Text:
+	text_asm
 	ld hl, Route19TrainerHeader8
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19Text10:
-	TX_ASM
+Route19Swimmer8Text:
+	text_asm
 	ld hl, Route19TrainerHeader9
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route19BattleText1:
-	TX_FAR _Route19BattleText1
-	db "@"
+Route19CooltrainerM1BattleText:
+	text_far _Route19CooltrainerM1BattleText
+	text_end
 
-Route19EndBattleText1:
-	TX_FAR _Route19EndBattleText1
-	db "@"
+Route19CooltrainerM1EndBattleText:
+	text_far _Route19CooltrainerM1EndBattleText
+	text_end
 
-Route19AfterBattleText1:
-	TX_FAR _Route19AfterBattleText1
-	db "@"
+Route19CooltrainerM1AfterBattleText:
+	text_far _Route19CooltrainerM1AfterBattleText
+	text_end
 
-Route19BattleText2:
-	TX_FAR _Route19BattleText2
-	db "@"
+Route19CooltrainerM2BattleText:
+	text_far _Route19CooltrainerM2BattleText
+	text_end
 
-Route19EndBattleText2:
-	TX_FAR _Route19EndBattleText2
-	db "@"
+Route19CooltrainerM2EndBattleText:
+	text_far _Route19CooltrainerM2EndBattleText
+	text_end
 
-Route19AfterBattleText2:
-	TX_FAR _Route19AfterBattleText2
-	db "@"
+Route19CooltrainerM2AfterBattleText:
+	text_far _Route19CooltrainerM2AfterBattleText
+	text_end
 
-Route19BattleText3:
-	TX_FAR _Route19BattleText3
-	db "@"
+Route19Swimmer1BattleText:
+	text_far _Route19Swimmer1BattleText
+	text_end
 
-Route19EndBattleText3:
-	TX_FAR _Route19EndBattleText3
-	db "@"
+Route19Swimmer1EndBattleText:
+	text_far _Route19Swimmer1EndBattleText
+	text_end
 
-Route19AfterBattleText3:
-	TX_FAR _Route19AfterBattleText3
-	db "@"
+Route19Swimmer1AfterBattleText:
+	text_far _Route19Swimmer1AfterBattleText
+	text_end
 
-Route19BattleText4:
-	TX_FAR _Route19BattleText4
-	db "@"
+Route19Swimmer2BattleText:
+	text_far _Route19Swimmer2BattleText
+	text_end
 
-Route19EndBattleText4:
-	TX_FAR _Route19EndBattleText4
-	db "@"
+Route19Swimmer2EndBattleText:
+	text_far _Route19Swimmer2EndBattleText
+	text_end
 
-Route19AfterBattleText4:
-	TX_FAR _Route19AfterBattleText4
-	db "@"
+Route19Swimmer2AfterBattleText:
+	text_far _Route19Swimmer2AfterBattleText
+	text_end
 
-Route19BattleText5:
-	TX_FAR _Route19BattleText5
-	db "@"
+Route19Swimmer3BattleText:
+	text_far _Route19Swimmer3BattleText
+	text_end
 
-Route19EndBattleText5:
-	TX_FAR _Route19EndBattleText5
-	db "@"
+Route19Swimmer3EndBattleText:
+	text_far _Route19Swimmer3EndBattleText
+	text_end
 
-Route19AfterBattleText5:
-	TX_FAR _Route19AfterBattleText5
-	db "@"
+Route19Swimmer3AfterBattleText:
+	text_far _Route19Swimmer3AfterBattleText
+	text_end
 
-Route19BattleText6:
-	TX_FAR _Route19BattleText6
-	db "@"
+Route19Swimmer4BattleText:
+	text_far _Route19Swimmer4BattleText
+	text_end
 
-Route19EndBattleText6:
-	TX_FAR _Route19EndBattleText6
-	db "@"
+Route19Swimmer4EndBattleText:
+	text_far _Route19Swimmer4EndBattleText
+	text_end
 
-Route19AfterBattleText6:
-	TX_FAR _Route19AfterBattleText6
-	db "@"
+Route19Swimmer4AfterBattleText:
+	text_far _Route19Swimmer4AfterBattleText
+	text_end
 
-Route19BattleText7:
-	TX_FAR _Route19BattleText7
-	db "@"
+Route19Swimmer5BattleText:
+	text_far _Route19Swimmer5BattleText
+	text_end
 
-Route19EndBattleText7:
-	TX_FAR _Route19EndBattleText7
-	db "@"
+Route19Swimmer5EndBattleText:
+	text_far _Route19Swimmer5EndBattleText
+	text_end
 
-Route19AfterBattleText7:
-	TX_FAR _Route19AfterBattleText7
-	db "@"
+Route19Swimmer5AfterBattleText:
+	text_far _Route19Swimmer5AfterBattleText
+	text_end
 
-Route19BattleText8:
-	TX_FAR _Route19BattleText8
-	db "@"
+Route19Swimmer6BattleText:
+	text_far _Route19Swimmer6BattleText
+	text_end
 
-Route19EndBattleText8:
-	TX_FAR _Route19EndBattleText8
-	db "@"
+Route19Swimmer6EndBattleText:
+	text_far _Route19Swimmer6EndBattleText
+	text_end
 
-Route19AfterBattleText8:
-	TX_FAR _Route19AfterBattleText8
-	db "@"
+Route19Swimmer6AfterBattleText:
+	text_far _Route19Swimmer6AfterBattleText
+	text_end
 
-Route19BattleText9:
-	TX_FAR _Route19BattleText9
-	db "@"
+Route19Swimmer7BattleText:
+	text_far _Route19Swimmer7BattleText
+	text_end
 
-Route19EndBattleText9:
-	TX_FAR _Route19EndBattleText9
-	db "@"
+Route19Swimmer7EndBattleText:
+	text_far _Route19Swimmer7EndBattleText
+	text_end
 
-Route19AfterBattleText9:
-	TX_FAR _Route19AfterBattleText9
-	db "@"
+Route19Swimmer7AfterBattleText:
+	text_far _Route19Swimmer7AfterBattleText
+	text_end
 
-Route19BattleText10:
-	TX_FAR _Route19BattleText10
-	db "@"
+Route19Swimmer8BattleText:
+	text_far _Route19Swimmer8BattleText
+	text_end
 
-Route19EndBattleText10:
-	TX_FAR _Route19EndBattleText10
-	db "@"
+Route19Swimmer8EndBattleText:
+	text_far _Route19Swimmer8EndBattleText
+	text_end
 
-Route19AfterBattleText10:
-	TX_FAR _Route19AfterBattleText10
-	db "@"
+Route19Swimmer8AfterBattleText:
+	text_far _Route19Swimmer8AfterBattleText
+	text_end
 
-Route19Text11:
-	TX_FAR _Route19Text11
-	db "@"
+Route19SignText:
+	text_far _Route19SignText
+	text_end

@@ -1,7 +1,7 @@
 ; These routines manage gradual fading
 ; (e.g., entering a doorway)
 LoadGBPal::
-	ld a, [wMapPalOffset] ;tells if wCurMap is dark (requires HM5_FLASH?)
+	ld a, [wMapPalOffset] ; tells if wCurMap is dark (requires HM5_FLASH?)
 	ld b, a
 	ld hl, FadePal4
 	ld a, l
@@ -11,11 +11,11 @@ LoadGBPal::
 	dec h
 .ok
 	ld a, [hli]
-	ld [rBGP], a
+	ldh [rBGP], a
 	ld a, [hli]
-	ld [rOBP0], a
+	ldh [rOBP0], a
 	ld a, [hli]
-	ld [rOBP1], a
+	ldh [rOBP1], a
 	ret
 
 GBFadeInFromBlack::
@@ -29,11 +29,11 @@ GBFadeOutToWhite::
 
 GBFadeIncCommon:
 	ld a, [hli]
-	ld [rBGP], a
+	ldh [rBGP], a
 	ld a, [hli]
-	ld [rOBP0], a
+	ldh [rOBP0], a
 	ld a, [hli]
-	ld [rOBP1], a
+	ldh [rOBP1], a
 	ld c, 8
 	call DelayFrames
 	dec b
@@ -51,23 +51,23 @@ GBFadeInFromWhite::
 
 GBFadeDecCommon:
 	ld a, [hld]
-	ld [rOBP1], a
+	ldh [rOBP1], a
 	ld a, [hld]
-	ld [rOBP0], a
+	ldh [rOBP0], a
 	ld a, [hld]
-	ld [rBGP], a
+	ldh [rBGP], a
 	ld c, 8
 	call DelayFrames
 	dec b
 	jr nz, GBFadeDecCommon
 	ret
 
-FadePal1:: db %11111111, %11111111, %11111111
-FadePal2:: db %11111110, %11111110, %11111000
-FadePal3:: db %11111001, %11100100, %11100100
-FadePal4:: db %11100100, %11010000, %11100000
-;                rBGP      rOBP0      rOBP1
-FadePal5:: db %11100100, %11010000, %11100000
-FadePal6:: db %10010000, %10000000, %10010000
-FadePal7:: db %01000000, %01000000, %01000000
-FadePal8:: db %00000000, %00000000, %00000000
+FadePal1:: dc 3,3,3,3, 3,3,3,3, 3,3,3,3
+FadePal2:: dc 3,3,3,2, 3,3,3,2, 3,3,2,0
+FadePal3:: dc 3,3,2,1, 3,2,1,0, 3,2,1,0
+FadePal4:: dc 3,2,1,0, 3,1,0,0, 3,2,0,0
+;              rBGP     rOBP0    rOBP1
+FadePal5:: dc 3,2,1,0, 3,1,0,0, 3,2,0,0
+FadePal6:: dc 2,1,0,0, 2,0,0,0, 2,1,0,0
+FadePal7:: dc 1,0,0,0, 1,0,0,0, 1,0,0,0
+FadePal8:: dc 0,0,0,0, 0,0,0,0, 0,0,0,0

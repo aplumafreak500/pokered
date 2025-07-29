@@ -10,9 +10,11 @@
 *.2bpp binary
 *.1bpp binary
 *.rle binary
-*.tilecoll binary
 *.bst binary
-*.map binary
+*.tilemap binary
 *.wav binary
 *.blk binary
 *.pic binary
+
+# Declare files that will always have CRLF line endings on checkout.
+*.patch.template text eol=crlf linguist-language=INI

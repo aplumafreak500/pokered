@@ -1,6 +1,6 @@
 Route9_Script:
 	call EnableAutoTextBoxDrawing
-	ld hl, Route9TrainerHeader0
+	ld hl, Route9TrainerHeaders
 	ld de, Route9_ScriptPointers
 	ld a, [wRoute9CurScript]
 	call ExecuteCurMapScriptInTable
@@ -8,261 +8,202 @@ Route9_Script:
 	ret
 
 Route9_ScriptPointers:
-	dw CheckFightingMapTrainers
-	dw DisplayEnemyTrainerTextAndStartBattle
-	dw EndTrainerBattle
+	def_script_pointers
+	dw_const CheckFightingMapTrainers,              SCRIPT_ROUTE9_DEFAULT
+	dw_const DisplayEnemyTrainerTextAndStartBattle, SCRIPT_ROUTE9_START_BATTLE
+	dw_const EndTrainerBattle,                      SCRIPT_ROUTE9_END_BATTLE
 
 Route9_TextPointers:
-	dw Route9Text1
-	dw Route9Text2
-	dw Route9Text3
-	dw Route9Text4
-	dw Route9Text5
-	dw Route9Text6
-	dw Route9Text7
-	dw Route9Text8
-	dw Route9Text9
-	dw PickUpItemText
-	dw Route9Text11
+	def_text_pointers
+	dw_const Route9CooltrainerF1Text, TEXT_ROUTE9_COOLTRAINER_F1
+	dw_const Route9CooltrainerM1Text, TEXT_ROUTE9_COOLTRAINER_M1
+	dw_const Route9CooltrainerM2Text, TEXT_ROUTE9_COOLTRAINER_M2
+	dw_const Route9CooltrainerF2Text, TEXT_ROUTE9_COOLTRAINER_F2
+	dw_const Route9Hiker1Text,        TEXT_ROUTE9_HIKER1
+	dw_const Route9Hiker2Text,        TEXT_ROUTE9_HIKER2
+	dw_const Route9Youngster1Text,    TEXT_ROUTE9_YOUNGSTER1
+	dw_const Route9Hiker3Text,        TEXT_ROUTE9_HIKER3
+	dw_const Route9Youngster2Text,    TEXT_ROUTE9_YOUNGSTER2
+	dw_const PickUpItemText,          TEXT_ROUTE9_TM_TELEPORT
+	dw_const Route9SignText,          TEXT_ROUTE9_SIGN
 
+Route9TrainerHeaders:
+	def_trainers
 Route9TrainerHeader0:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_0
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_0
-	dw Route9BattleText1 ; TextBeforeBattle
-	dw Route9AfterBattleText1 ; TextAfterBattle
-	dw Route9EndBattleText1 ; TextEndBattle
-	dw Route9EndBattleText1 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_0, 3, Route9CooltrainerF1BattleText, Route9CooltrainerF1EndBattleText, Route9CooltrainerF1AfterBattleText
 Route9TrainerHeader1:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_1
-	dw Route9BattleText2 ; TextBeforeBattle
-	dw Route9AfterBattleText2 ; TextAfterBattle
-	dw Route9EndBattleText2 ; TextEndBattle
-	dw Route9EndBattleText2 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_1, 2, Route9CooltrainerM1BattleText, Route9CooltrainerM1EndBattleText, Route9CooltrainerM1AfterBattleText
 Route9TrainerHeader2:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_2
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_2
-	dw Route9BattleText3 ; TextBeforeBattle
-	dw Route9AfterBattleText3 ; TextAfterBattle
-	dw Route9EndBattleText3 ; TextEndBattle
-	dw Route9EndBattleText3 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_2, 4, Route9CooltrainerM2BattleText, Route9CooltrainerM2EndBattleText, Route9CooltrainerM2AfterBattleText
 Route9TrainerHeader3:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_3
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_3
-	dw Route9BattleText4 ; TextBeforeBattle
-	dw Route9AfterBattleText4 ; TextAfterBattle
-	dw Route9EndBattleText4 ; TextEndBattle
-	dw Route9EndBattleText4 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_3, 2, Route9CooltrainerF2BattleText, Route9CooltrainerF2EndBattleText, Route9CooltrainerF2AfterBattleText
 Route9TrainerHeader4:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_4
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_4
-	dw Route9BattleText5 ; TextBeforeBattle
-	dw Route9AfterBattleText5 ; TextAfterBattle
-	dw Route9EndBattleText5 ; TextEndBattle
-	dw Route9EndBattleText5 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_4, 2, Route9Hiker1BattleText, Route9Hiker1EndBattleText, Route9Hiker1AfterBattleText
 Route9TrainerHeader5:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_5
-	db ($3 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_5
-	dw Route9BattleText6 ; TextBeforeBattle
-	dw Route9AfterBattleText6 ; TextAfterBattle
-	dw Route9EndBattleText6 ; TextEndBattle
-	dw Route9EndBattleText6 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_5, 3, Route9Hiker2BattleText, Route9Hiker2EndBattleText, Route9Hiker2AfterBattleText
 Route9TrainerHeader6:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_6
-	db ($4 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_6
-	dw Route9BattleText7 ; TextBeforeBattle
-	dw Route9AfterBattleText7 ; TextAfterBattle
-	dw Route9EndBattleText7 ; TextEndBattle
-	dw Route9EndBattleText7 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_6, 4, Route9Youngster1BattleText, Route9Youngster1EndBattleText, Route9Youngster1AfterBattleText
 Route9TrainerHeader7:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_7, 1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_7, 1
-	dw Route9BattleText8 ; TextBeforeBattle
-	dw Route9AfterBattleText8 ; TextAfterBattle
-	dw Route9EndBattleText8 ; TextEndBattle
-	dw Route9EndBattleText8 ; TextEndBattle
-
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_7, 2, Route9Hiker3BattleText, Route9Hiker3EndBattleText, Route9Hiker3AfterBattleText
 Route9TrainerHeader8:
-	dbEventFlagBit EVENT_BEAT_ROUTE_9_TRAINER_8, 1
-	db ($2 << 4) ; trainer's view range
-	dwEventFlagAddress EVENT_BEAT_ROUTE_9_TRAINER_8, 1
-	dw Route9BattleText9 ; TextBeforeBattle
-	dw Route9AfterBattleText9 ; TextAfterBattle
-	dw Route9EndBattleText9 ; TextEndBattle
-	dw Route9EndBattleText9 ; TextEndBattle
+	trainer EVENT_BEAT_ROUTE_9_TRAINER_8, 2, Route9Youngster2BattleText, Route9Youngster2EndBattleText, Route9Youngster2AfterBattleText
+	db -1 ; end
 
-	db $ff
-
-Route9Text1:
-	TX_ASM
+Route9CooltrainerF1Text:
+	text_asm
 	ld hl, Route9TrainerHeader0
 	jr Route9TalkToTrainer
 
-Route9Text2:
-	TX_ASM
+Route9CooltrainerM1Text:
+	text_asm
 	ld hl, Route9TrainerHeader1
 	jr Route9TalkToTrainer
 
-Route9Text3:
-	TX_ASM
+Route9CooltrainerM2Text:
+	text_asm
 	ld hl, Route9TrainerHeader2
 	jr Route9TalkToTrainer
 
-Route9Text4:
-	TX_ASM
+Route9CooltrainerF2Text:
+	text_asm
 	ld hl, Route9TrainerHeader3
 	jr Route9TalkToTrainer
 
-Route9Text5:
-	TX_ASM
+Route9Hiker1Text:
+	text_asm
 	ld hl, Route9TrainerHeader4
 	jr Route9TalkToTrainer
 
-Route9Text6:
-	TX_ASM
+Route9Hiker2Text:
+	text_asm
 	ld hl, Route9TrainerHeader5
 	jr Route9TalkToTrainer
 
-Route9Text7:
-	TX_ASM
+Route9Youngster1Text:
+	text_asm
 	ld hl, Route9TrainerHeader6
 	jr Route9TalkToTrainer
 
-Route9Text8:
-	TX_ASM
+Route9Hiker3Text:
+	text_asm
 	ld hl, Route9TrainerHeader7
 	jr Route9TalkToTrainer
 
-Route9Text9:
-	TX_ASM
+Route9Youngster2Text:
+	text_asm
 	ld hl, Route9TrainerHeader8
 Route9TalkToTrainer:
 	call TalkToTrainer
 	jp TextScriptEnd
 
-Route9BattleText1:
-	TX_FAR _Route9BattleText1
-	db "@"
+Route9CooltrainerF1BattleText:
+	text_far _Route9CooltrainerF1BattleText
+	text_end
 
-Route9EndBattleText1:
-	TX_FAR _Route9EndBattleText1
-	db "@"
+Route9CooltrainerF1EndBattleText:
+	text_far _Route9CooltrainerF1EndBattleText
+	text_end
 
-Route9AfterBattleText1:
-	TX_FAR _Route9AfterBattleText1
-	db "@"
+Route9CooltrainerF1AfterBattleText:
+	text_far _Route9CooltrainerF1AfterBattleText
+	text_end
 
-Route9BattleText2:
-	TX_FAR _Route9BattleText2
-	db "@"
+Route9CooltrainerM1BattleText:
+	text_far _Route9CooltrainerM1BattleText
+	text_end
 
-Route9EndBattleText2:
-	TX_FAR _Route9EndBattleText2
-	db "@"
+Route9CooltrainerM1EndBattleText:
+	text_far _Route9CooltrainerM1EndBattleText
+	text_end
 
-Route9AfterBattleText2:
-	TX_FAR _Route9AfterBattleText2
-	db "@"
+Route9CooltrainerM1AfterBattleText:
+	text_far _Route9CooltrainerM1AfterBattleText
+	text_end
 
-Route9BattleText3:
-	TX_FAR _Route9BattleText3
-	db "@"
+Route9CooltrainerM2BattleText:
+	text_far _Route9CooltrainerM2BattleText
+	text_end
 
-Route9EndBattleText3:
-	TX_FAR _Route9EndBattleText3
-	db "@"
+Route9CooltrainerM2EndBattleText:
+	text_far _Route9CooltrainerM2EndBattleText
+	text_end
 
-Route9AfterBattleText3:
-	TX_FAR _Route9AfterBattleText3
-	db "@"
+Route9CooltrainerM2AfterBattleText:
+	text_far _Route9CooltrainerM2AfterBattleText
+	text_end
 
-Route9BattleText4:
-	TX_FAR _Route9BattleText4
-	db "@"
+Route9CooltrainerF2BattleText:
+	text_far _Route9CooltrainerF2BattleText
+	text_end
 
-Route9EndBattleText4:
-	TX_FAR _Route9EndBattleText4
-	db "@"
+Route9CooltrainerF2EndBattleText:
+	text_far _Route9CooltrainerF2EndBattleText
+	text_end
 
-Route9AfterBattleText4:
-	TX_FAR _Route9AfterBattleText4
-	db "@"
+Route9CooltrainerF2AfterBattleText:
+	text_far _Route9CooltrainerF2AfterBattleText
+	text_end
 
-Route9BattleText5:
-	TX_FAR _Route9BattleText5
-	db "@"
+Route9Hiker1BattleText:
+	text_far _Route9Hiker1BattleText
+	text_end
 
-Route9EndBattleText5:
-	TX_FAR _Route9EndBattleText5
-	db "@"
+Route9Hiker1EndBattleText:
+	text_far _Route9Hiker1EndBattleText
+	text_end
 
-Route9AfterBattleText5:
-	TX_FAR _Route9AfterBattleText5
-	db "@"
+Route9Hiker1AfterBattleText:
+	text_far _Route9Hiker1AfterBattleText
+	text_end
 
-Route9BattleText6:
-	TX_FAR _Route9BattleText6
-	db "@"
+Route9Hiker2BattleText:
+	text_far _Route9Hiker2BattleText
+	text_end
 
-Route9EndBattleText6:
-	TX_FAR _Route9EndBattleText6
-	db "@"
+Route9Hiker2EndBattleText:
+	text_far _Route9Hiker2EndBattleText
+	text_end
 
-Route9AfterBattleText6:
-	TX_FAR _Route9AfterBattleText6
-	db "@"
+Route9Hiker2AfterBattleText:
+	text_far _Route9Hiker2AfterBattleText
+	text_end
 
-Route9BattleText7:
-	TX_FAR _Route9BattleText7
-	db "@"
+Route9Youngster1BattleText:
+	text_far _Route9Youngster1BattleText
+	text_end
 
-Route9EndBattleText7:
-	TX_FAR _Route9EndBattleText7
-	db "@"
+Route9Youngster1EndBattleText:
+	text_far _Route9Youngster1EndBattleText
+	text_end
 
-Route9AfterBattleText7:
-	TX_FAR _Route9AfterBattleText7
-	db "@"
+Route9Youngster1AfterBattleText:
+	text_far _Route9Youngster1AfterBattleText
+	text_end
 
-Route9BattleText8:
-	TX_FAR _Route9BattleText8
-	db "@"
+Route9Hiker3BattleText:
+	text_far _Route9Hiker3BattleText
+	text_end
 
-Route9EndBattleText8:
-	TX_FAR _Route9EndBattleText8
-	db "@"
+Route9Hiker3EndBattleText:
+	text_far _Route9Hiker3EndBattleText
+	text_end
 
-Route9AfterBattleText8:
-	TX_FAR _Route9AfterBattleText8
-	db "@"
+Route9Hiker3AfterBattleText:
+	text_far _Route9Hiker3AfterBattleText
+	text_end
 
-Route9BattleText9:
-	TX_FAR _Route9BattleText9
-	db "@"
+Route9Youngster2BattleText:
+	text_far _Route9Youngster2BattleText
+	text_end
 
-Route9EndBattleText9:
-	TX_FAR _Route9EndBattleText9
-	db "@"
+Route9Youngster2EndBattleText:
+	text_far _Route9Youngster2EndBattleText
+	text_end
 
-Route9AfterBattleText9:
-	TX_FAR _Route9AfterBattleText9
-	db "@"
+Route9Youngster2AfterBattleText:
+	text_far _Route9Youngster2AfterBattleText
+	text_end
 
-Route9Text11:
-	TX_FAR _Route9Text11
-	db "@"
+Route9SignText:
+	text_far _Route9SignText
+	text_end

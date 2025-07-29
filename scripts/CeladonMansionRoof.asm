@@ -2,8 +2,9 @@ CeladonMansionRoof_Script:
 	jp EnableAutoTextBoxDrawing
 
 CeladonMansionRoof_TextPointers:
-	dw CeladonMansion4Text1
+	def_text_pointers
+	dw_const CeladonMansionRoofHouseSignText, TEXT_CELADONMANSIONROOF_HOUSE_SIGN
 
-CeladonMansion4Text1:
-	TX_FAR _CeladonMansion4Text1
-	db "@"
+CeladonMansionRoofHouseSignText:
+	text_far _CeladonMansionRoofHouseSignText
+	text_end
